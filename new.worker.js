@@ -1,4 +1,4 @@
-var sourceModule = require('sources');
+var sourceModule = {};
 var tools = require('tools');
 var mining = require('room_mining');
 var mavg = require('moving_avg');
