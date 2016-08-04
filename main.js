@@ -1,4 +1,4 @@
-require('creep.types')();
+require('creep.types').proto();
 var worker = require('new.worker');
 var tower = require('tower');
 var rm = require('room_mining');

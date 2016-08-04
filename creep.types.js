@@ -1,25 +1,32 @@
-module.exports = function () {
-    MEDIUM_MINER = 'MEDIUM_MINER';
-    MEDIUM_TRANSPORT = 'MEDIUM_TRANSPORT';
-    MEDIUM_WORKER = 'MEDIUM_WORKER';
-    
-    HEAVY_WORKER = 'HEAVY_WORKER';
-    HEAVY_MINER = 'HEAVY_MINER';
-    
-    StructureSpawn.prototype.createCustomCreep =
-        function(type, max_energy = Infinity, memory = {}) {
-            var body = mTypes[type](Math.min(max_energy, this.room.energyAvailable));
-            if (body.length > 0) {
-                var err = this.createCreep(body, undefined, memory);
-                if (! (err < 0)) {
-                    console.log("Now spawning a " + type + " at " + this.name + " [" + this.room.name + "] for " + workerCost(body) + " energy.");
+var MEDIUM_MINER = 'MEDIUM_MINER';
+var MEDIUM_TRANSPORT = 'MEDIUM_TRANSPORT';
+var MEDIUM_WORKER = 'MEDIUM_WORKER';
+
+var HEAVY_WORKER = 'HEAVY_WORKER';
+var HEAVY_MINER = 'HEAVY_MINER';
+
+module.exports = {
+    proto: function () {
+        StructureSpawn.prototype.createCustomCreep =
+            function (type, max_energy = Infinity, memory = {}) {
+                var body = mTypes[type](Math.min(max_energy, this.room.energyAvailable));
+                if (body.length > 0) {
+                    var err = this.createCreep(body, undefined, memory);
+                    if (!(err < 0)) {
+                        console.log("Now spawning a " + type + " at " + this.name + " [" + this.room.name + "] for " + workerCost(body) + " energy.");
+                    }
+                    return err;
+                } else {
+                    return ERR_NOT_ENOUGH_ENERGY;
                 }
-                return err;
-            } else {
-                return ERR_NOT_ENOUGH_ENERGY;
-            }
-        };
-    
+            };
+    },
+    MEDIUM_MINER: MEDIUM_MINER,
+    MEDIUM_TRANSPORT: MEDIUM_TRANSPORT,
+    MEDIUM_WORKER:MEDIUM_WORKER,
+
+    HEAVY_WORKER: HEAVY_WORKER,
+    HEAVY_MINER: HEAVY_MINER
 };
 
 function workerCost (parts) {

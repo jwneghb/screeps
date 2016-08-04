@@ -1,4 +1,5 @@
 var tools = require('tools');
+var creepTypes = require('creep.types');
 
 module.exports = {
     init: f_init,
@@ -153,14 +154,14 @@ function f_control_miners(source, source_data) {
 }
 
 function f_spawn_miner(spawn) {
-    var name = spawn.createCustomCreep(HEAVY_MINER);
+    var name = spawn.createCustomCreep(creepTypes.HEAVY_MINER);
     if (! (name < 0)) {
         f_assign_miner(Game.creeps[name]);
     }
 }
 
 function f_spawn_carrier(spawn, max_energy) {
-    var name = spawn.createCustomCreep(MEDIUM_TRANSPORT, max_energy);
+    var name = spawn.createCustomCreep(creepTypes.MEDIUM_TRANSPORT, max_energy);
     if (! (name < 0)) {
         f_assign_carrier(Game.creeps[name]);
     }

@@ -1,7 +1,7 @@
-var sourceModule = {};
 var tools = require('tools');
 var mining = require('room_mining');
 var mavg = require('moving_avg');
+var creepTypes = require('creep.types');
 
 var EMGCY_CTRL_DOWNGRADE = 10000;
 
@@ -95,10 +95,10 @@ module.exports = {
         	    if (Math.floor(work / Math.max(workers.length, 1)) > 100) {
         	        max_energy = 1000;
         	    }
-        	    spawn.createCustomCreep(MEDIUM_WORKER, max_energy, {role: WORKER_ROLE, mode: WORKER_MODE_IDLE});
+        	    spawn.createCustomCreep(creepTypes.MEDIUM_WORKER, max_energy, {role: WORKER_ROLE, mode: WORKER_MODE_IDLE});
         	} else if (room.controller.level < CTRL_LEVEL && heavy_workers.length < 1) {
         	    var max_energy = mining.fill(room) > 25e3 ? 400 * 4 : 400 * 3;
-        	    spawn.createCustomCreep(HEAVY_WORKER, max_energy, {role: HEAVY_WORKER_ROLE, mode: WORKER_MODE_UPGRADE_CTRL});
+        	    spawn.createCustomCreep(creepTypes.HEAVY_WORKER, max_energy, {role: HEAVY_WORKER_ROLE, mode: WORKER_MODE_UPGRADE_CTRL});
         	}
     	}
     	
