@@ -28,22 +28,14 @@ function f_set_min_fill(source_id, min_fill) {
 
 function f_source_initialized(source) {
     if (!source) return false;
-     if (!Memory.mining ||
-        !Memory.mining[source.room.name] ||
-        !Memory.mining[source.room.name].sources ||
-        !Memory.mining[source.room.name].sources[source.id]) {
-        return false;
-    }
-    return true;
+     return !(!Memory.mining || !Memory.mining[source.room.name] || !Memory.mining[source.room.name].sources || !Memory.mining[source.room.name].sources[source.id]);
+
 }
 
 function f_room_initialized(room) {
     if (!room) return false;
-    if (!Memory.mining ||
-        !Memory.mining[room.name]) {
-        return false;
-    }
-    return true;
+    return !(!Memory.mining || !Memory.mining[room.name]);
+
 }
 
 function f_init (room) {
@@ -191,7 +183,7 @@ var CARRIER_JOBS = {
     COLLECT: 'collect',
     FILL: 'fill',
     PICK_UP: 'pick up'
-}
+};
 
 function f_collect_priority(source_data) {
     var priority = source_data.container.fill - source_data.container.min_fill;
@@ -242,10 +234,9 @@ function f_assign_job(creep) {
         var idx = tools.mindex(sources, {u: (s) => f_collect_priority(room_data.sources[s]),  c: tools.cmax});
         
         if (idx >= 0) {
-            source_data = room_data.sources[sources[idx]];
+            var source_data = room_data.sources[sources[idx]];
             
             if (f_collect_priority(source_data) > 0) {
-                var container = Game.getObjectById(source_data.container.id);
             
                 creep.memory.mining.job = {order: CARRIER_JOBS.COLLECT, id: source_data.container.id, min_fill: source_data.container.min_fill};
                 if (source_data.carriers.indexOf(creep.name) < 0) {

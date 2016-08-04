@@ -45,21 +45,6 @@ function f_needs_repair(structure) {
     }
 }
 
-function workerCost (parts) {
-    var cost = 0;
-    for (var i = 0; i < parts.length; ++i) {
-        var p = parts[i];
-        if (p == WORK) {
-            cost += 100;
-        } else if (p == CARRY) {
-            cost += 50;
-        } else if (p == MOVE) {
-            cost += 50;
-        }
-    }
-    return cost;
-}
-
 module.exports = {
     
     WORKER_ROLE: WORKER_ROLE,
@@ -280,127 +265,6 @@ function collect(creep) {
     return !creep.memory.isCollecting;
 }
 
-function harvestStatus(creep) {
-	if (creep.memory.isHarvesting) {
-		if(creep.carry.energy == creep.carryCapacity) {
-		    if (creep.memory.source) {
-		        if (sourceModule.managed(creep.memory.source)) {
-		            var wait_at = sourceModule.wait_at(creep.memory.source);
-		            if (!creep.pos.inRangeTo(wait_at.x, wait_at.y, 1)) {
-		                creep.moveTo(wait_at.x, wait_at.y);
-		                return false;
-		            } else {
-		                sourceModule.release_slot(creep.memory.source, creep.id);
-		            }
-		        }
-		    }
-			creep.memory.isHarvesting = false;
-			delete creep.memory.source;
-		    delete creep.memory.ticket;
-		    creep.memory.canHarvest = false;
-        }
-	} else {
-		if(creep.carry.energy == 0) {
-			creep.memory.isHarvesting = true;
-			creep.memory.target = null;
-		}
-	}
-	
-	if (creep.memory.isHarvesting) {
-		harvest(creep);
-	}
-	
-	return !creep.memory.isHarvesting;
-}
-
-function source_eval(creep, source) {
-    var factor = 0;
-    if (sourceModule.managed(source.id)) {
-        factor = sourceModule.eta(source.id, creep.carryCapacity - creep.carry.energy);
-    } else {
-        factor = 30;
-    }
-    factor += creep.pos.findPathTo(source).length;
-    return factor;
-}
-
-function harvest(creep) {
-    if (creep.memory.canHarvest) {
-        creep.harvest(Game.getObjectById(creep.memory.source));
-    } else {
-        if (creep.memory.source) {
-            if (sourceModule.managed(creep.memory.source)) {
-                if (creep.memory.ticket) {
-                    //creep.say(creep.memory.ticket.spot);
-                    if (creep.memory.ticket.spot == 0) {
-                        if (creep.pos.inRangeTo(creep.memory.ticket.x, creep.memory.ticket.y, 0)) {
-                            creep.memory.canHarvest = true;
-                        } else {
-                            if (creep.moveTo(creep.memory.ticket.x, creep.memory.ticket.y) == ERR_NO_PATH) {
-                                //creep.say('no path');
-                                if (Math.abs(creep.pos.x - creep.memory.ticket.x) <= 1 && Math.abs(creep.pos.y - creep.memory.ticket.y) <= 1) {
-                                    var blocker = creep.room.lookForAt('creep', creep.memory.ticket.x, creep.memory.ticket.y);
-                                    if (blocker && blocker.length > 0) {
-                                        //console.log('blocked by', blocker[0].name);
-                                    }
-                                }
-                            }
-                        }
-                    } else {
-                        creep.moveTo(creep.memory.ticket.x, creep.memory.ticket.y);
-                        creep.memory.ticket = sourceModule.request_slot(creep.memory.source, creep.id);
-                    }
-                } else {
-                    var wait_at = sourceModule.wait_at(creep.memory.source);
-                    if (creep.pos.inRangeTo(wait_at.x, wait_at.y, 1)) {
-                        creep.memory.ticket = sourceModule.request_slot(creep.memory.source, creep.id);
-                        if (creep.memory.ticket) {
-                            harvest(creep);
-                        }
-                    } else {
-                        creep.moveTo(wait_at.x, wait_at.y);
-                    }
-                }
-            } else {
-                var s = Game.getObjectById(creep.memory.source);
-                if (creep.harvest(s) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(s);
-                }
-            }
-        } else {
-            delete creep.memory.ticket;
-            
-            // TEMPORARY
-            //creep.memory.source = '577b92ec0f9d51615fa47608';
-            //harvest(creep);
-            //return;
-            // /TEMPORARY
-            
-            if (creep.memory.mode == WORKER_MODE_UPGRADE_CTRL) {
-                
-                var src = creep.room.controller.pos.findClosestByPath(FIND_SOURCES);
-                if (src) {
-                    creep.memory.source = src.id;
-                    harvest(creep);
-                    return;
-                }
-                
-            }
-            
-            var sources = creep.room.find(FIND_SOURCES);
-            if (sources.length > 0) {
-            	var s = [];
-            	for (var i = 0; i < sources.length; ++i) {
-            	    s.push(source_eval(creep, sources[i]));
-            	}
-            	
-            	creep.memory.source = sources[s.indexOf(Math.min(...s))].id;
-            	harvest(creep);
-            }
-        }
-    }
-}
-
 function selectRandomId(list) {
 	if (list.length > 0) {
 		return list[Math.floor(Math.random() * list.length)].id;
@@ -481,7 +345,7 @@ function upgrade_ctrl(creep) {
         creep.memory.ticks = 10;
     }
     
-	ctrl = creep.room.controller;
+	var ctrl = creep.room.controller;
 	if (ctrl) {
 		if (ctrl.level < CTRL_LEVEL || ctrl.ticksToDowngrade < EMGCY_CTRL_DOWNGRADE) {
 		    if (creep.room.name == 'W42N24') {
@@ -545,17 +409,6 @@ function construct(creep) {
 			creep.memory.target = selectRandomId(targets);
 		}
 	}
-}
-
-function my_min(list, project) {
-    if (list.length == 0) {
-        return undefined;
-    }
-    var min = list[0];
-    for (var i = 1; i < list.length; ++i) {
-        if (project(min) > project(list[i])) min = list[i];
-    }
-    return min;
 }
 
 function idle(creep) {

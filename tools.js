@@ -41,7 +41,7 @@ module.exports = {
             idx = 0;
             var best = unwrap(list[0]);
             for (var i = 1; i < list.length; ++i) {
-                var cur = unwrap(list[i])
+                var cur = unwrap(list[i]);
                 if (comp(best, cur)) {
                     best = cur;
                     idx = i;
@@ -65,7 +65,7 @@ module.exports = {
             
             best = unwrap(list[0]);
             for (var i = 1; i < list.length; ++i) {
-                var cur = unwrap(list[i])
+                var cur = unwrap(list[i]);
                 if (comp(best, cur)) {
                     best = cur;
                 }

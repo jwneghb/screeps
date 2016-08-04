@@ -1,10 +1,10 @@
 module.exports = function () {
-    MEDIUM_MINER = 'MEDIUM_MINER';
-    MEDIUM_TRANSPORT = 'MEDIUM_TRANSPORT';
-    MEDIUM_WORKER = 'MEDIUM_WORKER';
+    var MEDIUM_MINER = 'MEDIUM_MINER';
+    var MEDIUM_TRANSPORT = 'MEDIUM_TRANSPORT';
+    var MEDIUM_WORKER = 'MEDIUM_WORKER';
     
-    HEAVY_WORKER = 'HEAVY_WORKER';
-    HEAVY_MINER = 'HEAVY_MINER';
+    var HEAVY_WORKER = 'HEAVY_WORKER';
+    var HEAVY_MINER = 'HEAVY_MINER';
     
     StructureSpawn.prototype.createCustomCreep =
         function(type, max_energy = Infinity, memory = {}) {

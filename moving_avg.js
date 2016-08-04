@@ -47,7 +47,6 @@ function moving_function(title, value, params) {
     var aux = data.aux;
     var a = data.avg;
     var w = data.ws;
-    var c = value;
 
     var d = f(value, aux);
     
