@@ -1,3 +1,7 @@
+module.exports = {
+    income: income
+};
+
 function period(time) {
     return Math.floor(time / 1000);
 }
@@ -11,8 +15,9 @@ function income(resource_type, amount) {
 
     var cur = Memory.book_keeping.current_period;
     if (!cur) {
-        cur = {start: Game.time, resources: {}};
+        Memory.book_keeping.current_period = {start: Game.time, resources: {}};
     }
+    cur = Memory.book_keeping.current_period;
 
     if (period(Game.time) > period(cur.start)) {
         var total = {};
@@ -25,9 +30,13 @@ function income(resource_type, amount) {
             total: total
         }
         Memory.book_keeping.previous_periods.push(cur_flat);
-        cur = {start: Game.time, total: {}, entries: {}};
+        Memory.book_keeping.current_period = {start: Game.time, resources: {}};
     }
 
-    cur.entries[resource_type].push({t: Game.time, a: amount});
-    cur.total[resource_type] += amount;
+    if (!cur.resources[resource_type]) {
+        cur.resources[resource_type] = {entries: [], total: 0};
+    }
+
+    cur.resources[resource_type].entries.push({t: Game.time, a: amount});
+    cur.resources[resource_type].total += amount;
 }

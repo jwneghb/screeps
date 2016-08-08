@@ -30,12 +30,12 @@ module.exports.loop = function () {
 
     var delta_fill = mavg.log('delta_fill', fill+creep_fill, {subtitle: 'W42N24', ws: 1000, aux: {}, f: (v, a) => {let p = a.p; a.p = v; return v - p || 0;} });
     var av_fill = mavg.log('fill', fill+creep_fill, {subtitle: 'W42N24', ws: 1000});
-    if (Game.time % 10 == 0) {
+    /*if (Game.time % 10 == 0) {
         var rp = Game.rooms.W42N24.controller.progressTotal - Game.rooms.W42N24.controller.progress;
         var eta = Math.ceil(rp / prog);
         var readable = "" + (Math.floor(10 * 3.1 * eta / 3600) / 10) + " hours";
         console.log("[CTRL] At " + (Math.round(prog*100)/100) + "/tick, with " + Math.ceil(rp/100)/10 + "k remaining, eta is " + Math.ceil(eta/100)/10 + "k ticks (" +  readable + ").");
         console.log("Fill: " + Math.round(fill/100)/10 + "k / avg: " + Math.round(av_fill/100)/10 + "k / delta: " + (Math.round(delta_fill*100)/100) + ".");
-    }
+    }*/
 };
 

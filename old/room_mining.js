@@ -1,6 +1,7 @@
 var tools = require('tools');
 var creepTypes = require('creep.types');
 var constants = require('my.constants');
+var book_keeping = require('book_keeping');
 
 module.exports = {
     init: f_init,
@@ -109,16 +110,21 @@ function f_assign_miner(creep) {
 }
 
 function f_control_miner(creep, source, pos) {
+    var income = 0;
     if (!creep.spawning) {
         if (creep.memory.mining.isFirst) {
             if (creep.memory.mining.inPosition) {
                 if (Memory.mining[creep.room.name].sources[source.id].container.fill <= 1988) {
-                    creep.harvest(source);
+                    if (creep.harvest(source) == OK) {
+                        income += Math.min(12, source.energy);
+                    }
                 }
             } else {
                 if (creep.pos.inRangeTo(pos, 0)) {
                     creep.memory.mining.inPosition = true;
-                    creep.harvest(source);
+                    if (creep.harvest(source) == OK) {
+                        income += Math.min(12, source.energy);
+                    }
                 } else {
                     creep.moveTo(pos.x, pos.y);
                 }
@@ -129,6 +135,7 @@ function f_control_miner(creep, source, pos) {
             }
         }
     }
+    return income;
 }
 
 function f_control_miners(source, source_data) {
@@ -140,16 +147,20 @@ function f_control_miners(source, source_data) {
         }
     }
 
+    var income = 0;
+
     if (source_data.miners.length > 0) {
         var first_miner = Game.creeps[source_data.miners[0]];
         first_miner.memory.mining.isFirst = true;
-        f_control_miner(first_miner, source, source_data.container.pos);
+        income += f_control_miner(first_miner, source, source_data.container.pos);
 
         for (var i = 1; i < source_data.miners.length; ++i) {
             var miner = Game.creeps[source_data.miners[i]];
-            f_control_miner(miner, source, source_data.container.pos);
+            income += f_control_miner(miner, source, source_data.container.pos);
         }
     }
+
+    book_keeping.income(RESOURCE_ENERGY, income);
 
     return tools.mvalue(source_data.miners, {u: ttl, c: tools.cmax, i: 0});
 }
