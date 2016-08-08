@@ -1,4 +1,5 @@
 var tools = require('tools');
+var book_keeping = require('book_keeping');
 
 module.exports = {
     run: execute
@@ -54,9 +55,13 @@ function execute (room) {
 
             for (var i = 0; i < towers.length; ++i) {
                 if (lowest && ((lowest.hits < lowest.hitsMax * 0.25) || Math.random() > 0.7)) {
-                    towers[i].heal(lowest);
+                    if (towers[i].heal(lowest) == OK) {
+                        book_keeping.expense(book_keeping.TOWER_HEAL, 10);
+                    }
                 } else {
-                    towers[i].attack(selected_enemy);
+                    if (towers[i].attack(selected_enemy) == OK) {
+                        book_keeping.expense(book_keeping.TOWER_ATTACK, 10);
+                    }
                 }
             }
         }
@@ -64,7 +69,9 @@ function execute (room) {
         var lowest = find_healable(room);
         for (var i = 0; i < towers.length; ++i) {
             if (lowest) {
-                towers[i].heal(lowest);
+                if (towers[i].heal(lowest) == OK) {
+                    book_keeping.expense(book_keeping.TOWER_HEAL, 10);
+                }
             }
         }
     }
