@@ -135,7 +135,7 @@ function f_control_miner(creep, source, pos) {
             }
         }
     }
-    return income;
+    book_keeping.income(RESOURCE_ENERGY, income);
 }
 
 function f_control_miners(source, source_data) {
@@ -147,16 +147,14 @@ function f_control_miners(source, source_data) {
         }
     }
 
-    var income = 0;
-
     if (source_data.miners.length > 0) {
         var first_miner = Game.creeps[source_data.miners[0]];
         first_miner.memory.mining.isFirst = true;
-        income += f_control_miner(first_miner, source, source_data.container.pos);
+        f_control_miner(first_miner, source, source_data.container.pos);
 
         for (var i = 1; i < source_data.miners.length; ++i) {
             var miner = Game.creeps[source_data.miners[i]];
-            income += f_control_miner(miner, source, source_data.container.pos);
+            f_control_miner(miner, source, source_data.container.pos);
         }
     }
 

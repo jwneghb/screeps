@@ -37,6 +37,14 @@ function income(resource_type, amount) {
         cur.resources[resource_type] = {entries: [], total: 0};
     }
 
-    cur.resources[resource_type].entries.push({t: Game.time, a: amount});
+    var len = cur.resources[resource_type].entries.length;
+    if (len > 0) {
+        if (cur.resources[resource_type].entries[len-1] != Game.time) {
+            cur.resources[resource_type].entries.push({t: Game.time, a: amount});
+        } else {
+            cur.resources[resource_type].entries[len-1].a += amount;
+        }
+    }
+
     cur.resources[resource_type].total += amount;
 }
