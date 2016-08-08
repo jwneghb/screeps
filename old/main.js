@@ -17,10 +17,7 @@ module.exports.loop = function () {
 
     worker.run(Game.rooms.W42N24, Game.spawns['spawn_01']);
 
-    var towers = Game.rooms.W42N24.find(FIND_MY_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_TOWER});
-    for (var i in towers) {
-        tower.run(towers[i]);
-    }
+    tower.run(Game.rooms.W42N24);
 
     rm.control(Game.spawns['spawn_01']);
 
