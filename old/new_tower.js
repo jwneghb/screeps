@@ -62,7 +62,9 @@ function execute (room) {
     } else {
         var closestHealable = tower.pos.findClosestByPath(FIND_MY_CREEPS, {filter: (c) => c.hits < c.hitsMax * 0.6});
         if (closestHealable && Math.random()) {
-            towers[i].heal(closestHealable);
+            for (var i = 0; i < towers.length; ++i) {
+                towers[i].heal(closestHealable);
+            }
         }
     }
 }
