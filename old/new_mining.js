@@ -72,7 +72,10 @@ function initialize_room(room_name) {
             return 'SOURCE_NOT_FOUND';
         }
 
-        var container = Game.getObjectById(settings[i].container.id);
+        var container = null;
+        if (settings[i].container.id) {
+            container = Game.getObjectById(settings[i].container.id);
+        }
         if (container) {
             source_data.container.id = container.id;
             source_data.container.pos = container.pos;
