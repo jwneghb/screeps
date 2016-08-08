@@ -1,12 +1,17 @@
 module.exports = {
-    income: income
+    income: income,
+    expense: expense,
+    CREATE_CREEP: 'create_creep',
+    UPGRADE_CONTROLLER: 'upgrade_controller',
+    TOWER_ATTACK: 'tower_attack',
+    TOWER_HEAL: 'tower_heal'
 };
 
 function period(time) {
     return Math.floor(time / 1000);
 }
 
-function income(resource_type, amount) {
+function getCurrent() {
     if (!Memory.book_keeping) {
         Memory.book_keeping = {
             previous_periods: []
@@ -15,38 +20,39 @@ function income(resource_type, amount) {
 
     var cur = Memory.book_keeping.current_period;
     if (!cur) {
-        Memory.book_keeping.current_period = {start: Game.time, resources: {}};
+        Memory.book_keeping.current_period = {start: Game.time, resources: {}, expenses: {}};
     }
     cur = Memory.book_keeping.current_period;
 
     if (period(Game.time) > period(cur.start)) {
-        var total = {};
-        for (var res in Object.keys(cur.resources)) {
-            total.res = cur.resources[res].total;
-        }
-        var cur_flat = {
-            start: cur.start,
-            end: Game.time,
-            total: total
-        }
-        Memory.book_keeping.previous_periods.push(cur_flat);
-        Memory.book_keeping.current_period = {start: Game.time, resources: {}};
+        cur.end = Game.time;
+        Memory.book_keeping.previous_periods.push(cur);
+        cur = {start: Game.time, resources: {}, expenses: {}};
     }
 
-    if (!cur.resources[resource_type]) {
-        cur.resources[resource_type] = {entries: [], total: 0};
-    }
+    return cur;
+}
 
-    var len = cur.resources[resource_type].entries.length;
-    if (len > 0) {
-        if (cur.resources[resource_type].entries[len-1].t != Game.time) {
-            cur.resources[resource_type].entries.push({t: Game.time, a: amount});
-        } else {
-            cur.resources[resource_type].entries[len-1].a += amount;
-        }
+function income(resource_type, amount) {
+    var cur = getCurrent();
+
+    if (cur.resources[resource_type] === undefined) {
+        cur.resources[resource_type] = amount;
     } else {
-        cur.resources[resource_type].entries.push({t: Game.time, a: amount});
+        cur.resources[resource_type] += amount;
     }
+}
 
-    cur.resources[resource_type].total += amount;
+function expense(expense_type, amount) {
+    var cur = getCurrent();
+    if (cur.expenses[expense_type] === undefined) {
+        cur.expenses[expense_type] = amount;
+    } else {
+        cur.expenses[expense_type] += amount;
+    }
+    if (cur.expenses['TOTAL'] === undefined) {
+        cur.expenses['TOTAL'] = amount;
+    } else {
+        cur.expenses['TOTAL'] += amount;
+    }
 }
