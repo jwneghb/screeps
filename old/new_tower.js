@@ -9,6 +9,7 @@ function execute (room) {
     if (!Memory.tower[room.name]) Memory.tower[room.name] = {};
 
     var enemies = room.find(FIND_HOSTILE_CREEPS, {filter: (c) => !isExcempt(c)});
+    var towers = room.find(FIND_MY_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_TOWER});
 
     if (enemies.length > 0) {
 
@@ -48,8 +49,7 @@ function execute (room) {
         if (selected_enemy) {
             Memory.tower[room.name].previous_enemy = selected_enemy.id;
 
-            var towers = room.find(FIND_MY_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_TOWER});
-            var closestHealable = tower.pos.findClosestByPath(FIND_MY_CREEPS, {filter: (c) => c.hits < c.hitsMax * 0.9});
+            var closestHealable = tower.pos.findClosestByPath(FIND_MY_CREEPS, {filter: (c) => c.hits < c.hitsMax * 0.6});
 
             for (var i = 0; i < towers.length; ++i) {
                 if (closestHealable && Math.random() > 0.7) {
@@ -58,6 +58,11 @@ function execute (room) {
                     towers[i].attack(selected_enemy);
                 }
             }
+        }
+    } else {
+        var closestHealable = tower.pos.findClosestByPath(FIND_MY_CREEPS, {filter: (c) => c.hits < c.hitsMax * 0.6});
+        if (closestHealable && Math.random()) {
+            towers[i].heal(closestHealable);
         }
     }
 }
