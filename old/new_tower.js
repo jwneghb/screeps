@@ -6,7 +6,7 @@ module.exports = {
 
 function execute (room) {
     if (!Memory.tower) Memory.tower = {};
-    if (!Memory.tower[room.name]) Memory.tower[room.name] = {};
+    if (!Memory.tower[room.name]) Memory.tower[room.name] = { previous_enemy: null, war_time: 0 };
 
     var enemies = room.find(FIND_HOSTILE_CREEPS, {filter: (c) => !isExcempt(c)});
     var towers = room.find(FIND_MY_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_TOWER});
@@ -48,19 +48,34 @@ function execute (room) {
 
         if (selected_enemy) {
             Memory.tower[room.name].previous_enemy = selected_enemy.id;
+            Memory.tower[room.name].war_time = Game.time;
 
-            //var need_hea = tower.pos.findClosestByPath(FIND_MY_CREEPS, {filter: (c) => c.hits < c.hitsMax * 0.6});
+            var lowest = find_healable(room);
 
             for (var i = 0; i < towers.length; ++i) {
-                /*if (closestHealable && Math.random() > 0.7) {
-                    towers[i].heal(closestHealable);
+                if (lowest && ((lowest.hits < lowest.hitsMax * 0.25) || Math.random() > 0.7)) {
+                    towers[i].heal(lowest);
                 } else {
-
-                }*/
-                towers[i].attack(selected_enemy);
+                    towers[i].attack(selected_enemy);
+                }
+            }
+        }
+    } else if (Memory.tower[room.name].war_time > Game.time - 60) {
+        var lowest = find_healable(room);
+        for (var i = 0; i < towers.length; ++i) {
+            if (lowest) {
+                towers[i].heal(lowest);
             }
         }
     }
+}
+
+function find_healable(room) {
+    var need_heal = room.find(FIND_MY_CREEPS, {filter: (c) => c.hits < c.hitsMax * 0.8});
+    var idx = tools.mindex(need_heal, {u: (c) => c.hits})
+    var lowest = null;
+    if (idx >= 0) lowest = idx;
+    return lowest;
 }
 
 function isAttacker(creep) {
