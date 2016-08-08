@@ -4,6 +4,7 @@ var tower = require('tower');
 var rm = require('room_mining');
 var mavg = require('moving_avg');
 var tools = require('tools');
+var ramparts = require('ramparts');
 
 module.exports.loop = function () {
 

@@ -22,7 +22,7 @@ module.exports = {
 
 function doattack(target) {
     if (target.owner.username == 'DoctorPC') {
-        if (target.pos.y >= 47 || (target.pos.x >= 32 && target.pos.y >= 31)) {
+        if (target.pos.y > 45  || target.pos.x > 22) {
             return false;
         }
     }
