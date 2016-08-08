@@ -87,8 +87,8 @@ function isExcempt(creep) {
 
 const exceptions = {
     W42N24: function (creep) {
-        if (target.owner.username == 'DoctorPC') {
-            return target.pos.y > 45  || target.pos.x > 22 || (target.pos.y < 29 && target.pos.x >18) || target.pos.y < 18;
+        if (creep.owner.username == 'DoctorPC') {
+            return creep.pos.y > 45  || creep.pos.x > 22 || (creep.pos.y < 29 && creep.pos.x >18) || creep.pos.y < 18;
         } else {
             return false;
         }

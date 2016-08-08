@@ -11,6 +11,7 @@ module.exports = {
     proto: function () {
         StructureSpawn.prototype.createCustomCreep =
             function (type, max_energy = Infinity, memory = {}) {
+                if (this.spawning) return ERR_BUSY;
                 var body = mTypes[type](Math.min(max_energy, this.room.energyAvailable));
                 if (body.length > 0) {
                     var err = this.createCreep(body, undefined, memory);
