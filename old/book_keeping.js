@@ -50,9 +50,4 @@ function expense(expense_type, amount) {
     } else {
         cur.expenses[expense_type] += amount;
     }
-    if (cur.expenses['TOTAL'] === undefined) {
-        cur.expenses['TOTAL'] = amount;
-    } else {
-        cur.expenses['TOTAL'] += amount;
-    }
 }
