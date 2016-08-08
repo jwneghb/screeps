@@ -2,6 +2,11 @@ var book_keeping = require('book_keeping');
 
 module.exports = {
     run: function(tower) {
+        var enemies = tower.room.find(FIND_HOSTILE_CREEPS, {filter: (c) => c.owner.username != 'DoctorPC'});
+        if (enemies.length > 0) {
+            tower.attack(enemies[0]);
+        }
+
         var closestHealable = tower.pos.findClosestByPath(FIND_MY_CREEPS, {filter: (c) => c.hits < c.hitsMax * 0.9});
         var closestEnemy = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
         if (closestEnemy && doattack(closestEnemy)) {

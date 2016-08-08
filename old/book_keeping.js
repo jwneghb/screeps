@@ -28,6 +28,7 @@ function getCurrent() {
         cur.end = Game.time;
         Memory.book_keeping.previous_periods.push(cur);
         cur = {start: Game.time, resources: {}, expenses: {}};
+        Memory.book_keeping.current_period = cur;
     }
 
     return cur;

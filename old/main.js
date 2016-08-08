@@ -1,6 +1,6 @@
 require('creep.types').proto();
 var worker = require('new.worker');
-var tower = require('tower');
+var tower = require('new_tower');
 var rm = require('room_mining');
 var mavg = require('moving_avg');
 var tools = require('tools');
