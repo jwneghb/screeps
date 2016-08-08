@@ -49,21 +49,15 @@ function execute (room) {
         if (selected_enemy) {
             Memory.tower[room.name].previous_enemy = selected_enemy.id;
 
-            var closestHealable = tower.pos.findClosestByPath(FIND_MY_CREEPS, {filter: (c) => c.hits < c.hitsMax * 0.6});
+            //var need_hea = tower.pos.findClosestByPath(FIND_MY_CREEPS, {filter: (c) => c.hits < c.hitsMax * 0.6});
 
             for (var i = 0; i < towers.length; ++i) {
-                if (closestHealable && Math.random() > 0.7) {
+                /*if (closestHealable && Math.random() > 0.7) {
                     towers[i].heal(closestHealable);
                 } else {
-                    towers[i].attack(selected_enemy);
-                }
-            }
-        }
-    } else {
-        var closestHealable = tower.pos.findClosestByPath(FIND_MY_CREEPS, {filter: (c) => c.hits < c.hitsMax * 0.6});
-        if (closestHealable && Math.random()) {
-            for (var i = 0; i < towers.length; ++i) {
-                towers[i].heal(closestHealable);
+
+                }*/
+                towers[i].attack(selected_enemy);
             }
         }
     }
