@@ -1,4 +1,5 @@
 var tools = require('tools');
+var book_keeping = require('book_keeping');
 
 module.exports = {
     run: run,
@@ -141,53 +142,39 @@ function control_miners(source_data) {
     var n = source_data.miners.length;
     var k = 0;
     var ttl = 0;
+    var income = 0;
     for (var i = 0; i < n; ++i) {
         var creep = Game.creeps[source_data.miners[k]];
         if (creep) {
-            control_miner(creep, source_data, k == 0);
+            income += control_miner(creep, source_data, k == 0);
             if (ttl < creep.ticksToLive) ttl = creep.ticksToLive;
             k += 1;
         } else {
             source_data.miners.splice(k, 1);
         }
     }
+    book_keeping.income(RESOURCE_ENERGY, income);
     return ttl;
 }
 
-/*
- function source_diff(source_data) {
- var container = Game.getObjectById(source_data.container.id);
- if (container.store.energy > source_data.container.max) {
- return container.store.energy - source_data.container.max;
- }
- if (container.store.energy < source_data.container.min) {
- return container.store.energy - source_data.container.min;
- }
- return 0;
- }
+function container_delta(container) {
+    if (!room_initialized(container.room)) return 0;
+    var sources = Memory[memspace][container.room.name].sources;
+    var source = null;
+    for (var i = 0; i < sources.length; ++i) {
+        if (sources[i].container.id == container.id) {
+            source = sources[i];
+            break;
+        }
+    }
 
- function diff(room) {
- if (!room_initialized(room)) return undefined;
- var room_data = Memory[memspace][room.name];
- var ret = [];
- for (var i = 0; i < room_data.sources.length; ++i) {
- let d = source_diff(room_data.sources[i]);
- if (d > 0) {
- ret.push({
- id: room_data.sources[i].container.id,
- diff: d
- });
- }
- }
- return ret;
- }
- */
+}
 
 function run(room) {
     if (!room_initialized(room)) return undefined;
 
     var room_data = Memory[memspace][room.name];
-    var ttl = []
+    var ttl = [];
     for (var i = 0; i < room_data.sources.length; ++i) {
         ttl.push(control_miners(room_data.sources[i]));
     }
