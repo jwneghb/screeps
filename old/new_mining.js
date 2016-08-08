@@ -72,23 +72,14 @@ function initialize_room(room_name) {
             return 'SOURCE_NOT_FOUND';
         }
 
-        var container = null;
-        if (settings[i].container.id) {
-            container = Game.getObjectById(settings[i].container.id);
-        }
-        if (container) {
-            source_data.container.id = container.id;
-            source_data.container.pos = container.pos;
-        } else {
-            source_data.container.pos = rel_pos(source.pos, source_data[i].rel);
+        source_data.container.pos = rel_pos(source.pos, source_data[i].rel);
 
-            let structs = _.filter(room.lookForAt(LOOK_STRUCTURES, source_data.container.pos),
-                (s) => s.structureType == STRUCTURE_CONTAINER);
-            if (structs.length > 0) {
-                source_data.container.id = structs[0].id;
-            } else {
-                return 'CONTAINER_NOT_FOUND';
-            }
+        let structs = _.filter(room.lookForAt(LOOK_STRUCTURES, source_data.container.pos),
+            (s) => s.structureType == STRUCTURE_CONTAINER);
+        if (structs.length > 0) {
+            source_data.container.id = structs[0].id;
+        } else {
+            return 'CONTAINER_NOT_FOUND';
         }
 
         room_data.sources.push(source_data);
