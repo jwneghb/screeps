@@ -158,8 +158,6 @@ function f_control_miners(source, source_data) {
         }
     }
 
-    book_keeping.income(RESOURCE_ENERGY, income);
-
     return tools.mvalue(source_data.miners, {u: ttl, c: tools.cmax, i: 0});
 }
 
