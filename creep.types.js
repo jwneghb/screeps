@@ -55,11 +55,11 @@ var mTypes = {
         }
         return body;
     },
-    
+
     HEAVY_MINER: function (energy) {
         return [WORK, WORK, WORK, WORK, WORK, WORK, MOVE, MOVE];
     },
-    
+
     MEDIUM_TRANSPORT: function (energy) {
         var body = [];
         while (energy >= 150) {
@@ -70,7 +70,7 @@ var mTypes = {
         }
         return body;
     },
-    
+
     MEDIUM_WORKER: function (energy) {
         var body = [];
         while (energy >= 200) {
@@ -81,16 +81,17 @@ var mTypes = {
         }
         return body;
     },
-    
+
     HEAVY_WORKER: function (energy) {
         var body = [];
-        while (energy >= 400) {
+        while (energy >= 450) {
             body.push(WORK);
             body.push(WORK);
             body.push(WORK);
             body.push(CARRY);
             body.push(MOVE);
-            energy -= 400;
+            body.push(MOVE);
+            energy -= 450;
         }
         return body;
     }

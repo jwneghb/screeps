@@ -31,30 +31,30 @@ function get_data(title, subtitle) {
 
 function moving_function(title, value, params) {
     var subtitle = params.subtitle;
-    
+
     if (!initialized(title, subtitle)) {
         var window = params.ws;
         if (!window) window = 10;
-        
+
         init(title, window, subtitle, params.aux);
     }
-    
+
     var f = params.f;
     if (!f) f = (v, aux) => v;
-    
+
     var data = get_data(title, subtitle);
-    
+
     var aux = data.aux;
     var a = data.avg;
     var w = data.ws;
 
     var d = f(value, aux);
-    
+
     a = (a * w + d) / (w + 1);
     w = Math.min(data.max_ws - 1, w + 1);
 
     data.avg = a;
     data.ws = w;
-    
+
     return a;
 }
