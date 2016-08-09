@@ -44,7 +44,8 @@ var init_W42N25 = [
 
 var init_settings = {
     W42N24: init_W42N24,
-    W42N25: init_W42N25
+    W42N25: init_W42N25,
+    W41N24: init_W41N24
 };
 
 function rel_pos(pos, rel) {
