@@ -99,7 +99,7 @@ function initialize_room(room) {
         room_data.sources.push(source_data);
     }
 
-    Memory[memspace][room_name] = room_data;
+    Memory[memspace][room.name] = room_data;
 
     return 'OK';
 }
