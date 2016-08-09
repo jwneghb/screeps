@@ -4,7 +4,8 @@ var book_keeping = require('book_keeping');
 module.exports = {
     control: control,
     init: initialize_room,
-    assign: assign_miner
+    assign: assign_miner,
+    fill_status: fill_status
 };
 
 var memspace = 'new_mining';
@@ -205,15 +206,26 @@ function control_miners(source_data) {
     return ttl;
 }
 
+function fill_status(room_name) {
+    if (!room_initialized(room_name)) return [];
+    var room_data = Memory[memspace][room.name];
+    var ret = [];
+    for (var i = 0; i < room_data.sources.length; ++i) {
+        var source_data = room_data.sources[i];
+        ret.push({id: source_data.container.id, fill: source_data.container.fill});
+    }
+    return  ret;
+}
+
 function control(room_name) {
     var room = Game.rooms[room_name];
 
     if (!room) {
       if (Memory[memspace][room_name]) {
-          var room_data = Memory[memspace][room_name];
-          var ttl = [];
-          for (var i = 0; i < room_data.sources.length; ++i) {
-              var source_data = room_data.sources[i];
+          let room_data = Memory[memspace][room_name];
+          let ttl = [];
+          for (let i = 0; i < room_data.sources.length; ++i) {
+              let source_data = room_data.sources[i];
               ttl.push(control_miners(source_data));
           }
           return ttl;
@@ -229,20 +241,22 @@ function control(room_name) {
         if (!Game.getObjectById(source_data.container.id)) {
             var co = find_container(source_data.container.pos);
             if (!co) {
-                var err = room.createConstructionSite(source_data.container.pos, STRUCTURE_CONTAINER);
+                var err = room.createConstructionSite(source_data.container.pos.x, source_data.container.pos.y, STRUCTURE_CONTAINER);
                 if (err == OK) {
                     co = find_container(room_data.sources[i].container.pos);
                 } else {
-                    console.log(err);
+                    console.log('[room_mining] Cannot create site! ' + err);
                 }
             }
             if (co) {
                 if (co.isStructure) {
                     source_data.container.id = co.structure.id;
                     source_data.container.isConstructed = true;
+                    source_data.container.fill = co.structure.store.energy || 0;
                 } else {
                     source_data.container.id = co.site.id;
                     source_data.container.isConstructed = false;
+                    source_data.container.fill = 0;
                 }
             }
         }
