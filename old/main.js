@@ -44,7 +44,7 @@ module.exports.loop = function () {
     goto.run();
 
     if (! (Memory.cd >= 0)) {
-        if (tools.mvalue(Game.rooms.W42N24.find(FIND_MY_CREEPS), {u: (c) => c.ttl}) > 200) {
+        if (tools.mvalue(Game.rooms.W42N24.find(FIND_MY_CREEPS), {u: (c) => c.ticksToLive}) > 200) {
             if (!Game.spawns.spawn_01.spawning) {
                 if (Game.rooms.W42N24.energyAvailable >= 2000) {
                     if (! (Game.spawns.spawn_01.createCustomCreep('MEDIUM_WORKER', Infinity, {goto:{roomName:'W42N25'}}) < 0)) {
