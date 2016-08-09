@@ -157,7 +157,7 @@ function control_miner(creep, source_data, isFirst) {
                     }
                 }
                 if (!container || !c.isConstructed || container.store.energy <= (2000 - mining_power) ||
-                    source.energy > (mining_power * source.ticksToRegeneration || 0) ||
+                    /* source.energy > (mining_power * source.ticksToRegeneration || 0) || */
                     container.hitsMax - creep.memory.work * 100)
                 {
                     if (creep.harvest(source) == OK) {
