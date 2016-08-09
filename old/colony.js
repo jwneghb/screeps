@@ -95,7 +95,7 @@ module.exports = {
             var builders = _.filter(workers, (creep) => creep.memory.mode == WORKER_MODE_BUILD).length;
             var upgraders = _.filter(workers, (creep) => creep.memory.mode == WORKER_MODE_UPGRADE_CTRL).length;
 
-            if (upgraders < 1) priorities.push(WORKER_MODE_UPGRADE_CTRL);
+            if (upgraders < 3) priorities.push(WORKER_MODE_UPGRADE_CTRL);
 
             var spl = tower_supply_total + (room.energyCapacityAvailable - room.energyAvailable) / 200;
             if (spl > 0) {
