@@ -70,12 +70,12 @@ function room_initialized(room) {
 function initialize_room(room) {
     if (!room) return 'ROOM_NOT_FOUND';
 
-    if (!init_settings[room_name]) return 'SOURCE_SETTINGS_MISSING';
+    if (!init_settings[room.name]) return 'SOURCE_SETTINGS_MISSING';
     if (!Memory[memspace]) Memory[memspace] = {};
 
     var room_data = {sources: []};
 
-    var settings = init_settings[room_name];
+    var settings = init_settings[room.name];
     let structs = room.find(FIND_MY_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_STORAGE});
     if (structs.length > 0) {
         room_data.storage = structs[0].id;
