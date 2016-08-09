@@ -6,6 +6,9 @@ var mavg = require('moving_avg');
 var tools = require('tools');
 var ramparts = require('ramparts');
 var claimer = require('claimer');
+var colony = require('colony');
+
+var new_mining = require('new_mining');
 
 module.exports.loop = function () {
 
@@ -23,6 +26,25 @@ module.exports.loop = function () {
     rm.control(Game.spawns['spawn_01']);
 
     ramparts.run();
+
+    var miners_needed = new_mining.control('W42N25');
+    if (miners_needed.length > 0) {
+        var needed = false;
+        for (var i = 0; i < miners_needed.length; ++i) {
+            if (miners_needed[i] < 180) {
+                needed = true;
+            }
+        }
+        if (needed && false) {
+            var creep = Game.spawns.spawn_01.createCustomCreep(creepTypes.FAST_MINER, Infinity);
+            if (! (creep < 0)) {
+                new_mining.assign(Game.creeps[creep], 'W42N25');
+            }
+        }
+    }
+
+    var work = colony.run(Game.rooms.W42N25);
+    console.log(work);
 
     //var prog = mavg.log('ctrl', Game.rooms.W42N24.controller.progress, {subtitle: 'W42N24', ws: 1000, aux: {}, f: (v, a) => {let p = a.p; a.p = v; return v - p || 0;} });
 

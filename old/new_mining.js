@@ -62,9 +62,8 @@ function ttl(creep_name) {
     return creep ? creep.ticksToLive : 0;
 }
 
-function room_initialized(room) {
-    if (!room) return false;
-    return !(!Memory[memspace] || !Memory[memspace][room.name]);
+function room_initialized(room_name) {
+    return !(!Memory[memspace] || !Memory[memspace][room_name]);
 }
 
 function initialize_room(room) {
@@ -99,12 +98,12 @@ function initialize_room(room) {
 }
 
 function find_container(position) {
-    var structures = Game.rooms[position.roomName].lookForAt(LOOK_STRUCTURES, position);
+    var structures = Game.rooms[position.roomName].lookForAt(LOOK_STRUCTURES, position.x, position.y);
     structures = _.filter(structures, (s) => s.structureType == STRUCTURE_CONTAINER);
     if (structures.length > 0) {
         return {isStructure: true, structure: structures[0]};
     }
-    var constructions = Game.rooms[position.roomName].lookForAt(LOOK_CONSTRUCTION_SITES, position);
+    var constructions = Game.rooms[position.roomName].lookForAt(LOOK_CONSTRUCTION_SITES, position.x, position.y);
     constructions = _.filter(constructions, (c) => c.my && c.structureType == STRUCTURE_CONTAINER);
     if (constructions.length > 0) {
         return {isStructure: false, site: constructions[0]};
@@ -112,11 +111,11 @@ function find_container(position) {
     return undefined;
 }
 
-function assign_miner(creep, room) {
+function assign_miner(creep, room_name) {
     if (!creep) return false;
-    if (!room_initialized(room)) return false;
+    if (!room_initialized(room_name)) return false;
 
-    var room_data = Memory[memspace][room.name];
+    var room_data = Memory[memspace][room_name];
 
     var idx = tools.mindex(room_data.sources, {
         u: (s) => tools.mvalue(s.miners, {u: ttl, c: tools.cmax, i: 0})
@@ -209,18 +208,6 @@ function control_miners(source_data) {
     return ttl;
 }
 
-function container_delta(container) {
-    if (!room_initialized(container.room)) return 0;
-    var sources = Memory[memspace][container.room.name].sources;
-    var source = null;
-    for (var i = 0; i < sources.length; ++i) {
-        if (sources[i].container.id == container.id) {
-            source = sources[i];
-            break;
-        }
-    }
-}
-
 function control(room_name) {
     var room = Game.rooms[room_name];
 
@@ -245,8 +232,11 @@ function control(room_name) {
         if (!source_data.container.id) {
             var co = find_container(source_data.container.pos);
             if (!co) {
-                if (room.createConstructionSite(source_data.container.pos, STRUCTURE_CONTAINER) == OK) {
+                var err = room.createConstructionSite(source_data.container.pos, STRUCTURE_CONTAINER);
+                if (err == OK) {
                     co = find_container(room_data.sources[i].container.pos);
+                } else {
+                    console.log(err);
                 }
             }
             if (co) {
