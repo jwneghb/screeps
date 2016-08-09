@@ -121,5 +121,8 @@ const exceptions = {
         } else {
             return false;
         }
+    },
+    W42N25: function (creep) {
+        return creep.owner.username == 'DoctorPC';
     }
 }

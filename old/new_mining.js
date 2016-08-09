@@ -155,18 +155,6 @@ function control_miner(creep, source_data, isFirst) {
                             creep.drop(RESOURCE_ENERGY);
                         }
                     }
-                    if (creep.carry.energy >=  creep.carryCapacity - mining_power ||
-                        creep.ticksToLive < 10 && creep.carry.energy > 0) {
-                        if (container) {
-                            if (c.isConstructed && container.hits <= container.hitsMax - creep.memory.work * 100) {
-                                creep.repair(container);
-                                return 0;
-                            } else {
-                                creep.build(container);
-                                return 0;
-                            }
-                        }
-                    }
                 }
                 if (!container || !c.isConstructed || container.store.energy <= (2000 - mining_power) ||
                     source.energy > (mining_power * source.ticksToRegeneration || 0))
@@ -239,7 +227,7 @@ function control(room_name) {
     var ttl = [];
     for (var i = 0; i < room_data.sources.length; ++i) {
         var source_data = room_data.sources[i];
-        if (!source_data.container.id) {
+        if (!Game.getObjectById(source_data.container.id)) {
             var co = find_container(source_data.container.pos);
             if (!co) {
                 var err = room.createConstructionSite(source_data.container.pos, STRUCTURE_CONTAINER);
@@ -251,10 +239,10 @@ function control(room_name) {
             }
             if (co) {
                 if (co.isStructure) {
-                    source_data.container.id = co.structure;
+                    source_data.container.id = co.structure.id;
                     source_data.container.isConstructed = true;
                 } else {
-                    source_data.container.id = co.site;
+                    source_data.container.id = co.site.id;
                     source_data.container.isConstructed = false;
                 }
             }
