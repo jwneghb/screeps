@@ -167,7 +167,7 @@ function control_miner(creep, source_data, isFirst) {
                         }
                     }
                 }
-                if (!container || container.store.energy <= (2000 - mining_power) ||
+                if (!container || !c.isConstructed || container.store.energy <= (2000 - mining_power) ||
                     source.energy > (mining_power * source.ticksToRegeneration || 0))
                 {
                     if (creep.harvest(source) == OK) {
@@ -175,14 +175,14 @@ function control_miner(creep, source_data, isFirst) {
                     }
                 }
             } else {
-                creep.moveTo(c.pos);
+                creep.moveTo(source_data.container.pos.x, source_data.container.pos.y);
             }
         } else {
             if (creep.pos.inRangeTo(c.pos, 0)) {
                 // Stop blocking the spot
                 creep.move(Math.floor(Math.random() * 8) + 1);
             } else if (!creep.pos.inRangeTo(c.pos, 1)) {
-                creep.moveTo(source_data.container.pos);
+                creep.moveTo(source_data.container.pos.x, source_data.container.pos.y);
             }
         }
     }
