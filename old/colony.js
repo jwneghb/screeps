@@ -47,10 +47,11 @@ module.exports = {
 
     run: function (room) {
         var unassigned = room.find(FIND_MY_CREEPS, {filter: (c) => !c.memory.role});
-        for (var i = 0; i < unassigned; ++i) {
-            if (_.filter(unassigned[i].body, (p) => p.type == WORK && p.carryCapacity > 0).length > 0) {
+        for (var i = 0; i < unassigned.length; ++i) {
+            if (_.filter(unassigned[i].body, (p) => p.type == WORK).length > 0 && unassigned[i].carryCapacity > 0) {
                 unassigned[i].memory.role = WORKER_ROLE;
                 unassigned[i].memory.mode = WORKER_MODE_IDLE;
+                delete unassigned[i].memory.goto;
             }
         }
 
