@@ -8,6 +8,7 @@ var HEAVY_WORKER = 'HEAVY_WORKER';
 var HEAVY_MINER = 'HEAVY_MINER';
 
 var CLAIMER = 'CLAIMER';
+var SCOUT = 'SCOUT';
 
 module.exports = {
     proto: function () {
@@ -33,7 +34,10 @@ module.exports = {
     MEDIUM_WORKER:MEDIUM_WORKER,
 
     HEAVY_WORKER: HEAVY_WORKER,
-    HEAVY_MINER: HEAVY_MINER
+    HEAVY_MINER: HEAVY_MINER,
+
+    CLAIMER: CLAIMER,
+    SCOUT: SCOUT
 };
 
 function workerCost (parts) {
@@ -104,13 +108,21 @@ var mTypes = {
     },
 
     CLAIMER: function (energy) {
-        if (energy > 2000) {
+        if (energy >= 2100) {
             var body = [CLAIM, CLAIM, CLAIM];
             while (energy >= 50) {
                 body.push(MOVE);
                 energy -= 50;
             }
             return body;
+        } else {
+            return [];
+        }
+    },
+
+    SCOUT: function (energy) {
+        if (energy >= 50) {
+            return [MOVE];
         } else {
             return [];
         }
