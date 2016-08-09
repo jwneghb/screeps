@@ -150,16 +150,11 @@ function control_miner(creep, source_data, isFirst) {
                                 return 0;
                             }
                         }
-
-                        if (creep.carry.energy >=  creep.carryCapacity - mining_power) {
-                            creep.drop(RESOURCE_ENERGY);
-                        }
                     }
                 }
 
 
-                if (!container || !c.isConstructed || container.store.energy <= (2000 - mining_power - (creep.carry.energy || 0)) ||
-                    /* source.energy > (mining_power * source.ticksToRegeneration || 0) || */ // OVERMINING CLAUSE
+                if (!container || !c.isConstructed || container.storeCapacity - container.store.energy >= mining_power ||
                     container.hits <= container.hitsMax - creep.memory.work * 100)
                 {
                     if (creep.harvest(source) == OK) {
