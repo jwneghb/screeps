@@ -168,7 +168,7 @@ function canCollectFrom(structure) {
         var total = structure.store.energy;
         var dropped = structure.room.lookForAt(LOOK_RESOURCES, structure.pos.x, structure.pos.y);
         if (dropped.length > 0) {
-            total += dropped.energy || 0;
+            total += dropped[0].energy || 0;
         }
         return total;
     }
@@ -202,9 +202,14 @@ function collect(creep) {
             var potential = creep.room.find(FIND_STRUCTURES, {filter: (s) => canCollectFrom(s) >= creep.carryCapacity});
             var idx = tools.mindex(potential, {u: (s) => canCollectFrom(s), c: tools.cmax});
             if (idx >= 0) {
-                creep.memory.collectFrom = potential[idx];
+                creep.memory.collectFrom = potential[idx].id;
             } else{
-                creep.memory.collectFrom = creep.pos.findClosestByPath(FIND_STRUCTURES, {filter: (s) => canCollectFrom(s) >= creep.carryCapacity/2});
+                var c = creep.pos.findClosestByPath(FIND_STRUCTURES, {filter: (s) => canCollectFrom(s) >= creep.carryCapacity/2});
+                if (c) {
+                    creep.memory.collectFrom = c.id;
+                } else {
+                    creep.memory.collectFrom = null;
+                }
             }
         }
     }
