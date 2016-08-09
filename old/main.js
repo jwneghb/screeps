@@ -31,7 +31,6 @@ module.exports.loop = function () {
 
     var miner_ttl = new_mining.control('W42N25');
     if (miner_ttl.length > 0) {
-        console.log(miner_ttl[0]);
         if (miner_ttl[0] < 180) {
             var creep = Game.spawns.spawn_01.createCustomCreep(creepTypes.FAST_MINER, Infinity);
             if (! (creep < 0)) {

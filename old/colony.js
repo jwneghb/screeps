@@ -84,8 +84,6 @@ module.exports = {
 
         var work = damage_total + tower_supply_total + sites_total;
 
-        console.log(room.name, damage_total, tower_supply_total, sites_total);
-
         var idle_workers = _.filter(workers, (creep) => creep.memory.mode == WORKER_MODE_IDLE);
 
         if (idle_workers.length > 0) {
@@ -97,6 +95,7 @@ module.exports = {
             var builders = _.filter(workers, (creep) => creep.memory.mode == WORKER_MODE_BUILD).length;
             var upgraders = _.filter(workers, (creep) => creep.memory.mode == WORKER_MODE_UPGRADE_CTRL).length;
 
+            console.log(upgraders);
             if (upgraders.length < 1) priorities.push(WORKER_MODE_UPGRADE_CTRL);
 
             var spl = tower_supply_total + (room.energyCapacityAvailable - room.energyAvailable) / 200;
@@ -135,7 +134,7 @@ module.exports = {
                 let worker = idle_workers.pop();
                 delete worker.memory.target;
                 var job = priorities.shift();
-                console.log('Assigned job: ' + job);
+                console.log('[' + room.name + '] + Assigned job: ' + job);
                 worker.memory.mode = job;
                 worker.say(job.substr(0, 3));
             }
