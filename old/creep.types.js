@@ -112,7 +112,7 @@ var mTypes = {
     },
 
     FAST_MINER: function (energy) {
-        return [WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE];
+        return [WORK, WORK, WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE];
     },
 
     CLAIMER: function (energy) {
