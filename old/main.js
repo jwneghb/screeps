@@ -29,12 +29,22 @@ module.exports.loop = function () {
 
     ramparts.run();
 
-    var miner_ttl = new_mining.control('W42N25');
-    if (miner_ttl.length > 0) {
-        if (miner_ttl[0] < 180) {
+    var minerW42N25_ttl = new_mining.control('W42N25');
+    if (minerW42N25_ttl.length > 0) {
+        if (minerW42N25_ttl[0] < 180) {
             var creep = Game.spawns.spawn_01.createCustomCreep(creepTypes.FAST_MINER, Infinity);
             if (! (creep < 0)) {
                 new_mining.assign(Game.creeps[creep], 'W42N25');
+            }
+        }
+    }
+
+    var minerW41N24_ttl = new_mining.control('W41N24');
+    if (minerW41N24_ttl.length > 0) {
+        if (minerW41N24_ttl[0] < 180 && false) {
+            var creep = Game.spawns.spawn_01.createCustomCreep(creepTypes.FAST_MINER, Infinity);
+            if (! (creep < 0)) {
+                new_mining.assign(Game.creeps[creep], 'W41N24');
             }
         }
     }
