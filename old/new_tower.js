@@ -114,15 +114,15 @@ function isExcempt(creep) {
     return exceptions[creep.room.name](creep);
 }
 
-const exceptions = {
+var exceptions = {
     W42N24: function (creep) {
         if (creep.owner.username == 'DoctorPC') {
-            return creep.pos.y > 45  || creep.pos.x > 22 || (creep.pos.y < 29 && creep.pos.x >18) || creep.pos.y < 18;
-        } else {
-            return false;
+            if (creep.pos.y > 45  || creep.pos.x > 22 || (creep.pos.y < 29 && creep.pos.x >18) || creep.pos.y < 18) return true;
         }
+        return false;
     },
     W42N25: function (creep) {
         return creep.owner.username == 'DoctorPC';
+
     }
-}
+};
