@@ -176,13 +176,22 @@ function control_miner(creep, source_data, isFirst) {
                 }
             } else {
                 creep.moveTo(source_data.container.pos.x, source_data.container.pos.y);
+                if (creep.room.name == c.pos.roomName) {
+                    creep.moveTo(c.pos.x, c.pos.y);
+                } else {
+                    creep.moveTo(creep.pos.findClosestByPath(creep.room.findExitTo(c.pos.roomName)));
+                }
             }
         } else {
             if (creep.pos.inRangeTo(c.pos, 0)) {
                 // Stop blocking the spot
                 creep.move(Math.floor(Math.random() * 8) + 1);
             } else if (!creep.pos.inRangeTo(c.pos, 1)) {
-                creep.moveTo(source_data.container.pos.x, source_data.container.pos.y);
+                if (creep.room.name == c.pos.roomName) {
+                    creep.moveTo(c.pos.x, c.pos.y);
+                } else {
+                    creep.moveTo(creep.pos.findClosestByPath(creep.room.findExitTo(c.pos.roomName)));
+                }
             }
         }
     }
