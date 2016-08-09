@@ -23,7 +23,7 @@ var init_W42N24 = [
 var init_W41N24 = [
     {
         id: '577b92fa0f9d51615fa47751',
-        rel: RIGHT
+        rel: TOP_RIGHT
     },
     {
         id: '577b92fa0f9d51615fa47753',
@@ -153,9 +153,9 @@ function control_miner(creep, source_data, isFirst) {
                     }
                 }
 
-
                 if (!container || !c.isConstructed || container.storeCapacity - container.store.energy >= mining_power ||
-                    container.hits <= container.hitsMax - creep.memory.work * 100)
+                    container.hits <= container.hitsMax - creep.memory.work * 100 ||
+                    source_data.overmine && source.ticksToRegeneration * mining_power >= source.energy)
                 {
                     if (creep.harvest(source) == OK) {
                         return Math.min(source.energy, mining_power);
