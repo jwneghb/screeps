@@ -210,7 +210,7 @@ function control(room_name) {
 
     if (!room) {
       if (Memory[memspace][room_name]) {
-          var room_data = Memory[memspace][room.name];
+          var room_data = Memory[memspace][room_name];
           var ttl = [];
           for (var i = 0; i < room_data.sources.length; ++i) {
               var source_data = room_data.sources[i];
