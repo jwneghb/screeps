@@ -152,14 +152,6 @@ module.exports = {
             }
         }
 
-        for (var i in heavy_workers) {
-            var creep = heavy_workers[i];
-            //creep.say(creep.memory.mode.substr(0, 3));
-            if (collect(creep)) {
-                procedures[creep.memory.mode](creep);
-            }
-        }
-
         for (var i in dying_soon) {
             var creep = dying_soon[i];
             creep.say("TTL: " + (creep.ticksToLive-1));
