@@ -30,8 +30,20 @@ var init_W41N24 = [
     }
 ];
 
+var init_W42N25 = [
+    {
+        id: '577b92ec0f9d51615fa47604',
+        rel: BOTTOM_RIGHT
+    },
+    {
+        id: '577b92ec0f9d51615fa47605',
+        rel: TOP_LEFT
+    }
+];
+
 var init_settings = {
-    W42N24: init_W42N24
+    W42N24: init_W42N24,
+    W42N25: init_W42N25
 };
 
 function rel_pos(pos, rel) {

@@ -24,13 +24,6 @@ module.exports.loop = function () {
 
     ramparts.run();
 
-    var cl = claimer.run();
-    if (!cl['W42N25'] || cl['W42N25'].length == 0 || cl['W42N25'][0].ticksToLive < 100) {
-        if (!Game.spawns.spawn_01.spawning) {
-            cl.spawn(Game.spawns.spawn_01, 'W42N25');
-        }
-    }
-
     //var prog = mavg.log('ctrl', Game.rooms.W42N24.controller.progress, {subtitle: 'W42N24', ws: 1000, aux: {}, f: (v, a) => {let p = a.p; a.p = v; return v - p || 0;} });
 
     /*

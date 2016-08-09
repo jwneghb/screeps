@@ -110,6 +110,7 @@ var mTypes = {
     CLAIMER: function (energy) {
         if (energy >= 2100) {
             var body = [CLAIM, CLAIM, CLAIM];
+            energy -= 1800;
             while (energy >= 50) {
                 body.push(MOVE);
                 energy -= 50;
