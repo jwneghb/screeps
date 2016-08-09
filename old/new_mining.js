@@ -158,7 +158,7 @@ function control_miner(creep, source_data, isFirst) {
                 }
 
 
-                if (!container || !c.isConstructed || container.store.energy <= (2000 - mining_power) ||
+                if (!container || !c.isConstructed || container.store.energy <= (2000 - mining_power - (creep.carry.energy || 0)) ||
                     /* source.energy > (mining_power * source.ticksToRegeneration || 0) || */ // OVERMINING CLAUSE
                     container.hits <= container.hitsMax - creep.memory.work * 100)
                 {
