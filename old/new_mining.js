@@ -76,12 +76,6 @@ function initialize_room(room) {
     var room_data = {sources: []};
 
     var settings = init_settings[room.name];
-    let structs = room.find(FIND_MY_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_STORAGE});
-    if (structs.length > 0) {
-        room_data.storage = structs[0].id;
-    } else {
-        return 'STORAGE_NOT_FOUND';
-    }
 
     for (var i = 0; i < settings.length; ++i) {
         var source_data = {
