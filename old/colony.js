@@ -84,7 +84,7 @@ module.exports = {
 
         var work = damage_total + tower_supply_total + sites_total;
 
-        var idle_workers = _.filter(workers, (creep) => creep.memory.mode == WORKER_MODE_IDLE);
+        var idle_workers = _.filter(workers, (creep) => creep.memory.mode == WORKER_MODE_IDLE && !creep.spawning);
 
         if (idle_workers.length > 0) {
 
@@ -133,7 +133,7 @@ module.exports = {
                 let worker = idle_workers.pop();
                 delete worker.memory.target;
                 var job = priorities.shift();
-                console.log('[' + room.name + '] + Assigned job: ' + job);
+                //console.log('[' + room.name + '] + Assigned job: ' + job);
                 worker.memory.mode = job;
                 worker.say(job.substr(0, 3));
             }
@@ -365,7 +365,8 @@ function construct(creep) {
 
 function idle(creep) {
     if (creep.carry.energy > 0) {
-        var s = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_STORAGE || s.structureType == STRUCTURE_CONTAINER});
+        var s = creep.pos.findClosestByPath(FIND_STRUCTURES, {filter: (s) => (s.my && s.structureType == STRUCTURE_STORAGE) || s.structureType == STRUCTURE_CONTAINER});
+        creep.say(s);
         if (s) {
             if (creep.transfer(s, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(s);

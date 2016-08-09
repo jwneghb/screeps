@@ -185,7 +185,7 @@ module.exports = {
 				let worker = idle_workers.pop();
 				delete worker.memory.target;
 				var job = priorities.shift();
-				console.log('Assigned job: ' + job);
+				//console.log('Assigned job: ' + job);
 				worker.memory.mode = job;
 				worker.say(job.substr(0, 3));
 			}
