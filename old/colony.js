@@ -95,7 +95,7 @@ module.exports = {
             var builders = _.filter(workers, (creep) => creep.memory.mode == WORKER_MODE_BUILD).length;
             var upgraders = _.filter(workers, (creep) => creep.memory.mode == WORKER_MODE_UPGRADE_CTRL).length;
 
-            if (upgraders < 3) priorities.push(WORKER_MODE_UPGRADE_CTRL);
+            if (upgraders < 1) priorities.push(WORKER_MODE_UPGRADE_CTRL);
 
             var spl = tower_supply_total + (room.energyCapacityAvailable - room.energyAvailable) / 200;
             if (spl > 0) {
@@ -161,7 +161,7 @@ module.exports = {
     }
 };
 
-function canCollectFrom(structure, amount) {
+function canCollectFrom(structure) {
     if (structure.structureType == STRUCTURE_CONTAINER ||
         (structure.structureType == STRUCTURE_STORAGE && structure.my))
     {
@@ -170,11 +170,9 @@ function canCollectFrom(structure, amount) {
         if (dropped.length > 0) {
             total += dropped.energy || 0;
         }
-        if (total >= amount) {
-            return true;
-        }
+        return total;
     }
-    return false;
+    return 0;
 }
 
 function collect(creep) {
@@ -201,9 +199,12 @@ function collect(creep) {
                 creep.memory.collectFrom = null;
             }*/
 
-            creep.memory.collectFrom = selectRandomId(creep.room.find(FIND_STRUCTURES, {filter: (s) => canCollectFrom(s, creep.carryCapacity)}));
-            if (!creep.memory.collectFrom) {
-                creep.memory.collectFrom = selectRandomId(creep.room.find(FIND_STRUCTURES, {filter: (s) => canCollectFrom(s, creep.carryCapacity/2)}));
+            var potential = creep.room.find(FIND_STRUCTURES, {filter: (s) => canCollectFrom(s) >= creep.carryCapacity});
+            var idx = tools.mindex(potential, {u: (s) => canCollectFrom(s), c: tools.cmax});
+            if (idx >= 0) {
+                creep.memory.collectFrom = potential[idx];
+            } else{
+                creep.memory.collectFrom = creep.pos.findClosestByPath(FIND_STRUCTURES, {filter: (s) => canCollectFrom(s) >= creep.carryCapacity/2});
             }
         }
     }
