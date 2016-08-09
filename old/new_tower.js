@@ -14,6 +14,11 @@ function execute (room) {
 
     if (enemies.length > 0) {
 
+        for (var i = 0; i < towers.length; ++i) {
+            towers[i].attack(enemies[0]);
+        }
+        /*
+
         var selected_enemy = null;
         if (Memory.tower[room.name].previous_enemy) {
             for (var i = 0; i < enemies; ++i) {
@@ -64,8 +69,9 @@ function execute (room) {
                     }
                 }
             }
-        }
-    } else if (Memory.tower[room.name].war_time > Game.time - 60) {
+        }*/
+    }
+    /*else if (Memory.tower[room.name].war_time > Game.time - 60) {
         var lowest = find_healable(room);
         for (var i = 0; i < towers.length; ++i) {
             if (lowest) {
@@ -74,7 +80,7 @@ function execute (room) {
                 }
             }
         }
-    }
+    }*/
 }
 
 function find_healable(room) {
