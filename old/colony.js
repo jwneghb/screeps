@@ -188,6 +188,7 @@ function collect(creep) {
             creep.memory.mode = WORKER_MODE_IDLE;
             creep.memory.isCollecting = true;
 
+            /*
             var structure = creep.pos.findClosestByPath(FIND_STRUCTURES, {filter: (s) => canCollectFrom(s, creep.carryCapacity)});
             if (!structure) {
                 structure = creep.pos.findClosestByPath(FIND_STRUCTURES, {filter: (s) => canCollectFrom(s, creep.carryCapacity / 2)});
@@ -198,6 +199,11 @@ function collect(creep) {
                 creep.memory.collectFrom = structure.id;
             } else {
                 creep.memory.collectFrom = null;
+            }*/
+
+            creep.memory.collectFrom = selectRandomId(creep.room.find(FIND_STRUCTURES, {filter: (s) => canCollectFrom(s, creep.carryCapacity)}));
+            if (!creep.memory.collectFrom) {
+                creep.memory.collectFrom = selectRandomId(creep.room.find(FIND_STRUCTURES, {filter: (s) => canCollectFrom(s, creep.carryCapacity/2)}));
             }
         }
     }
