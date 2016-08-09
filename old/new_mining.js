@@ -2,7 +2,7 @@ var tools = require('tools');
 var book_keeping = require('book_keeping');
 
 module.exports = {
-    run: run,
+    control: control,
     init: initialize_room
 };
 
@@ -221,7 +221,7 @@ function container_delta(container) {
     }
 }
 
-function run(room_name) {
+function control(room_name) {
     var room = Game.rooms[room_name];
 
     if (!room) {
