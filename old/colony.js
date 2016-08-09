@@ -50,7 +50,7 @@ module.exports = {
         for (var i = 0; i < unassigned; ++i) {
             if (_.filter(unassigned[i].body, (p) => p.type == WORK && p.carryCapacity > 0).length > 0) {
                 unassigned[i].memory.role = WORKER_ROLE;
-                unassigned.memory.mode = WORKER_MODE_IDLE;
+                unassigned[i].memory.mode = WORKER_MODE_IDLE;
             }
         }
 

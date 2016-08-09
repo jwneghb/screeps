@@ -3,7 +3,8 @@ var book_keeping = require('book_keeping');
 
 module.exports = {
     control: control,
-    init: initialize_room
+    init: initialize_room,
+    assign: assign_miner
 };
 
 var memspace = 'new_mining';
