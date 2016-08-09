@@ -6,8 +6,8 @@ module.exports = {
 }
 
 function execute (room) {
-    if (!Memory.tower) Memory.tower = {};
-    if (!Memory.tower[room.name]) Memory.tower[room.name] = { previous_enemy: null, war_time: 0 };
+    //if (!Memory.tower) Memory.tower = {};
+    //if (!Memory.tower[room.name]) Memory.tower[room.name] = { previous_enemy: null, war_time: 0 };
 
     var enemies = room.find(FIND_HOSTILE_CREEPS, {filter: (c) => !isExcempt(c)});
     var towers = room.find(FIND_MY_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_TOWER});
