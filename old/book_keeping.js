@@ -8,7 +8,7 @@ module.exports = {
 };
 
 function period(time) {
-    return Math.floor(time / 1000);
+    return Math.floor(time / 30000);
 }
 
 function getCurrent() {

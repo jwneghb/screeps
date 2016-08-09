@@ -19,6 +19,17 @@ var init_W42N24 = [
     }
 ];
 
+var init_W41N24 = [
+    {
+        id: '577b92fa0f9d51615fa47751',
+        rel: RIGHT
+    },
+    {
+        id: '577b92fa0f9d51615fa47753',
+        rel: TOP_LEFT
+    }
+];
+
 var init_settings = {
     W42N24: init_W42N24
 };
@@ -73,23 +84,26 @@ function initialize_room(room) {
 
         source_data.container.pos = rel_pos(source.pos, settings[i].rel);
 
-        console.log(source.pos);
-        console.log(source_data.container.pos);
-
-        let structs = _.filter(room.lookForAt(LOOK_STRUCTURES, source_data.container.pos),
-            (s) => s.structureType == STRUCTURE_CONTAINER);
-        if (structs.length > 0) {
-            source_data.container.id = structs[0].id;
-        } else {
-            return 'CONTAINER_NOT_FOUND';
-        }
-
         room_data.sources.push(source_data);
     }
 
     Memory[memspace][room_name] = room_data;
 
     return 'OK';
+}
+
+function find_container(position) {
+    var structures = Game.rooms[position.roomName].lookForAt(LOOK_STRUCTURES, position);
+    structures = _.filter(structures, (s) => s.structureType == STRUCTURE_CONTAINER);
+    if (structures.length > 0) {
+        return {isStructure: true, structure: structures[0]};
+    }
+    var constructions = Game.rooms[position.roomName].lookForAt(LOOK_CONSTRUCTION_SITES, position);
+    constructions = _.filter(constructions, (c) => c.my && c.structureType == STRUCTURE_CONTAINER);
+    if (constructions.length > 0) {
+        return {isStructure: false, site: constructions[0]};
+    }
+    return undefined;
 }
 
 function assign_miner(creep, room) {
@@ -106,7 +120,7 @@ function assign_miner(creep, room) {
 
     room_data.sources[idx].miners.push(creep.name);
     creep.memory.role = 'miner';
-    creep.memory.mining_power = 2 * _.filter(creep.body, (p) => p.type == WORK).length;
+    creep.memory.work = _.filter(creep.body, (p) => p.type == WORK).length;
     return true;
 }
 
@@ -117,11 +131,42 @@ function control_miner(creep, source_data, isFirst) {
             if (creep.pos.inRangeTo(c.pos, 0)) {
                 var source = Game.getObjectById(source_data.id);
                 var container = Game.getObjectById(c.id);
-                if (container.store.energy <= (2000 - creep.memory.mining_power) ||
-                    source.energy > (creep.memory.mining_power * source.ticksToRegeneration || 0))
+                let mining_power = 2 * creep.memory.work;
+
+                if (creep.carryCapacity > 0) {
+                    if (creep.carry.energy >= creep.memory.work) {
+                        if (container) {
+                            if (!c.isConstructed) {
+                                creep.build(container);
+                                return 0;
+                            } else if (container.hits <= container.hitsMax - creep.memory.work * 100) {
+                                creep.repair(container);
+                                return 0;
+                            }
+                        }
+
+                        if (creep.carry.energy >=  creep.carryCapacity - mining_power) {
+                            creep.drop(RESOURCE_ENERGY);
+                        }
+                    }
+                    if (creep.carry.energy >=  creep.carryCapacity - mining_power ||
+                        creep.ticksToLive < 10 && creep.carry.energy > 0) {
+                        if (container) {
+                            if (c.isConstructed && container.hits <= container.hitsMax - creep.memory.work * 100) {
+                                creep.repair(container);
+                                return 0;
+                            } else {
+                                creep.build(container);
+                                return 0;
+                            }
+                        }
+                    }
+                }
+                if (!container || container.store.energy <= (2000 - mining_power) ||
+                    source.energy > (mining_power * source.ticksToRegeneration || 0))
                 {
                     if (creep.harvest(source) == OK) {
-                        return Math.min(source.energy, creep.memory.mining_power);
+                        return Math.min(source.energy, mining_power);
                     }
                 }
             } else {
@@ -129,6 +174,7 @@ function control_miner(creep, source_data, isFirst) {
             }
         } else {
             if (creep.pos.inRangeTo(c.pos, 0)) {
+                // Stop blocking the spot
                 creep.move(Math.floor(Math.random() * 8) + 1);
             } else if (!creep.pos.inRangeTo(c.pos, 1)) {
                 creep.moveTo(source_data.container.pos);
@@ -167,16 +213,47 @@ function container_delta(container) {
             break;
         }
     }
-
 }
 
-function run(room) {
-    if (!room_initialized(room)) return undefined;
+function run(room_name) {
+    var room = Game.rooms[room_name];
+
+    if (!room) {
+      if (Memory[memspace][room_name]) {
+          var room_data = Memory[memspace][room.name];
+          var ttl = [];
+          for (var i = 0; i < room_data.sources.length; ++i) {
+              var source_data = room_data.sources[i];
+              ttl.push(control_miners(source_data));
+          }
+          return ttl;
+      } else {
+          return undefined;
+      }
+    }
 
     var room_data = Memory[memspace][room.name];
     var ttl = [];
     for (var i = 0; i < room_data.sources.length; ++i) {
-        ttl.push(control_miners(room_data.sources[i]));
+        var source_data = room_data.sources[i];
+        if (!source_data.container.id) {
+            var co = find_container(source_data.container.pos);
+            if (!co) {
+                if (room.createConstructionSite(source_data.container.pos, STRUCTURE_CONTAINER) == OK) {
+                    co = find_container(room_data.sources[i].container.pos);
+                }
+            }
+            if (co) {
+                if (co.isStructure) {
+                    source_data.container.id = co.structure;
+                    source_data.container.isConstructed = true;
+                } else {
+                    source_data.container.id = co.site;
+                    source_data.container.isConstructed = false;
+                }
+            }
+        }
+        ttl.push(control_miners(source_data));
     }
 
     return ttl.sort();

@@ -7,6 +7,8 @@ var MEDIUM_WORKER = 'MEDIUM_WORKER';
 var HEAVY_WORKER = 'HEAVY_WORKER';
 var HEAVY_MINER = 'HEAVY_MINER';
 
+var CLAIMER = 'CLAIMER';
+
 module.exports = {
     proto: function () {
         StructureSpawn.prototype.createCustomCreep =
@@ -99,5 +101,18 @@ var mTypes = {
             energy -= 450;
         }
         return body;
+    },
+
+    CLAIMER: function (energy) {
+        if (energy > 2000) {
+            var body = [CLAIM, CLAIM, CLAIM];
+            while (energy >= 50) {
+                body.push(MOVE);
+                energy -= 50;
+            }
+            return body;
+        } else {
+            return [];
+        }
     }
 };
