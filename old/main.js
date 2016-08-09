@@ -43,6 +43,19 @@ module.exports.loop = function () {
 
     goto.run();
 
+    if (! (Memory.cd >= 0)) {
+        if (tools.mvalue(Game.rooms.W42N24.find(FIND_MY_CREEPS), {u: (c) => c.ttl}) > 200) {
+            if (!Game.spawns.spawn_01.spawning) {
+                if (Game.rooms.W42N24.energyAvailable >= 2000) {
+                    if (! (Game.spawns.spawn_01.createCustomCreep('MEDIUM_WORKER', Infinity, {goto:{roomName:'W42N25'}}) < 0)) {
+                        Memory.cd = 750;
+                    }
+                }
+            }
+        }
+    }
+    Memory.cd -= 1;
+
     //var prog = mavg.log('ctrl', Game.rooms.W42N24.controller.progress, {subtitle: 'W42N24', ws: 1000, aux: {}, f: (v, a) => {let p = a.p; a.p = v; return v - p || 0;} });
 
     /*
