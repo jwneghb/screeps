@@ -166,7 +166,12 @@ function canCollectFrom(structure, amount) {
     if (structure.structureType == STRUCTURE_CONTAINER ||
         (structure.structureType == STRUCTURE_STORAGE && structure.my))
     {
-        if (structure.store.energy >= amount) {
+        var total = structure.store.energy;
+        var dropped = creep.room.lookForAt(LOOK_RESOURCES, structure.pos.x, structure.pos.y);
+        if (dropped.length > 0) {
+            total += dropped.energy || 0;
+        }
+        if (total >= amount) {
             return true;
         }
     }
@@ -204,11 +209,22 @@ function collect(creep) {
     if (creep.memory.isCollecting) {
         var structure = Game.getObjectById(creep.memory.collectFrom);
         if (structure) {
-            if (creep.withdraw(structure, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(structure);
+            if (creep.carry.energy == creep.carryCapacity) {
+                creep.memory.isCollecting = false;
+            } else if (canCollectFrom(structure, creep.carryCapacity / 2)) {
+                creep.memory.collectFrom = null;
             } else {
-                if (creep.carry.energy == creep.carryCapacity || structure.store.energy == 0) {
-                    creep.memory.isCollecting = false;
+                if (creep.pos.inRangeTo(structure, 1)) {
+                    var dropped = creep.room.lookForAt(LOOK_RESOURCES, structure.pos.x, structure.pos.y);
+                    if (dropped.length > 0) {
+                        creep.say('pickup');
+                        creep.pickup(dropped[0]);
+                    } else {
+                        creep.say('withdraw');
+                        creep.withdraw(structure, RESOURCE_ENERGY)
+                    }
+                } else {
+                    creep.moveTo(structure);
                 }
             }
         } else {

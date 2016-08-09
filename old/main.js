@@ -40,7 +40,6 @@ module.exports.loop = function () {
     }
 
     var work = colony.run(Game.rooms.W42N25);
-    console.log(work);
 
     goto.run();
 
