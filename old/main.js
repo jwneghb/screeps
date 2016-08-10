@@ -55,7 +55,7 @@ module.exports.loop = function () {
     }
 
     var carrier_status = carriers.control();
-    if ((!carrier_status.W41N24 || carrier_status.W41N24.creeps.length < 3) && new_mining.fill('W41N24') > 500) {
+    if ((!carrier_status.W41N24 || carrier_status.W41N24.creeps.length < 5) && new_mining.fill('W41N24') > 500) {
         var creep = Game.spawns.spawn_01.createCustomCreep(creepTypes.FAST_TRANSPORTER);
         if (! (creep < 0)) {
             carriers.assign(creep, 'W41N24');
@@ -112,10 +112,10 @@ module.exports.loop = function () {
     var sub4k, sub2k;
     if (res.length > 0) {
         for (var i = 0; i < res.length; ++i) {
-            if (Memory.reservations[res] < 2000) {
+            if (Memory.reservations[res[i]] < 2000) {
                 sub2k = i;
                 break;
-            } else if (Memory.reservations[res] < 4000) {
+            } else if (Memory.reservations[res[i]] < 4000) {
                 sub4k = i;
             }
         }
