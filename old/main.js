@@ -87,7 +87,6 @@ module.exports.loop = function () {
 
     var res = reserver.run(['W41N24', 'W41N25']);
     if (res.length > 0) {
-        console.log(res);
         Game.spawns.spawn_01.createCustomCreep(creepTypes.RESERVER, Infinity, reserver.mem(res[0]));
     }
 
