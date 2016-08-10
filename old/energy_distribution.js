@@ -173,11 +173,14 @@ function control_carrier(creep, room, available_jobs) {
                     if (creep.pos.inRangeTo(target, 1)) {
                         if (creep.memory.job.type == JOB_TYPE.WITHDRAW) {
                             let amount = Math.min(target.store.energy - target.getLevels().min, creep.carryCapacity - _.sum(creep.carry));
-                            creep.withdraw(target, RESOURCE_ENERGY, amount);
-
+                            if (creep.withdraw(target, RESOURCE_ENERGY, amount) == OK) {
+                                creep.memory.job = null;
+                            }
                         } else if (creep.memory.job.type == JOB_TYPE.TRANSFER) {
                             let amount = Math.min(target.getLevels().max - target.store.energy, creep.carry.energy);
-                            creep.transfer(target, RESOURCE_ENERGY, amount);
+                            if (creep.transfer(target, RESOURCE_ENERGY, amount) == OK) {
+                                creep.memory.job = null;
+                            }
                         }
                     } else {
                         creep.moveTo(target);
