@@ -52,6 +52,9 @@ function control_carrier(creep) {
                 creep.memory.visited = [];
                 creep.memory.current = null;
                 creep.memory.returning = creep.ticksToLive < 150;
+
+                creep.memory.tours = creep.memory.tours + 1 || 1;
+                console.log(creep.name + " (tour  " + creep.memory.tours + ") deposited " + creep.carry.energy + ", TTL: " + creep.ticksToLive);
             }
         }
     } else {
