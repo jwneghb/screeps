@@ -55,6 +55,7 @@ function setup () {
 const JOB_TYPE = {
     WITHDRAW: 'WITHDRAW',
     TRANSFER: 'TRANSFER',
+    PICKUP: 'PICKUP',
     SUPPLY: 'SUPPLY'
 };
 
@@ -105,7 +106,7 @@ function jobs(room) {
 function selectJob(creep, available_jobs) {
     creep.memory.job = null;
 
-    if (creep.carry.energy < 50) {
+    if (creep.carry.energy < 50 && creep.ticksToLive > 35) {
         if (available_jobs[JOB_TYPE.WITHDRAW].length > 0) {
             let structures = [];
             let jobs = available_jobs[JOB_TYPE.WITHDRAW];
@@ -186,7 +187,6 @@ function control_carrier(creep, room, available_jobs) {
                         creep.moveTo(target);
                     }
                 } else {
-                    creep.say('INVALID');
                     selectJob(creep, available_jobs);
                 }
             } else {
