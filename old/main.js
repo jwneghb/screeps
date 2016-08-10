@@ -63,7 +63,7 @@ module.exports.loop = function () {
             if (!Game.spawns.spawn_01.spawning) {
                 if (Game.rooms.W42N24.energyAvailable >= 2000) {
                     if (! (Game.spawns.spawn_01.createCustomCreep('MEDIUM_WORKER', Infinity, {goto:{roomName:'W42N25'}}) < 0)) {
-                        Memory.cd = 400;
+                        Memory.cd = 700;
                     }
                 }
             }
