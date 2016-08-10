@@ -428,7 +428,9 @@ function f_control(spawn) {
 
 
     if (carriers_needed) {
-        if (!has_miners) {
+        f_spawn_carrier(spawn, 1000);
+        return true;
+        /*if (!has_miners) {
             f_spawn_carrier(spawn, 200);
             return true;
         } else if (miners_needed > 0) {
@@ -437,7 +439,7 @@ function f_control(spawn) {
         } else {
             f_spawn_carrier(spawn, 600);
             return true;
-        }
+        }*/
     } else if (miners_needed > 0) {
         f_spawn_miner(spawn);
         return true;
