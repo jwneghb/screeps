@@ -219,7 +219,7 @@ function collect(creep) {
         if (structure) {
             if (creep.carry.energy == creep.carryCapacity) {
                 creep.memory.isCollecting = false;
-            } else if (!canCollectFrom(structure, creep.carryCapacity / 2)) {
+            } else if (canCollectFrom(structure) < creep.carryCapacity / 2) {
                 creep.memory.collectFrom = null;
             } else {
                 if (creep.pos.inRangeTo(structure, 1)) {
