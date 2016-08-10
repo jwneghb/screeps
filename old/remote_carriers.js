@@ -56,6 +56,7 @@ function control_carrier(creep) {
                 creep.memory.tours = creep.memory.tours + 1 || 1;
                 creep.memory.deposit = creep.memory.deposit + creep.carry.energy || creep.carry.energy;
                 console.log(creep.name + " [" + (creep.body.length*50) + "]" + " (tour " + creep.memory.tours + ") deposited in total " + creep.memory.deposit + ", TTL: " + creep.ticksToLive);
+                if (!creep.memory.returning) creep.suicide();
             }
         }
     } else {
