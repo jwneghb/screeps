@@ -84,24 +84,6 @@ function job_idx(jobs, id) {
 }
 
 function jobs(room) {
-    let active_jobs = {};
-
-    let carriers = Memory[MSPC].rooms[room.name].carriers;
-    for (let i = 0; i < carriers.length; ++i) {
-        let creep = Game.creeps[carriers[i]];
-        if (creep && creep.memory.job) {
-            let job = creep.memory.job;
-            if (!active_jobs[job.id]) {
-                active_jobs[job.id] = 0
-            }
-            if (job.type == JOB_TYPE.WITHDRAW) {
-                active_jobs[job.id] -= job.amount || 0;
-            } else if (job.type == JOB_TYPE.TRANSFER) {
-                active_jobs[job.id] += job.amount || 0;
-            }
-        }
-    }
-
     let structures = room.find(FIND_STRUCTURES, {filter: (s) => structure_filter(s) && !s.isIgnore()});
     let ret = {};
     ret[JOB_TYPE.TRANSFER] = [];
@@ -110,7 +92,7 @@ function jobs(room) {
     for (let i = 0; i < structures.length; ++i) {
         let s = structures[i];
         let levels = s.getLevels();
-        let fill = _.sum(s.store) + (active_jobs[s.id] || 0);
+        let fill = _.sum(s.store);
         if (fill < levels.min) {
             ret[JOB_TYPE.TRANSFER].push({amount: levels.max - s.store.energy, id: s.id});
         } else if (fill > levels.max) {
