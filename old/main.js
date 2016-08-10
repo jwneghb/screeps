@@ -10,7 +10,7 @@ var rm = require('room_mining');
 var mavg = require('moving_avg');
 var tools = require('tools');
 var ramparts = require('ramparts');
-var claimer = require('claimer');
+var reserver = require('reserver');
 var colony = require('colony');
 var goto = require('goto');
 var carriers = require('remote_carriers');
@@ -85,10 +85,10 @@ module.exports.loop = function () {
         if (! (creep < 0)) edist.assign(creep, 'W42N25');
     }
 
-    var cl = claimer.run(['W41N24', 'W41N25']);
-    if (cl.length > 0) {
-        console.log(cl);
-        Game.spawns.spawn_01.createCustomCreep(creepTypes.CLAIMER, Infinity, claimer.mem(cl[0]));
+    var reserve = reservers.run(['W41N24', 'W41N25']);
+    if (reserve.length > 0) {
+        console.log(reserve);
+        Game.spawns.spawn_01.createCustomCreep(creepTypes.RESERVER, Infinity, reservers.mem(reserve[0]));
     }
 
     //var prog = mavg.log('ctrl', Game.rooms.W42N24.controller.progress, {subtitle: 'W42N24', ws: 1000, aux: {}, f: (v, a) => {let p = a.p; a.p = v; return v - p || 0;} });

@@ -166,9 +166,10 @@ function control_miner(creep, source_data, isFirst) {
                 }
             } else {
                 if (creep.room.name == c.pos.roomName) {
-                    if (creep.moveTo(c.pos.x, c.pos.y) == ERR_NO_PATH) {
-                        // STRANGE PATH FINDING ISSUES
-                        if (creep.room.name == 'W41N24') creep.say(creep.move(RIGHT));
+                    if (creep.room.name == 'W41N24' && creep.pos.x < 7) {
+                        creep.moveTo(7, 33);
+                    } else {
+                        creep.moveTo(c.pos.x, c.pos.y);
                     }
                 } else {
                     creep.moveTo(creep.pos.findClosestByPath(creep.room.findExitTo(c.pos.roomName)));

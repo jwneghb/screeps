@@ -1,7 +1,7 @@
 var creepTypes = require('creep.types');
 
 module.exports = {
-    run: control_claimers,
+    run: control_reservers,
     mem: mem
 };
 
@@ -9,7 +9,7 @@ function mem(room) {
     return {role: 'claimer', room: room};
 }
 
-function control_claimers(room_names) {
+function control_reservers(room_names) {
     for (var i in Game.creeps) {
         var c = Game.creeps[i];
         if (c.memory.role == 'claimer') {
@@ -17,15 +17,15 @@ function control_claimers(room_names) {
             if (idx >= 0) {
                 room_names.splice(idx, 1);
             }
-            control_claimer(c);
+            control_reserver(c);
         }
     }
     return room_names;
 }
 
-function control_claimer(creep) {
+function control_reserver(creep) {
     if (creep.room.name == creep.memory.room) {
-        if (creep.claimController(creep.room.controller) == ERR_NOT_IN_RANGE) {
+        if (creep.reserveController(creep.room.controller) == ERR_NOT_IN_RANGE) {
             creep.moveTo(creep.room.controller);
         }
     } else {
