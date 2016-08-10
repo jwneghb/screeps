@@ -66,6 +66,10 @@ module.exports.loop = function () {
 
     goto.run();
 
+    var work = colony.run(Game.rooms.W42N25);
+    if (work < 4) Game.spawns.spawn_02.createCustomCreep('MEDIUM_WORKER');
+
+    /*
     if (! (Memory.cd >= 0)) {
         if (tools.mvalue(Game.rooms.W42N24.find(FIND_MY_CREEPS), {u: (c) => c.ticksToLive}) > 200) {
             if (!Game.spawns.spawn_01.spawning) {
@@ -79,6 +83,7 @@ module.exports.loop = function () {
     } else {
         Memory.cd -= 1;
     }
+    */
 
     if (edist.control(Game.rooms.W42N25) < 1) {
         var creep = Game.spawns.spawn_02.createCustomCreep('MEDIUM_TRANSPORT');
@@ -91,7 +96,7 @@ module.exports.loop = function () {
         if (room) {
             if (!Memory.reservations) Memory.reservations = {};
             var t = 0;
-            if (room.reservation) t = room.reservation.ticksToEnd;
+            if (room.controller.reservation) t = room.controller.reservation.ticksToEnd;
             Memory.reservations[reserved_rooms[i]] = t;
         } else {
             if (!Memory.reservations[reserved_rooms[i]]) {

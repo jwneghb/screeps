@@ -159,7 +159,7 @@ module.exports = {
             idle(creep);
         }
 
-        return workers.length ? Math.floor(work / workers.length) : Infinity;
+        return workers.length; // ? Math.floor(work / workers.length) : Infinity;
     }
 };
 
