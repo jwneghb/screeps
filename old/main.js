@@ -67,7 +67,7 @@ module.exports.loop = function () {
     goto.run();
 
     var work = colony.run(Game.rooms.W42N25);
-    if (work < 4) Game.spawns.spawn_02.createCustomCreep('MEDIUM_WORKER');
+    if (work < 4 && Game.rooms.W42N25.energyAvailable > 1000) Game.spawns.spawn_02.createCustomCreep('MEDIUM_WORKER');
 
     /*
     if (! (Memory.cd >= 0)) {
