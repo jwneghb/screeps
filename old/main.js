@@ -45,20 +45,18 @@ module.exports.loop = function () {
     }
 
     var minerW41N24_ttl = new_mining.control('W41N24');
+    var carrier_status = carriers.control();
     if (minerW41N24_ttl.length > 0) {
         if (minerW41N24_ttl[0] < 180) {
             var creep = Game.spawns.spawn_01.createCustomCreep(creepTypes.FAST_MINER, Infinity);
             if (! (creep < 0)) {
                 new_mining.assign(Game.creeps[creep], 'W41N24');
             }
-        }
-    }
-
-    var carrier_status = carriers.control();
-    if (!carrier_status.W41N24) {
-        var creep = Game.spawns.spawn_01.createCustomCreep(creepTypes.FAST_TRANSPORTER, 1600);
-        if (! (creep < 0)) {
-            carriers.assign(creep, 'W41N24');
+        } else if (!carrier_status.W41N24) {
+            var creep = Game.spawns.spawn_01.createCustomCreep(creepTypes.FAST_TRANSPORTER, 1600);
+            if (! (creep < 0)) {
+                carriers.assign(creep, 'W41N24');
+            }
         }
     }
 
