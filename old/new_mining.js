@@ -265,7 +265,8 @@ function control(room_name) {
     var ttl = [];
     for (var i = 0; i < room_data.sources.length; ++i) {
         var source_data = room_data.sources[i];
-        if (!Game.getObjectById(source_data.container.id)) {
+        var container = Game.getObjectById(source_data.container.id);
+        if (!container) {
             var co = find_container(source_data.container.pos);
             if (!co) {
                 var err = room.createConstructionSite(source_data.container.pos.x, source_data.container.pos.y, STRUCTURE_CONTAINER);
@@ -286,6 +287,8 @@ function control(room_name) {
                     source_data.container.fill = 0;
                 }
             }
+        } else if (source_data.container.isConstructed) {
+            source_data.container.fill = container.store.energy;
         }
         ttl.push(control_miners(source_data));
     }
