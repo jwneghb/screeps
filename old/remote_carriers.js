@@ -44,10 +44,10 @@ function control_carrier(creep) {
             if (err == ERR_NOT_IN_RANGE) {
                 creep.moveTo(creep.room.storage);
             } else {
-                creep.drop(RESOURCE_ENERGY);
+                if (err != OK) creep.drop(RESOURCE_ENERGY);
                 creep.memory.visited = [];
                 creep.memory.current = null;
-                creep.memory.returning = creep.ticksToLive > 150;
+                creep.memory.returning = creep.ticksToLive < 150;
             }
         }
     } else {
