@@ -102,7 +102,7 @@ function jobs(room) {
     return ret;
 }
 
-function selectJob(creep, room, available_jobs, adjust=0) {
+function selectJob(creep, available_jobs) {
     creep.memory.job = null;
 
     if (creep.carry.energy < 50) {
@@ -116,7 +116,7 @@ function selectJob(creep, room, available_jobs, adjust=0) {
                 if (idx >= 0) {
                     let job = jobs[idx];
                     creep.memory.job = {type: JOB_TYPE.WITHDRAW, id: job.id};
-                    job.amount = Math.max(0, job.amount - creep.carryCapacity - (_.sum(creep.carry) + adjust));
+                    job.amount = Math.max(0, job.amount - creep.carryCapacity + _.sum(creep.carry));
                     if (job.amount == 0) jobs.splice(idx, 1);
                 }
             }
@@ -135,7 +135,7 @@ function selectJob(creep, room, available_jobs, adjust=0) {
             if (idx >= 0) {
                 let job = jobs[idx];
                 creep.memory.job = {type: JOB_TYPE.TRANSFER, id: job.id};
-                job.amount = Math.max(0, job.amount - (creep.carry.energy + adjust));
+                job.amount = Math.max(0, job.amount - creep.carry.energy);
                 if (job.amount == 0) jobs.splice(idx, 1);
             }
         }
@@ -159,27 +159,23 @@ function control_carrier(creep, room, available_jobs) {
                     if (creep.pos.inRangeTo(target, 1)) {
                         if (creep.memory.job.type == JOB_TYPE.WITHDRAW) {
                             let amount = Math.min(target.store.energy - target.getLevels().min, creep.carryCapacity - _.sum(creep.carry));
-                            if (creep.withdraw(target, RESOURCE_ENERGY, amount) == OK) {
-                                selectJob(creep, room, available_jobs, amount);
-                            }
+                            creep.withdraw(target, RESOURCE_ENERGY, amount);
 
                         } else if (creep.memory.job.type == JOB_TYPE.TRANSFER) {
                             let amount = Math.min(target.getLevels().max - target.store.energy, creep.carry.energy);
-                            if (creep.transfer(target, RESOURCE_ENERGY, amount) == OK) {
-                                selectJob(creep, room, available_jobs, -amount);
-                            }
+                            creep.transfer(target, RESOURCE_ENERGY, amount);
                         }
                     } else {
                         creep.moveTo(target);
                     }
                 } else {
-                    selectJob(creep, room, available_jobs);
+                    selectJob(creep, available_jobs);
                 }
             } else {
-                selectJob(creep, room, available_jobs);
+                selectJob(creep, available_jobs);
             }
         } else {
-            selectJob(creep, room, available_jobs);
+            selectJob(creep, available_jobs);
         }
     } else {
         creep.moveTo(creep.pos.findClosestByPath(creep.room.findExitTo(room.name)));
