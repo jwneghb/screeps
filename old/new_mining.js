@@ -208,7 +208,7 @@ function control_miners(source_data) {
 
 function fill_status(room_name) {
     if (!room_initialized(room_name)) return [];
-    var room_data = Memory[memspace][room.name];
+    var room_data = Memory[memspace][room_name];
     var ret = [];
     for (var i = 0; i < room_data.sources.length; ++i) {
         var source_data = room_data.sources[i];

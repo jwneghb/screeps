@@ -20,8 +20,8 @@ var procedures = {
     construct: construct
 };
 
-var repair_walls_max = 2e3;
-var repair_ramparts_max = 2e3;
+var repair_walls_max = 1e5;
+var repair_ramparts_max = 1e5;
 
 var repair_comfort = 1e5;
 

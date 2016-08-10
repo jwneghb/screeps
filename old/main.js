@@ -9,6 +9,7 @@ var ramparts = require('ramparts');
 var claimer = require('claimer');
 var colony = require('colony');
 var goto = require('goto');
+var carriers = require('remote_carriers');
 
 var new_mining = require('new_mining');
 
@@ -31,8 +32,8 @@ module.exports.loop = function () {
 
     var minerW42N25_ttl = new_mining.control('W42N25');
     if (minerW42N25_ttl.length > 0) {
-        if (minerW42N25_ttl[0] < 180) {
-            var creep = Game.spawns.spawn_01.createCustomCreep(creepTypes.FAST_MINER, Infinity);
+        if (minerW42N25_ttl[0] < 40) {
+            var creep = Game.spawns.spawn_02.createCustomCreep(creepTypes.HEAVY_MINER_C, Infinity);
             if (! (creep < 0)) {
                 new_mining.assign(Game.creeps[creep], 'W42N25');
             }
