@@ -51,7 +51,7 @@ function control_carrier(creep) {
                 if (err != OK) creep.drop(RESOURCE_ENERGY);
                 creep.memory.visited = [];
                 creep.memory.current = null;
-                creep.memory.returning = creep.ticksToLive < 150;
+                creep.memory.returning = creep.ticksToLive < 300;
 
                 creep.memory.tours = creep.memory.tours + 1 || 1;
                 creep.memory.deposit = creep.memory.deposit + creep.memory.energy || creep.memory.energy;
@@ -73,7 +73,7 @@ function control_carrier(creep) {
                 creep.memory.visited.push(creep.memory.current);
                 creep.memory.current = null;
             } else {
-                if (creep.carry.energy < creep.carryCapacity * 0.9 && creep.ticksToLive > 75) {
+                if (creep.carry.energy < creep.carryCapacity * 0.9 && creep.ticksToLive > 150) {
                     let container = creep.pos.findClosestByPath(FIND_STRUCTURES, {filter: (s) => container_eligible(creep, s)});
                     if (container) {
                         creep.memory.current = container.id;
