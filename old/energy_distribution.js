@@ -150,7 +150,7 @@ function selectJob(creep, room, available_jobs, recursion) {
 }
 
 function control_carrier(creep, room, available_jobs, recursion='any') {
-    if (creep.room.name == room_name) {
+    if (creep.room.name == room.name) {
         if (creep.memory.job) {
             let target = Game.getObjectById(creep.memory.job.id);
             if (target) {
@@ -159,22 +159,22 @@ function control_carrier(creep, room, available_jobs, recursion='any') {
                         if (creep.memory.job.type == JOB_TYPE.WITHDRAW) {
                             let amount = Math.min(target.store.energy - target.getLevels().min, creep.carryCapacity - _.sum(creep.carry));
                             creep.withdraw(target, RESOURCE_ENERGY, amount);
-                            selectJob(creep, available_jobs, 'move');
+                            selectJob(creep, room, available_jobs, 'move');
 
                         } else if (creep.memory.job.type == JOB_TYPE.TRANSFER) {
                             let amount = Math.min(target.getLevels().max - target.store.energy, creep.carry.energy);
                             creep.transfer(target, RESOURCE_ENERGY, amount);
-                            selectJob(creep, available_jobs, 'move');
+                            selectJob(creep, room, available_jobs, 'move');
                         }
                     }
                 } else {
                     creep.moveTo(target);
                 }
             } else {
-                selectJob(creep, available_jobs, recursion);
+                selectJob(creep, room, available_jobs, recursion);
             }
         } else {
-            selectJob(creep, available_jobs, recursion);
+            selectJob(creep, room, available_jobs, recursion);
         }
     } else {
         creep.moveTo(creep.pos.findClosestByPath(creep.room.findExitTo(room.name)));
@@ -186,7 +186,7 @@ function control_carriers(room, available_jobs) {
     let n = carriers.length;
     let k = 0;
     for (let i = 0; i < n; ++i) {
-        let creep = carriers[k];
+        let creep = Game.creeps[carriers[k]];
         if (creep) {
             control_carrier(creep, room, available_jobs);
             k += 1;
