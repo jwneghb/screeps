@@ -228,7 +228,7 @@ function total_fill(room_name) {
     var room_data = Memory[memspace][room_name];
     for (var i = 0; i < room_data.sources.length; ++i) {
         var source_data = room_data.sources[i];
-        ret += source_data.container.fill;
+        ret += source_data.container.fill || 0;
     }
     return ret;
 }
