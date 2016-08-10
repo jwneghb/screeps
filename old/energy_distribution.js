@@ -106,7 +106,7 @@ function jobs(room) {
 function selectJob(creep, available_jobs) {
     creep.memory.job = null;
 
-    if (creep.carry.energy < 50 && creep.ticksToLive > 35) {
+    if (creep.carry.energy < 50 && creep.ticksToLive >= 35) {
         if (available_jobs[JOB_TYPE.WITHDRAW].length > 0) {
             let structures = [];
             let jobs = available_jobs[JOB_TYPE.WITHDRAW];
@@ -143,6 +143,11 @@ function selectJob(creep, available_jobs) {
     } else {
         if (creep.room.storage && creep.room.storage.getLevels().max >= creep.room.storage.store.energy + creep.carry.energy) {
             creep.memory.job = {type: JOB_TYPE.TRANSFER, id: creep.room.storage.id};
+        } else if (creep.ticksToLive < 35) {
+            var struct = creep.pos.findClosestByPath(FIND_STRUCTURES, {filter: (s) => structure_filter(s) && _.sum(s.store) + creep.carry.energy / 4 < s.storeCapacity});
+            if (struct) {
+                creep.memory.job = {type: JOB_TYPE.TRANSFER, id: struct.id};
+            }
         }
     }
 }
