@@ -149,6 +149,7 @@ function selectJob(creep, available_jobs) {
 function isValid(creep, job) {
     let struct = Game.getObjectById(job.id);
     if (!struct) return false;
+    if (struct.isIgnore()) return false;
     let levels = struct.getLevels();
     if (!levels) return false;
 
@@ -182,6 +183,7 @@ function control_carrier(creep, room, available_jobs) {
                         creep.moveTo(target);
                     }
                 } else {
+                    creep.say('INVALID');
                     selectJob(creep, available_jobs);
                 }
             } else {
