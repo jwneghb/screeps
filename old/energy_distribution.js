@@ -115,15 +115,14 @@ function selectJob(creep, room, available_jobs, adjust=0) {
                 let idx = job_idx(jobs, target.id);
                 if (idx >= 0) {
                     let job = jobs[idx];
-                    let amt = creep.carryCapacity - (_.sum(creep.carry) + adjust);
-                    creep.memory.job = {type: JOB_TYPE.WITHDRAW, amount: amt, id: job.id};
-                    job.amount = Math.max(0, job.amount - amt);
+                    creep.memory.job = {type: JOB_TYPE.WITHDRAW, id: job.id};
+                    job.amount = Math.max(0, job.amount - creep.carryCapacity - (_.sum(creep.carry) + adjust));
                     if (job.amount == 0) jobs.splice(idx, 1);
                 }
             }
         } else if (available_jobs[JOB_TYPE.TRANSFER].length > 0) {
             if (creep.room.storage && creep.room.storage.getLevels().min <= creep.room.storage.store.energy - 50) {
-                creep.memory.job = {type: JOB_TYPE.WITHDRAW, amount: creep.carry.capacity - (_.sum(creep.carry) + adjust), id: creep.room.storage.id};
+                creep.memory.job = {type: JOB_TYPE.WITHDRAW, id: creep.room.storage.id};
             }
         }
     } else if (available_jobs[JOB_TYPE.TRANSFER].length > 0) {
@@ -135,14 +134,14 @@ function selectJob(creep, room, available_jobs, adjust=0) {
             let idx = job_idx(jobs, target.id);
             if (idx >= 0) {
                 let job = jobs[idx];
-                creep.memory.job = {type: JOB_TYPE.TRANSFER, amount: creep.carry.energy + adjust, id: job.id};
+                creep.memory.job = {type: JOB_TYPE.TRANSFER, id: job.id};
                 job.amount = Math.max(0, job.amount - (creep.carry.energy + adjust));
                 if (job.amount == 0) jobs.splice(idx, 1);
             }
         }
     } else {
         if (creep.room.storage && creep.room.storage.getLevels().max >= creep.room.storage.store.energy + creep.carry.energy) {
-            creep.memory.job = {type: JOB_TYPE.TRANSFER, amount: creep.carry.energy + adjust, id: creep.room.storage.id};
+            creep.memory.job = {type: JOB_TYPE.TRANSFER, id: creep.room.storage.id};
         }
     }
 
