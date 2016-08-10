@@ -137,17 +137,7 @@ var mTypes = {
     },
 
     CLAIMER: function (energy) {
-        if (energy >= 2100) {
-            var body = [CLAIM, CLAIM, CLAIM];
-            energy -= 1800;
-            while (energy >= 50) {
-                body.push(MOVE);
-                energy -= 50;
-            }
-            return body;
-        } else {
-            return [];
-        }
+        return [CLAIM, MOVE, MOVE, MOVE, MOVE, MOVE];
     },
 
     SCOUT: function (energy) {

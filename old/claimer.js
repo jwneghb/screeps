@@ -2,38 +2,33 @@ var creepTypes = require('creep.types');
 
 module.exports = {
     run: control_claimers,
-    spawn: spawn_claimer
+    mem: mem
 };
 
-function spawn_claimer(spawn, goal) {
-    spawn.createCustomCreep(creepTypes.CLAIMER, 2300, {role: 'claimer', room: goal});
+function mem(room) {
+    return {role: 'claimer', room: room};
+}
+
+function control_claimers(room_names) {
+    for (var i in Game.creeps) {
+        var c = Game.creeps[i];
+        if (c.memory.role == 'claimer') {
+            var idx = room_names.indexOf(c.memory.room);
+            if (idx >= 0) {
+                room_names.splice(idx, 1);
+            }
+            control_claimer(c);
+        }
+    }
+    return room_names;
 }
 
 function control_claimer(creep) {
-    if (!creep.spawning) {
-        if (creep.room.name == creep.memory.room) {
-            var ctrl = creep.room.controller;
-            if (creep.claimController(ctrl) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(ctrl);
-            }
-        } else {
-            creep.moveTo(creep.pos.findClosestByPath(creep.room.findExitTo(creep.memory.room)));
+    if (creep.room.name == creep.memory.room) {
+        if (creep.claimController(creep.room.controller) == ERR_NOT_IN_RANGE) {
+            creep.moveTo(creep.room.controller);
         }
+    } else {
+        creep.moveTo(creep.pos.findClosestByPath(creep.room.findExitTo(creep.memory.room)));
     }
-}
-
-function control_claimers() {
-    var ret = {};
-    for (var i in Game.creeps) {
-        var creep = Game.creeps[i];
-        if (creep.memory.role == 'claimer') {
-            control_claimer(creep);
-            if (!ret[creep.memory.room]) {
-                ret[creep.memory.room] = [creep.id];
-            } else {
-                ret[creep.memory.room].push(creep.id);
-            }
-        }
-    }
-    return ret;
 }

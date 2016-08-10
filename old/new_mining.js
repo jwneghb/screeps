@@ -168,7 +168,7 @@ function control_miner(creep, source_data, isFirst) {
                 if (creep.room.name == c.pos.roomName) {
                     if (creep.moveTo(c.pos.x, c.pos.y) == ERR_NO_PATH) {
                         // STRANGE PATH FINDING ISSUES
-                        if (creep.room.name == 'W41N24') creep.say(creep.moveTo(33,22));
+                        if (creep.room.name == 'W41N24') creep.say(creep.move(RIGHT));
                     }
                 } else {
                     creep.moveTo(creep.pos.findClosestByPath(creep.room.findExitTo(c.pos.roomName)));
