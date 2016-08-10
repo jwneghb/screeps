@@ -76,15 +76,6 @@ function control_carrier(creep) {
                         return;
                     }
                 }
-                if (creep.carry.energy == 0) {
-                    let pos = creep.pos.findClosestByPath(mining.active(creep.room.name));
-                    if (pos) {
-                        if (!creep.pos.inRangeTo(pos, 2)) {
-                            creep.moveTo(pos);
-                        }
-                        return;
-                    }
-                }
                 creep.memory.returning = true;
             }
         }

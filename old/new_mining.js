@@ -225,6 +225,7 @@ function actively_mining(room_name) {
 function total_fill(room_name) {
     if (!room_initialized(room_name)) return 0;
     var ret = 0;
+    var room_data = Memory[memspace][room_name];
     for (var i = 0; i < room_data.sources.length; ++i) {
         var source_data = room_data.sources[i];
         ret += source_data.container.fill;
