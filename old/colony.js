@@ -257,14 +257,11 @@ function supply(creep) {
     var supplyable = [STRUCTURE_SPAWN, STRUCTURE_EXTENSION, STRUCTURE_TOWER, STRUCTURE_CONTAINER];
 
     if (!creep.memory.target) {
-        creep.memory.target = creep.pos.findClosestByRange(FIND_MY_STRUCTURES,
+        var target = creep.pos.findClosestByRange(FIND_MY_STRUCTURES,
             {filter: (s) =>  supplyable.indexOf(s.structureType) >= 0 && s.energy < s.energyCapacity});
-
-        /*
-         var targets = creep.room.find(FIND_MY_STRUCTURES,
-         {filter: (s) =>  supplyable.indexOf(s.structureType) >= 0 && s.energy < s.energyCapacity});
-         creep.memory.target = selectRandomId(targets);
-         */
+        if (target) {
+            creep.memory.target = target.id;
+        }
     }
 
     if (!creep.memory.target) {

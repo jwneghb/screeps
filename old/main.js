@@ -55,8 +55,8 @@ module.exports.loop = function () {
     }
 
     var carrier_status = carriers.control();
-    if ((!carrier_status.W41N24 || carrier_status.W41N24.creeps.length < 2) && new_mining.fill('W41N24') > 500) {
-        var creep = Game.spawns.spawn_01.createCustomCreep(creepTypes.FAST_TRANSPORTER, 1600);
+    if ((!carrier_status.W41N24 || carrier_status.W41N24.creeps.length < 3) && new_mining.fill('W41N24') > 500) {
+        var creep = Game.spawns.spawn_01.createCustomCreep(creepTypes.FAST_TRANSPORTER);
         if (! (creep < 0)) {
             carriers.assign(creep, 'W41N24');
         }
