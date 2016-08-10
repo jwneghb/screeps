@@ -10,7 +10,7 @@ var WORKER_MODE_BUILD = 'construct';
 var WORKER_MODE_IDLE = 'idle';
 var WORKER_MODE_DYING = 'dying';
 
-var CTRL_LEVEL = 4;
+var CTRL_LEVEL = 8;
 
 var procedures = {
     supply: supply,
