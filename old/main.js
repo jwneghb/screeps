@@ -52,7 +52,7 @@ module.exports.loop = function () {
             if (! (creep < 0)) {
                 new_mining.assign(Game.creeps[creep], 'W41N24');
             }
-        } else if (!carrier_status.W41N24) {
+        } else if (!carrier_status.W41N24 && new_mining.fill('W41N24') > 500) {
             var creep = Game.spawns.spawn_01.createCustomCreep(creepTypes.FAST_TRANSPORTER, 1600);
             if (! (creep < 0)) {
                 carriers.assign(creep, 'W41N24');

@@ -5,7 +5,7 @@ module.exports = {
     control: control,
     init: initialize_room,
     assign: assign_miner,
-    fill_status: fill_status
+    fill: total_fill
 };
 
 var memspace = 'new_mining';
@@ -164,9 +164,11 @@ function control_miner(creep, source_data, isFirst) {
                     }
                 }
             } else {
-                creep.moveTo(source_data.container.pos.x, source_data.container.pos.y);
                 if (creep.room.name == c.pos.roomName) {
-                    creep.moveTo(c.pos.x, c.pos.y);
+                    if (creep.moveTo(c.pos.x, c.pos.y) == ERR_NO_PATH) {
+                        // STRANGE PATH FINDING ISSUES
+                        if (creep.room.name == 'W41N24') creep.say(creep.moveTo(33,22));
+                    }
                 } else {
                     creep.moveTo(creep.pos.findClosestByPath(creep.room.findExitTo(c.pos.roomName)));
                 }
@@ -204,6 +206,16 @@ function control_miners(source_data) {
     }
     book_keeping.income(RESOURCE_ENERGY, income);
     return ttl;
+}
+
+function total_fill(room_name) {
+    if (!room_initialized(room_name)) return 0;
+    var ret = 0;
+    for (var i = 0; i < room_data.sources.length; ++i) {
+        var source_data = room_data.sources[i];
+        ret += source_data.container.fill;
+    }
+    return ret;
 }
 
 function fill_status(room_name) {
