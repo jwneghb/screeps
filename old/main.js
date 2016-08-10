@@ -109,11 +109,21 @@ module.exports.loop = function () {
         }
     }
     var res = reserver.run(reserved_rooms);
+    var sub4k, sub2k;
     if (res.length > 0) {
         for (var i = 0; i < res.length; ++i) {
             if (Memory.reservations[res] < 4000) {
-                Game.spawns.spawn_01.createCustomCreep(creepTypes.RESERVER, Infinity, reserver.mem(res[0]));
+                sub4k = i;
             }
+            if (Memory.reservations[res] < 2000) {
+                sub2k = i;
+                break;
+            }
+        }
+        if (sub2k >= 0) {
+            Game.spawns.spawn_01.createCustomCreep(creepTypes.RESERVER, Infinity, reserver.mem(res[sub2k]));
+        } else if (sub4k >= 0){
+            Game.spawns.spawn_01.createCustomCreep(creepTypes.SMALL_RESERVER, Infinity, reserver.mem(res[sub4k]));
         }
     }
 

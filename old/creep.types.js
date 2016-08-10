@@ -13,6 +13,7 @@ var FAST_TRANSPORTER = 'FAST_TRANSPORTER';
 var HEAVY_MINER_C = 'HEAVY_MINER_C';
 
 var RESERVER = 'RESERVER';
+var SMALL_RESERVER = 'SMALL_RESERVER';
 var SCOUT = 'SCOUT';
 
 module.exports = {
@@ -47,6 +48,7 @@ module.exports = {
     FAST_TRANSPORTER: FAST_TRANSPORTER,
 
     RESERVER: RESERVER,
+    SMALL_RESERVER: SMALL_RESERVER,
     SCOUT: SCOUT
 };
 
@@ -139,6 +141,11 @@ var mTypes = {
     RESERVER: function (energy) {
         if (energy < 1950) return [];
         return [CLAIM, CLAIM, CLAIM, MOVE, MOVE, MOVE];
+    },
+
+    SMALL_RESERVER: function (energy) {
+        if (energy < 1400) return [];
+        return [CLAIM, CLAIM, MOVE, MOVE, MOVE, MOVE];
     },
 
     SCOUT: function (energy) {
