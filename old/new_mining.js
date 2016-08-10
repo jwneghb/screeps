@@ -5,7 +5,8 @@ module.exports = {
     control: control,
     init: initialize_room,
     assign: assign_miner,
-    fill: total_fill
+    fill: total_fill,
+    active: actively_mining
 };
 
 var memspace = 'new_mining';
@@ -206,6 +207,19 @@ function control_miners(source_data) {
     }
     book_keeping.income(RESOURCE_ENERGY, income);
     return ttl;
+}
+
+function actively_mining(room_name) {
+    if (!room_initialized(room_name)) return [];
+    var miners_at = [];
+    var room_data = Memory[memspace][room_name];
+    for (var i = 0; i < room_data.sources.length; ++i){
+        var source_data = room_data.sources[i];
+        if (source_data.miners.length > 0) {
+            miners_at.push(source_data.container.pos)
+        }
+    }
+    return miners_at;
 }
 
 function total_fill(room_name) {

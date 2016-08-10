@@ -1,5 +1,4 @@
-var mining = require('room_mining');
-var tools = require('tools');
+var mining = require('new_mining');
 
 module.exports = {
     control: control,
@@ -74,6 +73,15 @@ function control_carrier(creep) {
                     let container = creep.pos.findClosestByPath(FIND_STRUCTURES, {filter: (s) => container_eligible(creep, s)});
                     if (container) {
                         creep.memory.current = container.id;
+                        return;
+                    }
+                }
+                if (creep.carry.energy == 0) {
+                    let pos = creep.pos.findClosestByPath(mining.active(creep.room.name));
+                    if (pos) {
+                        if (!creep.pos.inRangeTo(pos, 2)) {
+                            creep.moveTo(pos);
+                        }
                         return;
                     }
                 }
