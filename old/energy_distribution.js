@@ -1,7 +1,8 @@
 module.exports = {
     setup: setup,
     control: control,
-    jobs: jobs
+    jobs: jobs,
+    assign: assign_carrier
 };
 
 const MSPC = 'energy_dist_v1';
@@ -19,7 +20,7 @@ function setup () {
         }
 
         var max = this.storeCapacity;
-        if (_,isNumber(parameters.max)) {
+        if (_.isNumber(parameters.max)) {
             if (parameters.max < min) return false;
             if (parameters.max > this.storeCapacity) return false;
             max = parameters.max;
@@ -27,6 +28,8 @@ function setup () {
 
         if (!Memory[MSPC].structures[this.id]) Memory[MSPC].structures[this.id] = {};
         Memory[MSPC].structures[this.id].levels = {min: min, max: max};
+
+        return true;
     };
 
     Structure.prototype.setIgnore = function(doIgnore) {
@@ -39,7 +42,7 @@ function setup () {
         if (!this.store) return undefined;
         var def = {min: 0, max: this.storeCapacity};
         if (!Memory[MSPC] || !Memory[MSPC].structures || !Memory[MSPC].structures[this.id]) return def;
-        return Memory[MSPC].structures[this.id].level;
+        return Memory[MSPC].structures[this.id].levels;
     };
 
     Structure.prototype.isIgnore = function () {
@@ -56,13 +59,13 @@ const JOB_TYPE = {
 };
 
 function initialize_room(room_name) {
-    if (!Memory[MSPC].rooms[room_name]) Memory[MSPC][room_name] = {carriers: [], jobs: []};
+    if (!Memory[MSPC].rooms[room_name]) Memory[MSPC].rooms[room_name] = {carriers: [], jobs: []};
 }
 
 function assign_carrier(creep_name, room_name) {
     initialize_room(room_name);
     if (Game.creeps[creep_name]) {
-        Memory[MSPC][room_name].carriers.push(creep_name);
+        Memory[MSPC].rooms[room_name].carriers.push(creep_name);
     }
 }
 
@@ -179,7 +182,7 @@ function control_carrier(creep, room, available_jobs, recursion='any') {
 }
 
 function control_carriers(room, available_jobs) {
-    let carriers = Memory[MSPC][room.name].carriers;
+    let carriers = Memory[MSPC].rooms[room.name].carriers;
     let n = carriers.length;
     let k = 0;
     for (let i = 0; i < n; ++i) {
