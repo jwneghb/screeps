@@ -85,10 +85,10 @@ module.exports.loop = function () {
         if (! (creep < 0)) edist.assign(creep, 'W42N25');
     }
 
-    var reserve = reservers.run(['W41N24', 'W41N25']);
-    if (reserve.length > 0) {
-        console.log(reserve);
-        Game.spawns.spawn_01.createCustomCreep(creepTypes.RESERVER, Infinity, reservers.mem(reserve[0]));
+    var res = reserver.run(['W41N24', 'W41N25']);
+    if (res.length > 0) {
+        console.log(res);
+        Game.spawns.spawn_01.createCustomCreep(creepTypes.RESERVER, Infinity, reserver.mem(res[0]));
     }
 
     //var prog = mavg.log('ctrl', Game.rooms.W42N24.controller.progress, {subtitle: 'W42N24', ws: 1000, aux: {}, f: (v, a) => {let p = a.p; a.p = v; return v - p || 0;} });
