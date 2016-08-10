@@ -20,8 +20,8 @@ var procedures = {
     construct: construct
 };
 
-var repair_walls_max = 1e5;
-var repair_ramparts_max = 1e5;
+var repair_walls_max = 1e4;
+var repair_ramparts_max = 1e4;
 
 var repair_comfort = 1e5;
 
@@ -58,8 +58,8 @@ module.exports = {
         repair_walls = tools.mvalue(room.find(FIND_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_WALL}), {u: (s) => s.hits}) + 500;
         repair_ramparts = tools.mvalue(room.find(FIND_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_RAMPART}), {u: (s) => s.hits}) + 500;
 
-        repair_walls = Math.min(repair_ramparts, repair_walls, repair_walls_max);
-        repair_ramparts = Math.min(repair_ramparts, repair_walls, repair_ramparts_max);
+        repair_walls = repair_walls_max; //Math.min(repair_ramparts, repair_walls, repair_walls_max);
+        repair_ramparts = repair_ramparts_max; //Math.min(repair_ramparts, repair_walls, repair_ramparts_max);
 
         var workers = room.find(FIND_MY_CREEPS, {filter: (creep) => creep.memory.role == WORKER_ROLE});
 
