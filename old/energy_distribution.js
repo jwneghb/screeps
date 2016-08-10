@@ -9,7 +9,7 @@ const MSPC = 'energy_dist_v1';
 function setup () {
     if (!Memory[MSPC]) Memory[MSPC] = {structures: {}, rooms: {}};
 
-    Structure.prototype.setLevels = function(structure, parameters) {
+    Structure.prototype.setLevels = function(parameters) {
         if (!this.store) return false;
 
         var min = 0;
@@ -38,8 +38,8 @@ function setup () {
     Structure.prototype.getLevels = function() {
         if (!this.store) return undefined;
         var def = {min: 0, max: this.storeCapacity};
-        if (!mem() || !mem().structures || !mem().structures[this.id]) return def;
-        return mem().structures[this.id].level;
+        if (!Memory[MSPC] || !Memory[MSPC].structures || !Memory[MSPC].structures[this.id]) return def;
+        return Memory[MSPC].structures[this.id].level;
     };
 
     Structure.prototype.isIgnore = function () {
@@ -62,7 +62,7 @@ function initialize_room(room_name) {
 function assign_carrier(creep_name, room_name) {
     initialize_room(room_name);
     if (Game.creeps[creep_name]) {
-        mem()[room_name].carriers.push(creep_name);
+        Memory[MSPC][room_name].carriers.push(creep_name);
     }
 }
 

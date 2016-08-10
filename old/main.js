@@ -1,5 +1,9 @@
 var creepTypes = require('creep.types');
 creepTypes.proto();
+
+var edist = require('energy_distribution');
+edist.setup();
+
 var worker = require('new.worker');
 var tower = require('new_tower');
 var rm = require('room_mining');
