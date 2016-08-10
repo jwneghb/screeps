@@ -85,10 +85,28 @@ module.exports.loop = function () {
         if (! (creep < 0)) edist.assign(creep, 'W42N25');
     }
 
-    var res = reserver.run(['W41N24', 'W41N25']);
+    var reserved_rooms = ['W41N24', 'W41N25'];
+    for (var i = 0; i < reserved_rooms.length; ++i) {
+        var room = Game.rooms[reserved_rooms[i]];
+        if (room) {
+            if (!Memory.reservations) Memory.reservations = {};
+            var t = 0;
+            if (room.reservation) t = room.reservation.ticksToEnd;
+            Memory.reservations[reserved_rooms[i]] = t;
+        } else {
+            if (!Memory.reservations[reserved_rooms[i]]) {
+                Memory.reservations[reserved_rooms[i]] = 0;
+            } else {
+                if (Memory.reservations[reserved_rooms[i]] > 0) {
+                    Memory.reservations[reserved_rooms[i]] -= 1;
+                }
+            }
+        }
+    }
+    var res = reserver.run(reserved_rooms);
     if (res.length > 0) {
         for (var i = 0; i < res.length; ++i) {
-            if (!Game.rooms[res[i]] || Game.rooms[res[i]].controller.reservation.ticksToEnd < 4000) {
+            if (Memory.reservations[res] < 4000) {
                 Game.spawns.spawn_01.createCustomCreep(creepTypes.RESERVER, Infinity, reserver.mem(res[0]));
             }
         }
