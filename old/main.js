@@ -55,7 +55,6 @@ module.exports.loop = function () {
     }
 
     var carrier_status = carriers.control();
-    console.log(new_mining.fill('W41N24'));
     if (!carrier_status.W41N24 && new_mining.fill('W41N24') > 500) {
         var creep = Game.spawns.spawn_01.createCustomCreep(creepTypes.FAST_TRANSPORTER, 1600);
         if (! (creep < 0)) {

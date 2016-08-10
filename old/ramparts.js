@@ -27,7 +27,7 @@ function W42N24() {
 }
 
 function W42N25() {
-    var ramparts = ['57ab3b9b6231a5892582a572'];
+    var ramparts = Game.rooms.W42N25.find(FIND_MY_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_RAMPART});
 
     var creeps = Game.rooms.W42N25.find(FIND_HOSTILE_CREEPS);
     var drpc = false;
@@ -41,6 +41,6 @@ function W42N25() {
     }
 
     for (var i = 0; i < ramparts.length; ++i) {
-        Game.getObjectById(ramparts[i]).setPublic(drpc && !other);
+        ramparts[i].setPublic(drpc && !other);
     }
 }
