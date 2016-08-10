@@ -146,7 +146,20 @@ function selectJob(creep, available_jobs) {
     }
 }
 
-function isValid(job) {
+function isValid(creep, job) {
+    let struct = Game.getObjectById(job.id);
+    if (!struct) return false;
+    let levels = struct.getLevels();
+    if (!levels) return false;
+
+    if (job.type == JOB_TYPE.WITHDRAW) {
+        if (_.sum(creep.carry) == creep.carryCapacity) return false;
+        if (struct.store.energy <= levels.min) return false;
+    } else if (job.type == JOB_TYPE.TRANSFER) {
+        if (_.sum(creep.carry) < 50) return false;
+        if (struct.store.energy >= levels.max) return false;
+    }
+
     return true;
 }
 
@@ -155,7 +168,7 @@ function control_carrier(creep, room, available_jobs) {
         if (creep.memory.job) {
             let target = Game.getObjectById(creep.memory.job.id);
             if (target) {
-                if (isValid(creep.memory.job)) {
+                if (isValid(creep, creep.memory.job)) {
                     if (creep.pos.inRangeTo(target, 1)) {
                         if (creep.memory.job.type == JOB_TYPE.WITHDRAW) {
                             let amount = Math.min(target.store.energy - target.getLevels().min, creep.carryCapacity - _.sum(creep.carry));
