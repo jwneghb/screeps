@@ -186,7 +186,7 @@ function collect(creep) {
             creep.memory.mode = WORKER_MODE_IDLE;
             creep.memory.isCollecting = true;
 
-            /*
+
             var structure = creep.pos.findClosestByPath(FIND_STRUCTURES, {filter: (s) => canCollectFrom(s, creep.carryCapacity)});
             if (!structure) {
                 structure = creep.pos.findClosestByPath(FIND_STRUCTURES, {filter: (s) => canCollectFrom(s, creep.carryCapacity / 2)});
@@ -197,8 +197,8 @@ function collect(creep) {
                 creep.memory.collectFrom = structure.id;
             } else {
                 creep.memory.collectFrom = null;
-            }*/
-
+            }
+            /*
             var potential = creep.room.find(FIND_STRUCTURES, {filter: (s) => canCollectFrom(s) >= creep.carryCapacity});
             var idx = tools.mindex(potential, {u: (s) => canCollectFrom(s), c: tools.cmax});
             if (idx >= 0) {
@@ -210,7 +210,7 @@ function collect(creep) {
                 } else {
                     creep.memory.collectFrom = null;
                 }
-            }
+            }*/
         }
     }
 
