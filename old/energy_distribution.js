@@ -220,10 +220,11 @@ function control_carriers(room, available_jobs) {
             carriers.splice(k, 1);
         }
     }
+    return k;
 }
 
 function control(room) {
     initialize_room(room.name);
     let transport_jobs = jobs(room);
-    control_carriers(room, transport_jobs);
+    return control_carriers(room, transport_jobs);
 }

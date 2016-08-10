@@ -78,7 +78,10 @@ module.exports.loop = function () {
         Memory.cd -= 1;
     }
 
-    edist.control(Game.rooms.W42N25);
+    if (edist.control(Game.rooms.W42N25) < 1) {
+        var creep = Game.spawns.spawn_02.createCustomCreep('MEDIUM_TRANSPORT');
+        if (! (creep < 0)) edist.assign(creep, 'W42N25');
+    }
 
     //var prog = mavg.log('ctrl', Game.rooms.W42N24.controller.progress, {subtitle: 'W42N24', ws: 1000, aux: {}, f: (v, a) => {let p = a.p; a.p = v; return v - p || 0;} });
 
