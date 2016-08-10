@@ -11,6 +11,7 @@ var LONG_DISTANCE_CARRIER = 'LONG_DISTANCE_CARRIER';
 function assign_transporter(creep_name, mine_name, home_name) {
     var creep = Game.creeps[creep_name];
     if (!creep) return false;
+    if (!mine_name) return false;
     if (!home_name) home_name = creep.room.name;
     creep.memory.role = LONG_DISTANCE_CARRIER;
     creep.memory.home = home_name;

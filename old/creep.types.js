@@ -8,6 +8,7 @@ var HEAVY_WORKER = 'HEAVY_WORKER';
 var HEAVY_MINER = 'HEAVY_MINER';
 
 var FAST_MINER = 'FAST_MINER';
+var FAST_TRANSPORTER = 'FAST_TRANSPORTER';
 
 var HEAVY_MINER_C = 'HEAVY_MINER_C';
 
@@ -43,6 +44,7 @@ module.exports = {
     HEAVY_MINER_C: HEAVY_MINER_C,
 
     FAST_MINER: FAST_MINER,
+    FAST_TRANSPORTER: FAST_TRANSPORTER,
 
     CLAIMER: CLAIMER,
     SCOUT: SCOUT
@@ -121,6 +123,17 @@ var mTypes = {
 
     FAST_MINER: function (energy) {
         return [WORK, WORK, WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE];
+    },
+
+    FAST_TRANSPORTER: function (energy) {
+        var body = [];
+        if (energy < 1000) return body;
+        while (energy > 100) {
+            body.push(CARRY);
+            body.push(MOVE);
+            energy -= 100;
+        }
+        return body;
     },
 
     CLAIMER: function (energy) {
