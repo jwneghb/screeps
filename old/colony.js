@@ -187,9 +187,9 @@ function collect(creep) {
             creep.memory.isCollecting = true;
 
 
-            var structure = creep.pos.findClosestByPath(FIND_STRUCTURES, {filter: (s) => canCollectFrom(s, creep.carryCapacity)});
+            var structure = creep.pos.findClosestByPath(FIND_STRUCTURES, {filter: (s) => canCollectFrom(s) >= creep.carryCapacity});
             if (!structure) {
-                structure = creep.pos.findClosestByPath(FIND_STRUCTURES, {filter: (s) => canCollectFrom(s, creep.carryCapacity / 2)});
+                structure = creep.pos.findClosestByPath(FIND_STRUCTURES, {filter: (s) => canCollectFrom(s) >= creep.carryCapacity / 2});
             }
 
 
