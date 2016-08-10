@@ -112,12 +112,11 @@ module.exports.loop = function () {
     var sub4k, sub2k;
     if (res.length > 0) {
         for (var i = 0; i < res.length; ++i) {
-            if (Memory.reservations[res] < 4000) {
-                sub4k = i;
-            }
             if (Memory.reservations[res] < 2000) {
                 sub2k = i;
                 break;
+            } else if (Memory.reservations[res] < 4000) {
+                sub4k = i;
             }
         }
         if (sub2k >= 0) {
