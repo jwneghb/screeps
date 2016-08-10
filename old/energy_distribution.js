@@ -120,7 +120,7 @@ function jobs(room) {
     return ret;
 }
 
-function selectJob(creep, room, available_jobs, recursion) {
+function selectJob(creep, room, available_jobs, recursion, adjust=0) {
     creep.memory.job = null;
 
     if (creep.carry.energy < 50) {
@@ -133,7 +133,7 @@ function selectJob(creep, room, available_jobs, recursion) {
                 let idx = job_idx(jobs, target.id);
                 if (idx >= 0) {
                     let job = jobs[idx];
-                    let amt = creep.carryCapacity - _.sum(creep.carry);
+                    let amt = creep.carryCapacity - (_.sum(creep.carry) + adjust);
                     creep.memory.job = {type: JOB_TYPE.WITHDRAW, amount: amt, id: job.id};
                     job.amount = Math.max(0, job.amount - amt);
                     if (job.amount == 0) jobs.splice(idx, 1);
@@ -141,7 +141,7 @@ function selectJob(creep, room, available_jobs, recursion) {
             }
         } else if (available_jobs[JOB_TYPE.TRANSFER].length > 0) {
             if (creep.room.storage && creep.room.storage.getLevels().min <= creep.room.storage.store.energy - 50) {
-                creep.memory.job = {type: JOB_TYPE.WITHDRAW, amount: (creep.carry.capacity - _.sum(creep.carry)), id: creep.room.storage.id};
+                creep.memory.job = {type: JOB_TYPE.WITHDRAW, amount: creep.carry.capacity - (_.sum(creep.carry) + adjust), id: creep.room.storage.id};
             }
         }
     } else if (available_jobs[JOB_TYPE.TRANSFER].length > 0) {
@@ -153,14 +153,14 @@ function selectJob(creep, room, available_jobs, recursion) {
             let idx = job_idx(jobs, target.id);
             if (idx >= 0) {
                 let job = jobs[idx];
-                creep.memory.job = {type: JOB_TYPE.TRANSFER, amount: creep.carry.energy, id: job.id};
-                job.amount = Math.max(0, job.amount - creep.carry.energy);
+                creep.memory.job = {type: JOB_TYPE.TRANSFER, amount: creep.carry.energy + adjust, id: job.id};
+                job.amount = Math.max(0, job.amount - (creep.carry.energy + adjust));
                 if (job.amount == 0) jobs.splice(idx, 1);
             }
         }
     } else {
         if (creep.room.storage && creep.room.storage.getLevels().max >= creep.room.storage.store.energy + creep.carry.energy) {
-            creep.memory.job = {type: JOB_TYPE.TRANSFER, amount: creep.carry.energy, id: creep.room.storage.id};
+            creep.memory.job = {type: JOB_TYPE.TRANSFER, amount: creep.carry.energy + adjust, id: creep.room.storage.id};
         }
     }
 
@@ -178,18 +178,20 @@ function control_carrier(creep, room, available_jobs, recursion='any') {
         if (creep.memory.job) {
             let target = Game.getObjectById(creep.memory.job.id);
             if (target) {
-                if (isValid(job)) {
+                if (isValid(creep.memory.job)) {
                     if (creep.pos.inRangeTo(target, 1)) {
                         if (recursion != 'move') {
                             if (creep.memory.job.type == JOB_TYPE.WITHDRAW) {
                                 let amount = Math.min(target.store.energy - target.getLevels().min, creep.carryCapacity - _.sum(creep.carry));
-                                creep.withdraw(target, RESOURCE_ENERGY, amount);
-                                selectJob(creep, room, available_jobs, 'move');
+                                if (creep.withdraw(target, RESOURCE_ENERGY, amount) == OK) {
+                                    selectJob(creep, room, available_jobs, 'move', amount);
+                                }
 
                             } else if (creep.memory.job.type == JOB_TYPE.TRANSFER) {
                                 let amount = Math.min(target.getLevels().max - target.store.energy, creep.carry.energy);
-                                creep.transfer(target, RESOURCE_ENERGY, amount);
-                                selectJob(creep, room, available_jobs, 'move');
+                                if (creep.transfer(target, RESOURCE_ENERGY, amount) == OK) {
+                                    selectJob(creep, room, available_jobs, 'move', -amount);
+                                }
                             }
                         }
                     } else {
