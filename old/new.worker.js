@@ -150,20 +150,15 @@ module.exports = {
 			var builders = _.filter(workers, (creep) => creep.memory.mode == WORKER_MODE_BUILD).length;
 
 			var spl = tower_supply_total + (room.energyCapacityAvailable - room.energyAvailable) / 200;
+
 			if (spl > 0) {
 				if (supply_workers == 0) {
 					priorities.push(WORKER_MODE_SUPPLY);
-				} else {
-					if (spl / supply_workers > 100) {
-						priorities.push(WORKER_MODE_SUPPLY);
-					}
 				}
 			}
 
 			if (damage_total > 0) {
 				if (repair_workers == 0) {
-					priorities.push(WORKER_MODE_REPAIR_STUFF);
-				} else if (damage_total / repair_workers > 100) {
 					priorities.push(WORKER_MODE_REPAIR_STUFF);
 				}
 			}
@@ -171,7 +166,17 @@ module.exports = {
 			if (sites_const > 0) {
 				if (builders == 0) {
 					priorities.push(WORKER_MODE_BUILD)
-				} else if (sites_const / builders > 100) {
+				}
+			}
+
+			if (damage_total > 0) {
+				if (repair_workers > 0 && damage_total / repair_workers > 100) {
+					priorities.push(WORKER_MODE_REPAIR_STUFF);
+				}
+			}
+
+			if (sites_const > 0) {
+				if (builders > 0 && sites_const / builders > 100) {
 					priorities.push(WORKER_MODE_BUILD)
 				}
 			}
