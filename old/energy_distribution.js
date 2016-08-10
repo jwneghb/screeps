@@ -144,10 +144,6 @@ function selectJob(creep, room, available_jobs, adjust=0) {
             creep.memory.job = {type: JOB_TYPE.TRANSFER, id: creep.room.storage.id};
         }
     }
-
-    if (creep.memory.job) {
-        control_carrier(creep, room, available_jobs);
-    }
 }
 
 function isValid(job) {
