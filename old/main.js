@@ -9,7 +9,6 @@ carriers.setup();
 
 var worker = require('new.worker');
 var tower = require('new_tower');
-var rm = require('room_mining');
 var tools = require('tools');
 var ramparts = require('ramparts');
 var reserver = require('reserver');
@@ -32,8 +31,6 @@ module.exports.loop = function () {
 
     tower.run(Game.rooms.W42N24);
 
-    //rm.control(Game.spawns['spawn_01']);
-
     ramparts.run();
 
     var minerW42N25_ttl = new_mining.control('W42N25');
@@ -46,7 +43,6 @@ module.exports.loop = function () {
         }
     }
 
-    /*
     var minerW42N24_ttl = new_mining.control('W42N24');
     if (minerW42N24_ttl.length > 0) {
         if (minerW42N24_ttl[0] < 40) {
@@ -56,7 +52,6 @@ module.exports.loop = function () {
             }
         }
     }
-    */
 
     var minerW41N24_ttl = new_mining.control('W41N24');
     if (minerW41N24_ttl.length > 0) {
@@ -88,12 +83,10 @@ module.exports.loop = function () {
         if (! (creep < 0)) edist.assign(creep, 'W42N25');
     }
 
-    /*
     if (edist.control(Game.rooms.W42N24) < 1) {
         var creep = Game.spawns.spawn_01.createCustomCreep('MEDIUM_TRANSPORT', 1000);
-        if (! (creep < 0)) edist.assign(creep, 'W42N25');
+        if (! (creep < 0)) edist.assign(creep, 'W42N24');
     }
-    */
 
     var reserved_rooms = ['W41N24', 'W41N25'];
     var reserver_spawns = {W41N24: {spawn: Game.spawns.spawn_01, busy: false}, W41N25: {spawn: Game.spawns.spawn_02, busy: false}};

@@ -152,8 +152,6 @@ function selectJob(creep, available_jobs_, offset=undefined) {
         available_jobs = available_jobs_;
     }
 
-    if (offset) console.log(creep.name, offset);
-
     var fill = (offset || 0) + _.sum(creep.carry);
     var energy = (offset || 0) + creep.carry.energy;
 
