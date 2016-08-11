@@ -90,13 +90,15 @@ function control_carrier(creep) {
             }
 
             outlet = Game.getObjectById(creep.memory.outlet);
+            let levels = outlet.getLevels();
+            let amount = Math.min(levels.max - levels.fill, creep.carry.energy);
 
-            let err = creep.transfer(outlet, RESOURCE_ENERGY);
+            let err = creep.transfer(outlet, RESOURCE_ENERGY, amount);
 
             if (err == ERR_NOT_IN_RANGE) {
                 creep.moveTo(outlet);
             } else if (err == OK) {
-                if (creep.carry.energy == 0) {
+                if (creep.carry.energy == amount) {
                     creep.memory.outlet = null;
 
                     creep.memory.returning = creep.ticksToLive < 300;
