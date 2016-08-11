@@ -125,7 +125,7 @@ function jobs(room) {
 function selectJob(creep, available_jobs) {
     creep.memory.job = null;
 
-    if (creeps.ticksToLive == 1) {
+    if (creep.ticksToLive == 2) {
         console.log('energy_distribution: ' + creep.name + 'retiring, ' + (creep.memory.idleTicks || 0));
     }
 
