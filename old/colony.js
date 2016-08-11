@@ -379,7 +379,6 @@ function construct(creep) {
 function idle(creep) {
     if (creep.carry.energy > 0) {
         var s = creep.pos.findClosestByPath(FIND_STRUCTURES, {filter: (s) => (s.my && s.structureType == STRUCTURE_STORAGE) || s.structureType == STRUCTURE_CONTAINER});
-        creep.say(s);
         if (s) {
             if (creep.transfer(s, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(s);
