@@ -75,13 +75,11 @@ function control_carrier(creep) {
 
                 if (links && links.length > 0) {
                     var outlet = Game.getObjectById(links[0]);
-                    let total = outlet.energyCapacity - outlet.energy;
                     for (let i = 1; i < links.length; ++i) {
                         let link = Game.getObjectById(links[i]);
                         if (link.energy < outlet.energy) outlet = link;
-                        total += link.energyCapacity - link.energy;
                     }
-                    if (total >= creep.carry.energy) isLink = true;
+                    isLink = true;
                 }
 
                 if (!isLink) {
