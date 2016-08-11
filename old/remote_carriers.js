@@ -59,6 +59,7 @@ function control_carrier(creep) {
     if (creep.memory.returning) {
         if (creep.carry.energy == 0) {
             creep.memory.returning = false;
+            if (creep.ticksToLive < 250) creep.suicide();
             return;
         }
         if (is_in_room(creep, creep.memory.home)) {
@@ -101,12 +102,9 @@ function control_carrier(creep) {
                 if (creep.carry.energy == amount) {
                     creep.memory.outlet = null;
 
-                    creep.memory.returning = creep.ticksToLive < 300;
-
                     creep.memory.tours = creep.memory.tours + 1 || 1;
                     creep.memory.deposit = creep.memory.deposit + creep.carry.energy || creep.carry.energy;
                     console.log(creep.name + " [" + (creep.body.length * 50) + "]" + " (tour " + creep.memory.tours + ") deposited in total " + creep.memory.deposit + ", TTL: " + creep.ticksToLive);
-                    if (creep.memory.returning) creep.suicide();
                 } else {
                     creep.memory.outlet = null;
                 }
@@ -114,7 +112,7 @@ function control_carrier(creep) {
         }
     } else {
         if (is_in_room(creep, creep.memory.mine)) {
-            if (creep.room.name == 'W41N24' && creep.pos.x < 3) {
+            if (creep.room.name == 'W41N24' && creep.pos.x < 4) {
                 creep.moveTo(6, 34);
                 return;
             }
