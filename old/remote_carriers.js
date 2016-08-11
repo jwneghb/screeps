@@ -12,10 +12,15 @@ function setup () {
     if (!Memory.long_dist_mining) Memory.long_dist_mining = {};
 
     StructureLink.prototype.setLDMTarget = function(isTarget=true) {
+        if (!Memory.long_dist_mining[this.room.name]) {
+            Memory.long_dist_mining[this.room.name] = [];
+        }
+
         if (isTarget) {
-            Memory.long_dist_mining[this.room.name] = this.id;
+            Memory.long_dist_mining[this.room.name].push(this.id);
         } else {
-            delete Memory.long_dist_mining[this.room.name];
+            let idx = Memory.long_dist_mining[this.room.name].indexOf(this.id);
+            if (idx >= 0) Memory.long_dist_mining[this.room.name].splice(idx, 1);
         }
     };
 }
@@ -57,21 +62,39 @@ function control_carrier(creep) {
             return;
         }
         if (is_in_room(creep, creep.memory.home)) {
-            if (Memory.long_dist_mining[creep.room.name]) {
-                var input = Game.getObjectById(Memory.long_dist_mining[creep.room.name]);
+            if (!creep.memory.outlet) {
+
+                if (Memory.long_dist_mining[creep.room.name]) {
+                    var links = Memory.long_dist_mining[creep.room.name];
+                }
+
+                var isLink = false;
+
+                if (links && links.length > 0) {
+                    var outlet = Game.getObjectById(links[0]);
+                    let total = outlet.energyCapacity - outlet.energy;
+                    for (let i = 1; i < links.length; ++i) {
+                        let link = Game.getObjectById(links[i]);
+                        if (link.energy < outlet.energy) outlet = link;
+                        total += link.energyCapacity - link.energy;
+                    }
+                    if (total >= creep.carry.energy) isLink = true;
+                }
+
+                if (!isLink) {
+                    outlet = creep.room.storage;
+                }
+
+                creep.memory.outlet = outlet;
             }
 
-            if (input) {
-                var isLink = true;
-            } else {
-                input = creep.room.storage;
-            }
+            let err = creep.transfer(outlet, RESOURCE_ENERGY);
 
-            let err = creep.transfer(input, RESOURCE_ENERGY);
             if (err == ERR_NOT_IN_RANGE) {
-                creep.moveTo(input);
-            } else if (err != ERR_FULL || !isLink) {
-                if (err != OK) creep.drop(RESOURCE_ENERGY);
+                creep.moveTo(outlet);
+            } else if (err == OK) {
+                creep.memory.outlet = null;
+
                 creep.memory.visited = [];
                 creep.memory.current = null;
                 creep.memory.returning = creep.ticksToLive < 300;
