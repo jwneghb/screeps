@@ -93,6 +93,7 @@ function jobs(room) {
     let ret = {};
     ret[JOB_TYPE.TRANSFER] = [];
     ret[JOB_TYPE.WITHDRAW] = [];
+    ret[JOB_TYPE.SUPPLY] = [];
 
     let structures = room.find(FIND_STRUCTURES, {filter: (s) => structure_filter(s) && !s.isIgnore()});
     for (let i = 0; i < structures.length; ++i) {
@@ -105,16 +106,17 @@ function jobs(room) {
             ret[JOB_TYPE.WITHDRAW].push({amount: s.store.energy - levels.max,  id: s.id});
         }
     }
-
+/*
     let supplyables = room.find(FIND_MY_STRUCTURES, {filter: (s) => supplyable_filter(s)});
     for (let i = 0; i < supplyables.length; ++i) {
         let s = supplyables[i];
         let fill = s.energy;
         let cap = s.energyCapacity;
         if (fill < cap) {
-            ret[JOB_TYPE.TRANSFER].push({amount: cap - fill, id: s.id});
+            ret[JOB_TYPE.SUPPLY].push({amount: cap - fill, id: s.id});
         }
     }
+   */
     return ret;
 }
 
