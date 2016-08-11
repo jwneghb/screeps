@@ -11,7 +11,14 @@ function setup () {
     if (!Memory[MSPC]) Memory[MSPC] = {structures: {}, rooms: {}};
 
     Structure.prototype.setLevels = function(parameters) {
-        if (!this.store) return false;
+        var cap;
+        if (this.store) {
+            cap = this.storeCapacity;
+        } else if(this.energyCapacity) {
+            cap = this.energyCapacity;
+        } else {
+            return false;
+        }
 
         var min = 0;
         if (_.isNumber(parameters.min)) {
@@ -19,10 +26,10 @@ function setup () {
             min = parameters.min;
         }
 
-        var max = this.storeCapacity;
+        var max = cap;
         if (_.isNumber(parameters.max)) {
             if (parameters.max < min) return false;
-            if (parameters.max > this.storeCapacity) return false;
+            if (parameters.max > cap) return false;
             max = parameters.max;
         }
 
@@ -33,20 +40,31 @@ function setup () {
     };
 
     Structure.prototype.setIgnore = function(doIgnore) {
-        if (!this.store) return false;
+        if (!this.store && !this.energyCapacity) return false;
         if (!Memory[MSPC].structures[this.id]) Memory[MSPC].structures[this.id] = {};
         Memory[MSPC].structures[this.id].ignore = doIgnore || false;
     };
 
     Structure.prototype.getLevels = function() {
-        if (!this.store) return undefined;
-        var def = {min: 0, max: this.storeCapacity};
-        if (!Memory[MSPC] || !Memory[MSPC].structures || !Memory[MSPC].structures[this.id]) return def;
-        return Memory[MSPC].structures[this.id].levels;
+        var ret;
+        var fill;
+        if (this.store) {
+            ret = {min: 0, max: this.storeCapacity};
+            fill = _.sum(this.store);
+        } else if(this.energyCapacity) {
+            ret = {min: 0, max: this.energyCapacity};
+            fill = this.energy
+        } else {
+            return undefined;
+        }
+        if (Memory[MSPC] && Memory[MSPC].structures && Memory[MSPC].structures[this.id]) {
+            ret = Memory[MSPC].structures[this.id].levels;
+        }
+        return {min: ret.min, max: ret.max, fill: fill};
     };
 
     Structure.prototype.isIgnore = function () {
-        if (!this.store) return undefined;
+        if (!this.store && !this.energyCapacity) return undefined;
         if (!Memory[MSPC].structures[this.id]) return false;
         return Memory[MSPC].structures[this.id].ignore || false;
     }
@@ -103,11 +121,10 @@ function jobs(room) {
     for (let i = 0; i < structures.length; ++i) {
         let s = structures[i];
         let levels = s.getLevels();
-        let fill = _.sum(s.store);
-        if (fill < levels.min) {
-            ret[FLOW.OUT].push({amount: levels.max - s.store.energy, method: METHOD.TRANSFER, id: s.id});
-        } else if (fill > levels.max) {
-            ret[FLOW.IN].push({amount: s.store.energy - levels.max, method: METHOD.WITHDRAW, id: s.id});
+        if (levels.fill < levels.min) {
+            ret[FLOW.OUT].push({amount: levels.max - levels.fill, method: METHOD.TRANSFER, id: s.id});
+        } else if (levels.fill > levels.max) {
+            ret[FLOW.IN].push({amount: levels.fill - levels.max, method: METHOD.WITHDRAW, id: s.id});
         }
     }
     let supplyables = room.find(FIND_MY_STRUCTURES, {filter: (s) => supplyable_filter(s)});
@@ -122,7 +139,16 @@ function jobs(room) {
     return ret;
 }
 
-function selectJob(creep, available_jobs) {
+function selectJob(creep, available_jobs_) {
+    var available_jobs;
+    if (creep.memory.job) {
+        available_jobs = {};
+        available_jobs[FLOW.IN] = _.filter(available_jobs_[FLOW.IN], (j) => j.id != creep.memory.job.id);
+        available_jobs[FLOW.OUT] = _.filter(available_jobs_[FLOW.OUT], (j) => j.id != creep.memory.job.id);
+    } else {
+        available_jobs = available_jobs_;
+    }
+
     creep.memory.job = null;
 
     if (creep.ticksToLive == 2) {
@@ -188,10 +214,10 @@ function isValid(creep, job) {
 
     if (job.method == METHOD.WITHDRAW) {
         if (_.sum(creep.carry) == creep.carryCapacity) return false;
-        if (obj.store.energy <= levels.min) return false;
+        if (levels.fill <= levels.min) return false;
     } else if (job.method == METHOD.TRANSFER) {
         if (_.sum(creep.carry) < 50) return false;
-        if (obj.store.energy >= levels.max) return false;
+        if (levels.fill >= levels.max) return false;
     } else if (job.method == METHOD.SUPPLY) {
         if (_.sum(creep.carry) < Math.min(50, obj.energyCapacity - obj.energy)) return false;
         if (obj.energy == obj.energyCapacity) return false;
@@ -211,21 +237,23 @@ function control_carrier(creep, room, available_jobs) {
                 if (isValid(creep, creep.memory.job)) {
                     if (creep.pos.inRangeTo(target, 1)) {
                         if (creep.memory.job.flow == FLOW.IN) {
-                            let amount = Math.min(target.store.energy - target.getLevels().min, creep.carryCapacity - _.sum(creep.carry));
+                            let levels = target.getLevels();
+                            let amount = Math.min(levels.fill - levels.min, creep.carryCapacity - _.sum(creep.carry));
                             if (creep.withdraw(target, RESOURCE_ENERGY, amount) == OK) {
-                                creep.memory.job = null;
+                                selectJob(creep, available_jobs);
                             }
                         } else if (creep.memory.job.flow == FLOW.OUT) {
                             let amount = 0;
                             if (creep.memory.job.method == METHOD.TRANSFER) {
-                                amount = Math.min(target.getLevels().max - target.store.energy, creep.carry.energy);
+                                let levels = target.getLevels();
+                                amount = Math.min(levels.max - levels.fill, creep.carry.energy);
                             } else if (creep.memory.job.method == METHOD.SUPPLY) {
                                 amount = Math.min(target.energyCapacity - target.energy, creep.carry.energy);
                             } else {
                                 console.log("ERR: INVALID job.flow / job.method combination in energy_distribution.control_carrier");
                             }
                             if (creep.transfer(target, RESOURCE_ENERGY, amount) == OK) {
-                                creep.memory.job = null;
+                                selectJob(creep, available_jobs);
                             }
                         }
                     } else {
