@@ -13,9 +13,9 @@ function setup () {
 
     StructureLink.prototype.setLDMTarget = function(isTarget=true) {
         if (isTarget) {
-            Memory.long_dist_mining[this.room] = this.id;
+            Memory.long_dist_mining[this.room.name] = this.id;
         } else {
-            delete Memory.long_dist_mining[this.room];
+            delete Memory.long_dist_mining[this.room.name];
         }
     };
 }
