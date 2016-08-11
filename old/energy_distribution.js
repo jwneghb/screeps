@@ -253,9 +253,8 @@ function control_carrier(creep, room, available_jobs, recursive=false) {
                         if (creep.memory.job.flow == FLOW.IN) {
                             let levels = target.getLevels();
                             let amount = Math.min(levels.fill - levels.min, creep.carryCapacity - _.sum(creep.carry));
-                            if (creep.withdraw(target, RESOURCE_ENERGY, amount) == OK) {
-                                selectJob(creep, available_jobs, true);
-                            }
+                            creep.withdraw(target, RESOURCE_ENERGY, amount);
+                            selectJob(creep, available_jobs, true);
                         } else if (creep.memory.job.flow == FLOW.OUT) {
                             let amount = 0;
                             if (creep.memory.job.method == METHOD.TRANSFER) {
@@ -266,9 +265,8 @@ function control_carrier(creep, room, available_jobs, recursive=false) {
                             } else {
                                 console.log("ERR: INVALID job.flow / job.method combination in energy_distribution.control_carrier");
                             }
-                            if (creep.transfer(target, RESOURCE_ENERGY, amount) == OK) {
-                                selectJob(creep, available_jobs, true);
-                            }
+                            creep.transfer(target, RESOURCE_ENERGY, amount);
+                            selectJob(creep, available_jobs, true);
                         }
                     } else {
                         creep.moveTo(target);
