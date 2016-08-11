@@ -99,11 +99,10 @@ function control_carrier(creep) {
             if (err == ERR_NOT_IN_RANGE) {
                 creep.moveTo(outlet);
             } else if (err == OK) {
+                creep.memory.deposit = creep.memory.deposit + amount || amount;
                 if (creep.carry.energy == amount) {
                     creep.memory.outlet = null;
-
                     creep.memory.tours = creep.memory.tours + 1 || 1;
-                    creep.memory.deposit = creep.memory.deposit + creep.carry.energy || creep.carry.energy;
                     console.log(creep.name + " [" + (creep.body.length * 50) + "]" + " (tour " + creep.memory.tours + ") deposited in total " + creep.memory.deposit + ", TTL: " + creep.ticksToLive);
                 } else {
                     creep.memory.outlet = null;
