@@ -62,6 +62,8 @@ function control_carrier(creep) {
             return;
         }
         if (is_in_room(creep, creep.memory.home)) {
+            creep.memory.outlet = null;
+
             if (!creep.memory.outlet) {
 
                 if (Memory.long_dist_mining[creep.room.name]) {
@@ -85,8 +87,10 @@ function control_carrier(creep) {
                     outlet = creep.room.storage;
                 }
 
-                creep.memory.outlet = outlet;
+                creep.memory.outlet = outlet.id;
             }
+
+            outlet = Game.getObjectById(creep.memory.outlet);
 
             let err = creep.transfer(outlet, RESOURCE_ENERGY);
 
