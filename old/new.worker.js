@@ -83,9 +83,7 @@ module.exports = {
 					max_energy = 1600;
 				}
 				spawn.createCustomCreep(creepTypes.MEDIUM_WORKER, max_energy, {role: WORKER_ROLE, mode: WORKER_MODE_IDLE});
-			} else if (room.controller.level < CTRL_LEVEL && heavy_workers.length < 1) {
-				//var max_energy = mining.fill(room) > 50e3 ? 450*4 : 450*3;
-				var max_energy = 1800;
+			} else if (room.controller.level < CTRL_LEVEL && heavy_workers.length < 2) {
 				spawn.createCustomCreep(creepTypes.HEAVY_WORKER, Infinity, {role: HEAVY_WORKER_ROLE, mode: WORKER_MODE_UPGRADE_CTRL, upg_amt: 0});
 			}
 		}
@@ -128,12 +126,12 @@ module.exports = {
 			var builders = _.filter(workers, (creep) => creep.memory.mode == WORKER_MODE_BUILD).length;
 
 			var spl = tower_supply_total + (room.energyCapacityAvailable - room.energyAvailable) / 200;
-
+			/*
 			if (spl > 0) {
 				if (supply_workers == 0) {
 					priorities.push(WORKER_MODE_SUPPLY);
 				}
-			}
+			}*/
 
 			if (damage_total > 0) {
 				if (repair_workers == 0) {

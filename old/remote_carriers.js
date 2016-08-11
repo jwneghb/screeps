@@ -114,10 +114,10 @@ function control_carrier(creep) {
         }
     } else {
         if (is_in_room(creep, creep.memory.mine)) {
-            /*if (creep.room.name == 'W41N24' && creep.pos.x < 3) {
+            if (creep.room.name == 'W41N24' && creep.pos.x < 3) {
                 creep.moveTo(6, 34);
                 return;
-            }*/
+            }
             if (creep.memory.current) {
                 let container = Game.getObjectById(creep.memory.current);
                 if (container) {
