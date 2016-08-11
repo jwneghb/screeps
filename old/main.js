@@ -83,7 +83,7 @@ module.exports.loop = function () {
         if (! (creep < 0)) edist.assign(creep, 'W42N25');
     }
 
-    if (edist.control(Game.rooms.W42N24) < 1) {
+    if (edist.control(Game.rooms.W42N24) < 2) {
         var creep = Game.spawns.spawn_01.createCustomCreep('MEDIUM_TRANSPORT', 1000);
         if (! (creep < 0)) edist.assign(creep, 'W42N24');
     }

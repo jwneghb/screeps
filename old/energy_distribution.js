@@ -7,6 +7,10 @@ module.exports = {
 
 const MSPC = 'energy_dist_v1';
 
+const idleAt = {
+    W42N24: {x: 4, y:34}
+};
+
 function setup () {
     if (!Memory[MSPC]) Memory[MSPC] = {structures: {}, rooms: {}};
 
@@ -210,6 +214,9 @@ function selectJob(creep, available_jobs_, offset=undefined) {
         if (_.isNumber(offset)) control_carrier(creep, creep.room, available_jobs, true);
     } else {
         creep.memory.idleTicks = creep.memory.idleTicks + 1 || 1;
+        if (idleAt[creep.room.name]) {
+            creep.moveTo(idleAt[creep.room.name].x, idleAt[creep.room.name].y);
+        }
     }
 }
 
