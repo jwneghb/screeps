@@ -62,7 +62,7 @@ function setup () {
         } else {
             return undefined;
         }
-        if (Memory[MSPC] && Memory[MSPC].structures && Memory[MSPC].structures[this.id]) {
+        if (Memory[MSPC] && Memory[MSPC].structures && Memory[MSPC].structures[this.id] && Memory[MSPC].structures[this.id].levels) {
             ret = Memory[MSPC].structures[this.id].levels;
         }
         return {min: ret.min, max: ret.max, fill: fill};
