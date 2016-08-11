@@ -116,7 +116,7 @@ function jobs(room) {
         let fill = s.energy;
         let cap = s.energyCapacity;
         if (fill < cap) {
-            ret[FLOW.OUT].push({amount: cap - fill, id: s.id});
+            ret[FLOW.OUT].push({amount: cap - fill, method: METHOD.SUPPLY, id: s.id});
         }
     }
     return ret;
@@ -124,6 +124,10 @@ function jobs(room) {
 
 function selectJob(creep, available_jobs) {
     creep.memory.job = null;
+
+    if (creeps.ticksToLive == 1) {
+        console.log('energy_distribution: ' + creep.name + 'retiring, ' + (creep.memory.idleTicks || 0));
+    }
 
     if (creep.carry.energy < 50 && creep.ticksToLive >= 35) {
         if (available_jobs[FLOW.IN].length > 0) {
@@ -135,14 +139,14 @@ function selectJob(creep, available_jobs) {
                 let idx = job_idx(jobs, target.id);
                 if (idx >= 0) {
                     let job = jobs[idx];
-                    creep.memory.job = {type: FLOW.IN, method: job.method, id: job.id};
+                    creep.memory.job = {flow: FLOW.IN, method: job.method, id: job.id};
                     job.amount = Math.max(0, job.amount - creep.carryCapacity + _.sum(creep.carry));
                     if (job.amount == 0) jobs.splice(idx, 1);
                 }
             }
         } else if (available_jobs[FLOW.OUT].length > 0) {
             if (creep.room.storage && creep.room.storage.getLevels().min <= creep.room.storage.store.energy - 50) {
-                creep.memory.job = {type: FLOW.IN, method: METHOD.WITHDRAW, id: creep.room.storage.id};
+                creep.memory.job = {flow: FLOW.IN, method: METHOD.WITHDRAW, id: creep.room.storage.id};
             }
         }
     } else if (available_jobs[FLOW.OUT].length > 0) {
@@ -154,21 +158,23 @@ function selectJob(creep, available_jobs) {
             let idx = job_idx(jobs, target.id);
             if (idx >= 0) {
                 let job = jobs[idx];
-                creep.memory.job = {type: FLOW.OUT, method: job.method, id: job.id};
+                creep.memory.job = {flow: FLOW.OUT, method: job.method, id: job.id};
                 job.amount = Math.max(0, job.amount - creep.carry.energy);
                 if (job.amount == 0) jobs.splice(idx, 1);
             }
         }
     } else {
         if (creep.room.storage && creep.room.storage.getLevels().max >= creep.room.storage.store.energy + creep.carry.energy) {
-            creep.memory.job = {type: FLOW.OUT, method: METHOD.TRANSFER, id: creep.room.storage.id};
+            creep.memory.job = {flow: FLOW.OUT, method: METHOD.TRANSFER, id: creep.room.storage.id};
         } else if (creep.ticksToLive < 35) {
             var struct = creep.pos.findClosestByPath(FIND_STRUCTURES, {filter: (s) => structure_filter(s) && _.sum(s.store) + creep.carry.energy / 4 < s.storeCapacity});
             if (struct) {
-                creep.memory.job = {type: FLOW.OUT, method: METHOD.TRANSFER, id: struct.id};
+                creep.memory.job = {flow: FLOW.OUT, method: METHOD.TRANSFER, id: struct.id};
             }
         }
     }
+
+    if (!creep.memory.job) creep.memory.idleTicks = creep.memory.idleTicks + 1 || 1;
 }
 
 function isValid(creep, job) {
@@ -176,7 +182,7 @@ function isValid(creep, job) {
     if (!obj) return false;
     if (job.method == METHOD.TRANSFER || job.method == METHOD.WITHDRAW) {
         if (obj.isIgnore()) return false;
-        var levels = struct.getLevels();
+        var levels = obj.getLevels();
         if (!levels) return false;
     }
 
@@ -190,7 +196,7 @@ function isValid(creep, job) {
         if (_.sum(creep.carry) < Math.min(50, obj.energyCapacity - obj.energy)) return false;
         if (obj.energy == obj.energyCapacity) return false;
     } else {
-        console.log("ERR: UNKNOWN job.method in energy_distribution.isValid");
+        console.log("ERR: UNKNOWN job.method in energy_distribution.isValid: " + job.method);
         return false;
     }
 
@@ -204,19 +210,19 @@ function control_carrier(creep, room, available_jobs) {
             if (target) {
                 if (isValid(creep, creep.memory.job)) {
                     if (creep.pos.inRangeTo(target, 1)) {
-                        if (creep.memory.job.type == FLOW.IN) {
+                        if (creep.memory.job.flow == FLOW.IN) {
                             let amount = Math.min(target.store.energy - target.getLevels().min, creep.carryCapacity - _.sum(creep.carry));
                             if (creep.withdraw(target, RESOURCE_ENERGY, amount) == OK) {
                                 creep.memory.job = null;
                             }
-                        } else if (creep.memory.job.type == FLOW.OUT) {
+                        } else if (creep.memory.job.flow == FLOW.OUT) {
                             let amount = 0;
                             if (creep.memory.job.method == METHOD.TRANSFER) {
                                 amount = Math.min(target.getLevels().max - target.store.energy, creep.carry.energy);
                             } else if (creep.memory.job.method == METHOD.SUPPLY) {
                                 amount = Math.min(target.energyCapacity - target.energy, creep.carry.energy);
                             } else {
-                                console.log("ERR: INVALID job.type / job.method combination in energy_distribution.control_carrier");
+                                console.log("ERR: INVALID job.flow / job.method combination in energy_distribution.control_carrier");
                             }
                             if (creep.transfer(target, RESOURCE_ENERGY, amount) == OK) {
                                 creep.memory.job = null;
