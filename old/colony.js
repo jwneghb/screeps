@@ -99,6 +99,7 @@ module.exports = {
                 priorities.push(WORKER_MODE_UPGRADE_CTRL);
             }
 
+            /*
             var spl = tower_supply_total + (room.energyCapacityAvailable - room.energyAvailable) / 200;
             if (spl > 0) {
                 if (supply_workers == 0) {
@@ -109,6 +110,7 @@ module.exports = {
                     }
                 }
             }
+            */
 
             if (damage_total > 0) {
                 if (repair_workers == 0) {
@@ -126,7 +128,7 @@ module.exports = {
                 }
             }
 
-            if (priorities.length == 0 && spl > 0) priorities.push(WORKER_MODE_SUPPLY);
+            //if (priorities.length == 0 && spl > 0) priorities.push(WORKER_MODE_SUPPLY);
             if (priorities.length == 0 && damage_total > 0) priorities.push(WORKER_MODE_REPAIR_STUFF);
             if (priorities.length == 0 && sites_const > 0) priorities.push(WORKER_MODE_BUILD);
             if (priorities.length == 0) priorities.push(WORKER_MODE_UPGRADE_CTRL);
