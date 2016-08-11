@@ -1,5 +1,3 @@
-var book_keeping = require('book_keeping');
-
 var MEDIUM_MINER = 'MEDIUM_MINER';
 var MEDIUM_TRANSPORT = 'MEDIUM_TRANSPORT';
 var MEDIUM_WORKER = 'MEDIUM_WORKER';
@@ -27,7 +25,6 @@ module.exports = {
                     if (!(err < 0)) {
                         var cost = workerCost(body);
                         console.log("Now spawning a " + type + " at " + this.name + " [" + this.room.name + "] for " + cost + " energy.");
-                        book_keeping.expense(book_keeping.CREATE_CREEP, cost);
                     }
                     return err;
                 } else {

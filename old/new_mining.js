@@ -1,5 +1,4 @@
 var tools = require('tools');
-var book_keeping = require('book_keeping');
 
 module.exports = {
     control: control,
@@ -206,7 +205,6 @@ function control_miners(source_data) {
             source_data.miners.splice(k, 1);
         }
     }
-    book_keeping.income(RESOURCE_ENERGY, income);
     return ttl;
 }
 

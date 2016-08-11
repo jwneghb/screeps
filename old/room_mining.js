@@ -1,7 +1,6 @@
 var tools = require('tools');
 var creepTypes = require('creep.types');
 var constants = require('my.constants');
-var book_keeping = require('book_keeping');
 
 module.exports = {
     init: f_init,
@@ -135,7 +134,6 @@ function f_control_miner(creep, source, pos) {
             }
         }
     }
-    book_keeping.income(RESOURCE_ENERGY, income);
 }
 
 function f_control_miners(source, source_data) {

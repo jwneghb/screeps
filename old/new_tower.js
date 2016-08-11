@@ -1,13 +1,10 @@
 var tools = require('tools');
-var book_keeping = require('book_keeping');
 
 module.exports = {
     run: execute
 }
 
 function execute (room) {
-    //if (!Memory.tower) Memory.tower = {};
-    //if (!Memory.tower[room.name]) Memory.tower[room.name] = { previous_enemy: null, war_time: 0 };
 
     var enemies = room.find(FIND_HOSTILE_CREEPS, {filter: (c) => !isExcempt(c)});
     var towers = room.find(FIND_MY_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_TOWER});
@@ -17,70 +14,7 @@ function execute (room) {
         for (var i = 0; i < towers.length; ++i) {
             towers[i].attack(enemies[0]);
         }
-        /*
-
-        var selected_enemy = null;
-        if (Memory.tower[room.name].previous_enemy) {
-            for (var i = 0; i < enemies; ++i) {
-                if (enemy_ids[i] == Memory.tower[room.name].previous_enemy) {
-                    selected_enemy = enemies[i];
-                    break;
-                }
-            }
-        }
-
-        if (!selected_enemy) {
-            var healers = _.filter(enemies, (e) => isHealer(e));
-            let idx = tools.mindex(healers, {u: (c) => c.hits});
-            if (idx >= 0) {
-                selected_enemy = healers[idx];
-            }
-        }
-
-        if (!selected_enemy) {
-            var attackers = _.filter(enemies, (e) => isAttacker(e));
-            let idx = tools.mindex(attackers, {u: (c) => c.hits});
-            if (idx >= 0) {
-                selected_enemy = healers[idx];
-            }
-        }
-
-        if (!selected_enemy) {
-            let idx = tools.mindex(enemies, {u: (c) => c.hits});
-            if (idx >= 0) {
-                selected_enemy = healers[idx];
-            }
-        }
-
-        if (selected_enemy) {
-            Memory.tower[room.name].previous_enemy = selected_enemy.id;
-            Memory.tower[room.name].war_time = Game.time;
-
-            var lowest = find_healable(room);
-
-            for (var i = 0; i < towers.length; ++i) {
-                if (lowest && ((lowest.hits < lowest.hitsMax * 0.25) || Math.random() > 0.7)) {
-                    if (towers[i].heal(lowest) == OK) {
-                        book_keeping.expense(book_keeping.TOWER_HEAL, 10);
-                    }
-                } else {
-                    if (towers[i].attack(selected_enemy) == OK) {
-                        book_keeping.expense(book_keeping.TOWER_ATTACK, 10);
-                    }
-                }
-            }
-        }*/
     }
-    /*else if (Memory.tower[room.name].war_time > Game.time - 60) {
-        var lowest = find_healable(room);
-        for (var i = 0; i < towers.length; ++i) {
-            if (lowest) {
-                if (towers[i].heal(lowest) == OK) {
-                    book_keeping.expense(book_keeping.TOWER_HEAL, 10);
-                }
-            }
-        }
-    }*/
 }
 
 function find_healable(room) {

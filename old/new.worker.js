@@ -2,7 +2,6 @@ var tools = require('tools');
 var mining = require('room_mining');
 var mavg = require('moving_avg');
 var creepTypes = require('creep.types');
-var book_keeping = require('book_keeping');
 
 var EMGCY_CTRL_DOWNGRADE = 10000;
 
@@ -362,8 +361,6 @@ function upgrade_ctrl(creep) {
 						if (creep.memory.role == HEAVY_WORKER_ROLE && !(creep.memory.upg_amt === undefined)) {
 							var workParts = _.filter(creep.body, (p) => p.type == WORK).length;
 							var amt = Math.min(workParts, creep.carry.energy);
-
-                            book_keeping.expense(book_keeping.UPGRADE_CONTROLLER, amt);
 
 							creep.memory.upg_amt += amt;
 							creep.say(Math.floor(100 * creep.memory.upg_amt / (1500 - creep.ticksToLive))/100);
