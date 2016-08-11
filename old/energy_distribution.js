@@ -39,10 +39,11 @@ function setup () {
         return true;
     };
 
-    Structure.prototype.setIgnore = function(doIgnore) {
-        if (!this.store && !this.energyCapacity) return false;
+    Structure.prototype.setIgnore = function(doIgnore=true) {
+        if (!this.store && !this.energyCapacity) return undefined;
         if (!Memory[MSPC].structures[this.id]) Memory[MSPC].structures[this.id] = {};
         Memory[MSPC].structures[this.id].ignore = doIgnore || false;
+        return Memory[MSPC].structures[this.id].ignore;
     };
 
     Structure.prototype.getLevels = function() {
