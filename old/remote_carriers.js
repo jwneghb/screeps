@@ -95,16 +95,20 @@ function control_carrier(creep) {
             if (err == ERR_NOT_IN_RANGE) {
                 creep.moveTo(outlet);
             } else if (err == OK) {
-                creep.memory.outlet = null;
+                if (creep.carry.energy == 0) {
+                    creep.memory.outlet = null;
 
-                creep.memory.visited = [];
-                creep.memory.current = null;
-                creep.memory.returning = creep.ticksToLive < 300;
+                    creep.memory.visited = [];
+                    creep.memory.current = null;
+                    creep.memory.returning = creep.ticksToLive < 300;
 
-                creep.memory.tours = creep.memory.tours + 1 || 1;
-                creep.memory.deposit = creep.memory.deposit + creep.carry.energy || creep.carry.energy;
-                console.log(creep.name + " [" + (creep.body.length*50) + "]" + " (tour " + creep.memory.tours + ") deposited in total " + creep.memory.deposit + ", TTL: " + creep.ticksToLive);
-                if (creep.memory.returning) creep.suicide();
+                    creep.memory.tours = creep.memory.tours + 1 || 1;
+                    creep.memory.deposit = creep.memory.deposit + creep.carry.energy || creep.carry.energy;
+                    console.log(creep.name + " [" + (creep.body.length * 50) + "]" + " (tour " + creep.memory.tours + ") deposited in total " + creep.memory.deposit + ", TTL: " + creep.ticksToLive);
+                    if (creep.memory.returning) creep.suicide();
+                } else {
+                    creep.memory.outlet = null;
+                }
             }
         }
     } else {
