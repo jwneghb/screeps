@@ -30,6 +30,7 @@ module.exports.loop = function () {
     worker.run(Game.rooms.W42N24, Game.spawns['spawn_01']);
 
     tower.run(Game.rooms.W42N24);
+    tower.run(Game.rooms.W42N25);
 
     ramparts.run();
 
@@ -71,8 +72,6 @@ module.exports.loop = function () {
         }
     }
 
-    var work = colony.run(Game.rooms.W42N25);
-
     goto.run();
 
     var work = colony.run(Game.rooms.W42N25);
@@ -84,7 +83,7 @@ module.exports.loop = function () {
     }
 
     if (edist.control(Game.rooms.W42N24) < 2) {
-        var creep = Game.spawns.spawn_01.createCustomCreep('MEDIUM_TRANSPORT', 1000);
+        var creep = Game.spawns.spawn_01.createCustomCreep('MEDIUM_TRANSPORT', 1200);
         if (! (creep < 0)) edist.assign(creep, 'W42N24');
     }
 
