@@ -59,7 +59,7 @@ function control_carrier(creep) {
     if (creep.memory.returning) {
         if (creep.carry.energy == 0) {
             creep.memory.returning = false;
-            if (creep.ticksToLive < 250) creep.suicide();
+            if (creep.ticksToLive < 210) creep.suicide();
             return;
         }
         if (is_in_room(creep, creep.memory.home)) {
@@ -128,7 +128,7 @@ function control_carrier(creep) {
                 creep.memory.visited.push(creep.memory.current);
                 creep.memory.current = null;
             } else {
-                if (creep.carry.energy < creep.carryCapacity * 0.9 && creep.ticksToLive > 150) {
+                if (creep.carry.energy < creep.carryCapacity * 0.9 && creep.ticksToLive > 100) {
                     let container = creep.pos.findClosestByPath(FIND_STRUCTURES, {filter: (s) => container_eligible(creep, s)});
                     if (container) {
                         creep.memory.current = container.id;
