@@ -1,5 +1,4 @@
 var tools = require('tools');
-var mavg = require('moving_avg');
 var creepTypes = require('creep.types');
 
 var EMGCY_CTRL_DOWNGRADE = 10000;
@@ -62,18 +61,6 @@ module.exports = {
 		workers = _.filter(workers, (w) => w.ticksToLive >= 20);
 		heavy_workers = _.filter(heavy_workers, (w) => w.ticksToLive >= 20);
 
-		for (var i in dying_soon) {
-			dying_soon[i].memory.mode = WORKER_MODE_DYING;
-			if (dying_soon[i].memory.role == HEAVY_WORKER_ROLE) {
-				if (! (dying_soon[i].memory.upg_amt === undefined)) {
-					mavg.log('upg', dying_soon[i].memory.upg_amt / _.filter(dying_soon[i].body, (p) => p.type == WORK).length / dying_soon[i].carryCapacity, {subtitle: 'pp&c'});
-					mavg.log('upg', dying_soon[i].memory.upg_amt / _.filter(dying_soon[i].body, (p) => p.type == WORK).length, {subtitle: 'pp'});
-					mavg.log('upg', dying_soon[i].memory.upg_amt, {subtitle: 'total'});
-					delete dying_soon[i].memory.upg_amt;
-				}
-			}
-		}
-
 		var damaged_structs = room.find(FIND_STRUCTURES, {filter: (s) => f_needs_repair(s) >= 100});
 		var damaged_below_comfort = _.filter(damaged_structs, (s) => s.hits < repair_comfort);
 		var damaged_above_comfort = _.filter(damaged_structs, (s) => s.hits >= repair_comfort);
@@ -86,14 +73,7 @@ module.exports = {
 		var sites_const = tools.cumulate(sites, {u: (s) => s.progressTotal - s.progress}) / 5;
 		var sites_total = tools.cumulate(sites, {u: (s) => s.progressTotal == 1 ? 250 : s.progressTotal - s.progress}) / 5;
 
-		var amt_of_work = damage_total + tower_supply_total + sites_total;
-
-		var avg_work = mavg.log('work', amt_of_work, {subtitle: room.name});
-
-		var work = Math.min(avg_work, amt_of_work);
-
-		//console.log(damage_total, tower_supply_total, sites_total);
-		//console.log('work/worker', workers.length ? Math.floor(work / workers.length) : Infinity);
+		var work = damage_total + tower_supply_total + sites_total;
 
 		if (!spawn.spawning) {
 			if (workers.length < 1 || (workers.length < 4 && Math.floor(work / workers.length) > 500)) {

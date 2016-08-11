@@ -10,7 +10,6 @@ carriers.setup();
 var worker = require('new.worker');
 var tower = require('new_tower');
 var rm = require('room_mining');
-var mavg = require('moving_avg');
 var tools = require('tools');
 var ramparts = require('ramparts');
 var reserver = require('reserver');
@@ -94,7 +93,7 @@ module.exports.loop = function () {
     }
 
     var reserved_rooms = ['W41N24', 'W41N25'];
-    var spawn_from = {W41N24: Game.spawns.spawn_01, W41N25: Game.spawns.spawn_02};
+    var reserver_spawns = {W41N24: {spawn: Game.spawns.spawn_01, busy: false}, W41N25: {spawn: Game.spawns.spawn_02, busy: false}};
     for (var i = 0; i < reserved_rooms.length; ++i) {
         var room = Game.rooms[reserved_rooms[i]];
         if (room) {
@@ -116,17 +115,14 @@ module.exports.loop = function () {
     var sub4k, sub2k;
     if (res.length > 0) {
         for (var i = 0; i < res.length; ++i) {
-            if (Memory.reservations[res[i]] < 2000) {
-                sub2k = i;
-                break;
-            } else if (Memory.reservations[res[i]] < 4000) {
-                sub4k = i;
+            if (Memory.reservations[res[i]] < 4000) {
+                if (!reserver_spawns[res[i]].busy) {
+                    if (!reserver_spawns[res[i]].spawn.spawning) {
+                        reserver_spawns[res[i]].spawn.createCustomCreep(creepTypes.SMALL_RESERVER, Infinity, reserver.mem(res[i]));
+                    }
+                    reserver_spawns[res[i]].busy = true;
+                }
             }
-        }
-        if (sub2k >= 0) {
-            spawn_from[res[sub2k]].createCustomCreep(creepTypes.RESERVER, Infinity, reserver.mem(res[sub2k]));
-        } else if (sub4k >= 0){
-            spawn_from[res[sub4k]].createCustomCreep(creepTypes.RESERVER, Infinity, reserver.mem(res[sub4k]));
         }
     }
 
