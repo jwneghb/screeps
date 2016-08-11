@@ -280,12 +280,7 @@ function control_carrier(creep, room, available_jobs, recursive=false) {
                             }
                         }
                     } else {
-                        if (recursive) {
-                            console.log(creep.name, 'no reuse');
-                            creep.moveTo(target, {reusePath: 0});
-                        } else {
-                            creep.moveTo(target);
-                        }
+                        creep.moveTo(target);
                     }
                 } else {
                     selectJob(creep, available_jobs);

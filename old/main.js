@@ -32,7 +32,7 @@ module.exports.loop = function () {
 
     tower.run(Game.rooms.W42N24);
 
-    rm.control(Game.spawns['spawn_01']);
+    //rm.control(Game.spawns['spawn_01']);
 
     ramparts.run();
 
@@ -45,6 +45,18 @@ module.exports.loop = function () {
             }
         }
     }
+
+    /*
+    var minerW42N24_ttl = new_mining.control('W42N24');
+    if (minerW42N24_ttl.length > 0) {
+        if (minerW42N24_ttl[0] < 40) {
+            var creep = Game.spawns.spawn_01.createCustomCreep(creepTypes.HEAVY_MINER_C, Infinity);
+            if (! (creep < 0)) {
+                new_mining.assign(Game.creeps[creep], 'W42N24');
+            }
+        }
+    }
+    */
 
     var minerW41N24_ttl = new_mining.control('W41N24');
     if (minerW41N24_ttl.length > 0) {
@@ -75,6 +87,13 @@ module.exports.loop = function () {
         var creep = Game.spawns.spawn_02.createCustomCreep('MEDIUM_TRANSPORT');
         if (! (creep < 0)) edist.assign(creep, 'W42N25');
     }
+
+    /*
+    if (edist.control(Game.rooms.W42N24) < 1) {
+        var creep = Game.spawns.spawn_01.createCustomCreep('MEDIUM_TRANSPORT', 1000);
+        if (! (creep < 0)) edist.assign(creep, 'W42N25');
+    }
+    */
 
     var reserved_rooms = ['W41N24', 'W41N25'];
     var reserver_spawns = {W41N24: {spawn: Game.spawns.spawn_01, busy: false}, W41N25: {spawn: Game.spawns.spawn_02, busy: false}};

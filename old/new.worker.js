@@ -78,9 +78,9 @@ module.exports = {
 		if (!spawn.spawning) {
 			if (workers.length < 1 || (workers.length < 4 && Math.floor(work / workers.length) > 500)) {
 				console.log('work/worker', workers.length ? Math.floor(work / workers.length) : Infinity);
-				var max_energy = 400;
+				var max_energy = 1000;
 				if (Math.floor(work / Math.max(workers.length, 1)) > 750) {
-					max_energy = 1000;
+					max_energy = 1600;
 				}
 				spawn.createCustomCreep(creepTypes.MEDIUM_WORKER, max_energy, {role: WORKER_ROLE, mode: WORKER_MODE_IDLE});
 			} else if (room.controller.level < CTRL_LEVEL && heavy_workers.length < 1) {
