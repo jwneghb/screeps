@@ -2,10 +2,23 @@ var mining = require('new_mining');
 
 module.exports = {
     control: control,
-    assign: assign_transporter
+    assign: assign_transporter,
+    setup: setup
 };
 
 var LONG_DISTANCE_CARRIER = 'LONG_DISTANCE_CARRIER';
+
+function setup () {
+    if (!Memory.long_dist_mining) Memory.long_dist_mining = {};
+
+    StructureLink.prototype.setLDMTarget = function(isTarget=true) {
+        if (isTarget) {
+            Memory.long_dist_mining[this.room] = this.id;
+        } else {
+            delete Memory.long_dist_mining[this.room];
+        }
+    };
+}
 
 function assign_transporter(creep_name, mine_name, home_name) {
     var creep = Game.creeps[creep_name];
@@ -44,9 +57,21 @@ function control_carrier(creep) {
             return;
         }
         if (is_in_room(creep, creep.memory.home)) {
-            let err = creep.transfer(creep.room.storage, RESOURCE_ENERGY);
+            if (Memory.long_dist_mining[creep.room.name]) {
+                var target = Game.getObjectById(Memory.long_dist_mining[creep.room.name]);
+            }
+
+            if (target) {
+                var isLink = true;
+            } else {
+                target = creep.room.storage;
+            }
+
+            let err = creep.transfer(target, RESOURCE_ENERGY);
             if (err == ERR_NOT_IN_RANGE) {
-                creep.moveTo(creep.room.storage);
+                creep.moveTo(target);
+            } else if (err == ERR_FULL && isLink) {
+                // nothing
             } else {
                 if (err != OK) creep.drop(RESOURCE_ENERGY);
                 creep.memory.visited = [];

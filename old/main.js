@@ -4,6 +4,9 @@ creepTypes.proto();
 var edist = require('energy_distribution');
 edist.setup();
 
+var carriers = require('remote_carriers');
+carriers.setup();
+
 var worker = require('new.worker');
 var tower = require('new_tower');
 var rm = require('room_mining');
@@ -13,7 +16,7 @@ var ramparts = require('ramparts');
 var reserver = require('reserver');
 var colony = require('colony');
 var goto = require('goto');
-var carriers = require('remote_carriers');
+
 
 var new_mining = require('new_mining');
 
