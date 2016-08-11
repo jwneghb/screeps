@@ -49,17 +49,10 @@ module.exports = {
     SCOUT: SCOUT
 };
 
-function workerCost (parts) {
+function workerCost (body) {
     var cost = 0;
-    for (var i = 0; i < parts.length; ++i) {
-        var p = parts[i];
-        if (p == WORK) {
-            cost += 100;
-        } else if (p == CARRY) {
-            cost += 50;
-        } else if (p == MOVE) {
-            cost += 50;
-        }
+    for (var i = 0; i < body.length; ++i) {
+        cost += BODYPART_COST[body[i].type];
     }
     return cost;
 }
