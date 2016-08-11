@@ -70,6 +70,11 @@ function assign_carrier(creep_name, room_name) {
     }
 }
 
+function supplyable_filter(s) {
+    return s.structureType == STRUCTURE_TOWER && s.energy < s.energyCapacity * 0.95 ||
+        (s.structureType == STRUCTURE_SPAWN || s.structureType == STRUCTURE_EXTENSION) && s.energy < s.energyCapacity;
+}
+
 function structure_filter(s) {
     return s.structureType == STRUCTURE_CONTAINER || (s.my && (s.structureType == STRUCTURE_STORAGE ||
         s.structureType == STRUCTURE_LINK || s.structureType == STRUCTURE_TERMINAL));
@@ -85,11 +90,11 @@ function job_idx(jobs, id) {
 }
 
 function jobs(room) {
-    let structures = room.find(FIND_STRUCTURES, {filter: (s) => structure_filter(s) && !s.isIgnore()});
     let ret = {};
     ret[JOB_TYPE.TRANSFER] = [];
     ret[JOB_TYPE.WITHDRAW] = [];
 
+    let structures = room.find(FIND_STRUCTURES, {filter: (s) => structure_filter(s) && !s.isIgnore()});
     for (let i = 0; i < structures.length; ++i) {
         let s = structures[i];
         let levels = s.getLevels();
@@ -98,6 +103,16 @@ function jobs(room) {
             ret[JOB_TYPE.TRANSFER].push({amount: levels.max - s.store.energy, id: s.id});
         } else if (fill > levels.max) {
             ret[JOB_TYPE.WITHDRAW].push({amount: s.store.energy - levels.max,  id: s.id});
+        }
+    }
+
+    let supplyables = room.find(FIND_MY_STRUCTURES, {filter: (s) => supplyable_filter(s)});
+    for (let i = 0; i < supplyables.length; ++i) {
+        let s = supplyables[i];
+        let fill = s.energy;
+        let cap = s.energyCapacity;
+        if (fill < cap) {
+            ret[JOB_TYPE.TRANSFER].push({amount: cap - fill, id: s.id});
         }
     }
     return ret;
