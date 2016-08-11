@@ -58,21 +58,19 @@ function control_carrier(creep) {
         }
         if (is_in_room(creep, creep.memory.home)) {
             if (Memory.long_dist_mining[creep.room.name]) {
-                var target = Game.getObjectById(Memory.long_dist_mining[creep.room.name]);
+                var input = Game.getObjectById(Memory.long_dist_mining[creep.room.name]);
             }
 
-            if (target) {
+            if (input) {
                 var isLink = true;
             } else {
-                target = creep.room.storage;
+                input = creep.room.storage;
             }
 
-            let err = creep.transfer(target, RESOURCE_ENERGY);
+            let err = creep.transfer(input, RESOURCE_ENERGY);
             if (err == ERR_NOT_IN_RANGE) {
-                creep.moveTo(target);
-            } else if (err == ERR_FULL && isLink) {
-                // nothing
-            } else {
+                creep.moveTo(input);
+            } else if (err != ERR_FULL || !isLink) {
                 if (err != OK) creep.drop(RESOURCE_ENERGY);
                 creep.memory.visited = [];
                 creep.memory.current = null;

@@ -141,8 +141,8 @@ var mTypes = {
     },
 
     SMALL_RESERVER: function (energy) {
-        if (energy < 1400) return [];
-        return [CLAIM, CLAIM, MOVE, MOVE, MOVE, MOVE];
+        if (energy < 1300) return [];
+        return [CLAIM, CLAIM, MOVE, MOVE];
     },
 
     SCOUT: function (energy) {

@@ -94,6 +94,7 @@ module.exports.loop = function () {
     }
 
     var reserved_rooms = ['W41N24', 'W41N25'];
+    var spawn_from = {W41N24: Game.spawns.spawn_01, W41N25: Game.spawns.spawn_02};
     for (var i = 0; i < reserved_rooms.length; ++i) {
         var room = Game.rooms[reserved_rooms[i]];
         if (room) {
@@ -123,9 +124,9 @@ module.exports.loop = function () {
             }
         }
         if (sub2k >= 0) {
-            Game.spawns.spawn_01.createCustomCreep(creepTypes.RESERVER, Infinity, reserver.mem(res[sub2k]));
+            spawn_from[res[sub2k]].createCustomCreep(creepTypes.RESERVER, Infinity, reserver.mem(res[sub2k]));
         } else if (sub4k >= 0){
-            Game.spawns.spawn_01.createCustomCreep(creepTypes.SMALL_RESERVER, Infinity, reserver.mem(res[sub4k]));
+            spawn_from[res[sub4k]].createCustomCreep(creepTypes.RESERVER, Infinity, reserver.mem(res[sub4k]));
         }
     }
 
