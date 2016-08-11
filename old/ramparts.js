@@ -8,7 +8,7 @@ function run() {
 }
 
 function W42N24() {
-    var ramparts = ['5797ba23c4d2412f59f0e925', '57a12b046e25efad5b9dece6', '57ab7c76b211235e0603f62e'];
+    var ramparts = ['5797ba23c4d2412f59f0e925', '57a12b046e25efad5b9dece6', '57ab7c76b211235e0603f62e', '57ac1f9fc2695e80327769f5'];
 
     var creeps = Game.rooms.W42N24.find(FIND_HOSTILE_CREEPS);
     var drpc = false;
