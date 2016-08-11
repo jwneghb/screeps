@@ -62,6 +62,9 @@ function control_carrier(creep) {
             return;
         }
         if (is_in_room(creep, creep.memory.home)) {
+            creep.memory.visited = [];
+            creep.memory.current = null;
+
             if (!creep.memory.outlet) {
 
                 if (Memory.long_dist_mining[creep.room.name]) {
@@ -98,8 +101,6 @@ function control_carrier(creep) {
                 if (creep.carry.energy == 0) {
                     creep.memory.outlet = null;
 
-                    creep.memory.visited = [];
-                    creep.memory.current = null;
                     creep.memory.returning = creep.ticksToLive < 300;
 
                     creep.memory.tours = creep.memory.tours + 1 || 1;
@@ -113,7 +114,7 @@ function control_carrier(creep) {
         }
     } else {
         if (is_in_room(creep, creep.memory.mine)) {
-            if (creep.room.name == 'W41N24' && creep.pos.x < 6) {
+            if (creep.room.name == 'W41N24' && creep.pos.x < 3) {
                 creep.moveTo(6, 34);
                 return;
             }
