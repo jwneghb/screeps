@@ -83,7 +83,7 @@ module.exports = {
 					max_energy = 1600;
 				}
 				spawn.createCustomCreep(creepTypes.MEDIUM_WORKER, max_energy, {role: WORKER_ROLE, mode: WORKER_MODE_IDLE});
-			} else if (room.controller.level < CTRL_LEVEL && (heavy_workers.length < 1 || heavy_workers.length < 2 && room.storage.store.energy > 500000)) {
+			} else if (room.controller.level < CTRL_LEVEL && (heavy_workers.length < 1 || heavy_workers.length < 2 && room.storage.store.energy > 600000)) {
 				spawn.createCustomCreep(creepTypes.HEAVY_WORKER, Infinity, {role: HEAVY_WORKER_ROLE, mode: WORKER_MODE_UPGRADE_CTRL, upg_amt: 0});
 			}
 		}

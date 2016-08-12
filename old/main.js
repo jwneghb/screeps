@@ -64,8 +64,8 @@ module.exports.loop = function () {
     var minerW41N24_ttl = new_mining.control('W41N24');
     var carrier_status = carriers.control();
 
-    // WEEKEND: Stop LDM, if energy drops below 450k
-    if (Game.rooms.W42N24.storage.store.energy > 450000) {
+    // WEEKEND: Stop LDM, if energy drops below 400k
+    if (Game.rooms.W42N24.storage.store.energy > 400000) {
 
         if (minerW41N24_ttl.length > 0) {
             if (minerW41N24_ttl[0] < 180) {
