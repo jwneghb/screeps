@@ -99,7 +99,7 @@ module.exports.loop = function () {
     var work = colony.run(Game.rooms.W42N25);
     if (work < 3 && Game.rooms.W42N25.energyAvailable > 1000) Game.spawns.spawn_02.createCustomCreep('MEDIUM_WORKER'); // WEEKEND: 1 less
 
-    if (edist.control(Game.rooms.W42N25) < 2) { // WEEKEND: 1 less
+    if (edist.control(Game.rooms.W42N25) < 3) {
         var creep = Game.spawns.spawn_02.createCustomCreep('MEDIUM_TRANSPORT');
         if (! (creep < 0)) edist.assign(creep, 'W42N25');
     }
