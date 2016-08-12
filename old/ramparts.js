@@ -32,15 +32,22 @@ function W42N25() {
     var creeps = Game.rooms.W42N25.find(FIND_HOSTILE_CREEPS);
     var drpc = false;
     var other = false;
+
+    var other_in_bottom_right = false;
+
     for (var i = 0; i < creeps.length; ++i) {
         if (creeps[i].owner.username == 'DoctorPC') {
             drpc = true;
         } else {
             other = true;
+            if (creeps[i].pos.x >= 41 && creeps[i].pos.y >= 35) other_in_bottom_right = true;
         }
     }
 
     for (var i = 0; i < ramparts.length; ++i) {
         ramparts[i].setPublic(drpc && !other);
     }
+
+    var bottom_right_rampart = Game.getObjectById('57ab3b9b6231a5892582a572');
+    if (drpc && !other_in_bottom_right) bottom_right_rampart.setPublic(true);
 }
