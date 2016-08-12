@@ -106,6 +106,32 @@ module.exports.loop = function () {
 
     // --- /W42N25 ---
 
+    // --- W41N25 ---
+
+    var minerW41N25_ttl = new_mining.control('W41N25');
+
+    if (Game.rooms.W42N25.storage.store.energy > 15000) {
+
+        if (minerW41N25_ttl.length > 0) {
+            if (minerW41N25_ttl[0] < 50) {
+                var creep = Game.spawns.spawn_02.createCustomCreep(creepTypes.FAST_MINER);
+                if (!(creep < 0)) {
+                    new_mining.assign(Game.creeps[creep], 'W41N25');
+                }
+            }
+        }
+
+        if ((!carrier_status.W41N25 || carrier_status.W41N25.creeps.length < 1) && new_mining.fill('W41N25') > 300) {
+            var creep = Game.spawns.spawn_02.createCustomCreep(creepTypes.FAST_TRANSPORTER);
+            if (!(creep < 0)) {
+                carriers.assign(creep, 'W41N25');
+            }
+        }
+
+    }
+
+    // --- /W41N25 ---
+
     var reserved_rooms = ['W41N24', 'W41N25'];
     var reserver_spawns = {W41N24: {spawn: Game.spawns.spawn_01, busy: false}, W41N25: {spawn: Game.spawns.spawn_02, busy: false}};
     for (var i = 0; i < reserved_rooms.length; ++i) {
