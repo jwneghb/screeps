@@ -80,7 +80,6 @@ function operate (room_data, carrier_status) {
                         return;
                     }
                 }
-
             }
 
         } else {
