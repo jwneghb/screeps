@@ -25,7 +25,7 @@ function operate (room_data, carrier_status) {
     var room = Game.rooms[room_data.name];
     var scout_ttl = scouts.control(room_data.name);
     if (room_data.reserve) var reserver_ttl = reservers.control(room_data.name);
-    if (room_data.mining) var miner_ttl = mining.cotrol(room_data.name);
+    if (room_data.mining) var miner_ttl = mining.control(room_data.name);
 
     if (!room) {
         // ----- NO VISIBILITY -----
@@ -44,7 +44,6 @@ function operate (room_data, carrier_status) {
 
         if (room.find(FIND_HOSTILE_CREEPS, {filter: (c) => !exempt_hostiles(c, room_data.name)}).length == 0) {
             // ----- NO HOSTILES -----
-            console.log('[' + room_data.name + '] No hostiles');
 
             // ++ RESERVING
             if (room_data.reserve) {
@@ -53,6 +52,7 @@ function operate (room_data, carrier_status) {
                     if (reserver_ttl == 0) {
                         // TODO: create & assign reserver
                         room_data.spawn_callback(room_data.reserve.body, (name) => reservers.assign(name, room_data.name));
+                        console.log('[' + room_data.name + '] Reserver Needed');
                         return;
                     }
                 }
@@ -65,6 +65,7 @@ function operate (room_data, carrier_status) {
                 {
                     // TODO: create and assign miner
                     room_data.spawn_callback(room_data.mining.miner_body, (name) => mining.assign(Game.creeps[name], room_data.name));
+                    console.log('[' + room_data.name + '] Miner Needed');
                     return;
                 }
 
@@ -73,11 +74,14 @@ function operate (room_data, carrier_status) {
                 {
                     // TODO: create and assign carrier
                     room_data.spawn_callback(room_data.mining.carrier_body, (name) => carriers.assign(name, room_data.name, room_data.mining.home));
+                    console.log('[' + room_data.name + '] Carrier Needed');
                     return;
                 }
 
             }
 
+        } else {
+            console.log('[' + room_data.name + '] Hostiles detected!');
         }
     }
 }
