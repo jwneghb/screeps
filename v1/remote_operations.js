@@ -51,7 +51,7 @@ function operate (room_data, carrier_status) {
                 if (controller.reservation.username != 'Jawnee' || controller.reservation.ticksToEnd < 4000) {
                     if (reserver_ttl == 0) {
                         // TODO: create & assign reserver
-                        room_data.spawn_callback(room_data.reserver.body, (name) => reservers.assign(name, room_data.name));
+                        room_data.spawn_callback(room_data.reserve.body, (name) => reservers.assign(name, room_data.name));
                         return;
                     }
                 }
