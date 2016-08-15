@@ -7,7 +7,7 @@ module.exports = {
 function set_controller_position (pos) {
     if (!Memory.reserve) Memory.reserve = {};
     if (!Memory.reserve[pos.roomName]) Memory.reserve[pos.roomName] = {};
-    Memory.reserve[pos.roomName].pos = new RoomPosition(pos.x, pos.y, pos.roomName);
+    Memory.reserve[pos.roomName].pos = {x: pos.x, y: pos.y, roomName: pos.roomName};
 }
 
 function assign_reserver (creep_name, room_name) {
@@ -52,7 +52,8 @@ function control_reserver (creep) {
         if (creep.room.name != creep.memory.target.roomName ||
             creep.reserveController(creep.room.controller) == ERR_NOT_IN_RANGE)
         {
-            creep.moveTo(creep.memory.target);
+            var tgt = creep.memory.target;
+            creep.moveTo(new RoomPosition(tgt.x, tgt.y, tgt.roomName));
         }
     }
 }
