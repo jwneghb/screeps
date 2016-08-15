@@ -26,8 +26,9 @@ function assign_reserver (creep_name, room_name) {
 }
 
 function control_reservers (room_name) {
-    if (!Memory.reserve || !Memory.reserve[room_name]) return 0;
-    var reservers = Memory.reserve[room_name];
+    if (!Memory.reserve || !Memory.reserve[room_name] || !Memory.reserve[room_name].creeps) return 0;
+
+    var reservers = Memory.reserve[room_name].creeps;
     var n = reservers.length;
     var k = 0;
     var ttl = 0;
