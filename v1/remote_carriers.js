@@ -59,9 +59,13 @@ function control_carrier(creep) {
     if (creep.memory.returning) {
         if (creep.carry.energy == 0) {
             creep.memory.returning = false;
+            creep.memory.visited = [];
+            creep.memory.current = null;
             if (creep.ticksToLive < 210) creep.suicide();
             return;
         }
+    }
+    if (creep.memory.returning) {
         if (is_in_room(creep, creep.memory.home)) {
             creep.memory.visited = [];
             creep.memory.current = null;
