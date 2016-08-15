@@ -64,8 +64,7 @@ function operate (room_data, carrier_status) {
                 if (!miner_ttl) {
                     mining.init(room, room_data.mining.container_placement);
                 } else {
-                    if (miner_ttl.length < room_data.mining.miners ||
-                        miner_ttl.length == room_data.mining.miners && miner_ttl[0] <= (room_data.mining.miner_ttl || 0)) {
+                    if (miner_ttl[0] <= (room_data.mining.miner_ttl || 0)) {
                         // TODO: create and assign miner
                         console.log(room_data.name + " - miner needed");
                         room_data.spawn_callback(room_data.mining.miner_body, (name) => mining.assign(Game.creeps[name], room_data.name));

@@ -129,8 +129,6 @@ const remote_rooms = [
                 '577b92fa0f9d51615fa47751': TOP_RIGHT,
                 '577b92fa0f9d51615fa47753': TOP_LEFT
             },
-            miners: 1,
-            miner_ttl: 1000,
             miner_body: [WORK, WORK, WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE],
 
             min_fill: 1000,
@@ -157,7 +155,6 @@ const remote_rooms = [
             container_placement: {
                 '577b92fa0f9d51615fa4774e': BOTTOM_RIGHT
             },
-            miners: 1,
             miner_body: [WORK, WORK, WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE],
 
             min_fill: 300,
