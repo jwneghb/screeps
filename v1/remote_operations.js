@@ -1,6 +1,7 @@
 var scouts = require('scouts');
 var reservers = require('reservers');
 var mining = require('new_mining');
+var intel = require('intel');
 var carriers = require('remote_carriers');
 carriers.setup();
 
@@ -30,6 +31,16 @@ function operate (room_data, carrier_status) {
     if (!room) {
         // ----- NO VISIBILITY -----
 
+        // Do not keep spawning scouts into invaders / others
+        var past_data = intel.get(room_data.name);
+        if (past_data.creeps.length == 1 && past_data.creeps[0].owner == 'Invader') {
+            if (past_data.creeps[0].ttl + past_data.time + 30 > Game.time) {
+                return;
+            }
+        } else if (past_data.creeps.length > 0 && past_data.time + 200 > Game.time) {
+            return;
+        }
+
         // ++ SCOUTING
         if (scout_ttl <= (room_data.scout.ttl || 0)) {
             // TODO: create & assign scout
@@ -41,6 +52,7 @@ function operate (room_data, carrier_status) {
 
     } else {
         // ----- HAVE VISIBILITY -----
+        intel.gather(room);
 
         if (room.find(FIND_HOSTILE_CREEPS, {filter: (c) => !exempt_hostiles(c, room_data.name)}).length == 0) {
             // ----- NO HOSTILES -----
@@ -80,9 +92,9 @@ function operate (room_data, carrier_status) {
                     }
                 }
             }
-
         } else {
             console.log(room_data.name + " - hostiles detected");
+
         }
     }
 }
