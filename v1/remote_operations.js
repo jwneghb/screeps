@@ -25,7 +25,7 @@ function operate (room_data, carrier_status) {
     var room = Game.rooms[room_data.name];
     var scout_ttl = scouts.control(room_data.name);
     if (room_data.reserve) var reserver_ttl = reservers.control(room_data.name);
-    if (room_data.mining) var miner_ttl = mining.cotrol(room_data.name);
+    if (room_data.mining) var miner_ttl = mining.control(room_data.name);
 
     if (!room) {
         // ----- NO VISIBILITY -----
