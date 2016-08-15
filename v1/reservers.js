@@ -1,15 +1,24 @@
 module.exports = {
     assign: assign_reserver,
-    control: control_reservers
+    control: control_reservers,
+    set_pos: set_controller_position
 };
 
+function set_controller_position (pos) {
+    if (!Memory.reserve) Memory.reserve = {};
+    if (!Memory.reserve[pos.roomName]) Memory.reserve[pos.roomName] = {};
+    Memory.reserve[pos.roomName].pos = new RoomPosition(pos.x, pos.y, pos.roomName);
+}
+
 function assign_reserver (creep_name, room_name) {
-    if (!Memory.reservers) Memory.reservers = {};
-    if (!Memory.reservers[room_name]) Memory.reservers[room_name] = [];
+    if (!Memory.reserve) Memory.reserve = {};
+    if (!Memory.reserve[room_name]) Memory.reserve[room_name] = {};
+    if (!Memory.reserve[room_name].creeps) Memory.reserve[room_name].creeps = []
     var creep = Game.creeps[creep_name];
     if (creep) {
-        Memory.reservers[room_name].push(creep_name);
-        creep.memory.room = room_name;
+        Memory.reserve[room_name].creeps.push(creep_name);
+        creep.memory.role = 'reserver';
+        creep.memory.target = Memory.reserve[room_name].pos;
         return true;
     } else {
         return false;
@@ -17,8 +26,8 @@ function assign_reserver (creep_name, room_name) {
 }
 
 function control_reservers (room_name) {
-    if (!Memory.reservers || !Memory.reservers[room_name]) return 0;
-    var reservers = Memory.reservers[room_name];
+    if (!Memory.reserve || !Memory.reserve[room_name]) return 0;
+    var reservers = Memory.reserve[room_name];
     var n = reservers.length;
     var k = 0;
     var ttl = 0;
@@ -38,16 +47,11 @@ function control_reservers (room_name) {
 }
 
 function control_reserver (creep) {
-    if (is_in_room(creep, creep.memory.room)) {
-        var controller = creep.room.controller;
-        if (creep.reserveController(controller) == ERR_NOT_IN_RANGE) {
-            creep.moveTo(controller);
+    if (creep.memory.target) {
+        if (creep.room.name != creep.memory.target.roomName ||
+            creep.reserveController(creep.room.controller) == ERR_NOT_IN_RANGE)
+        {
+            creep.moveTo(creep.memory.target);
         }
     }
-}
-
-function is_in_room(creep, room_name) {
-    if (room_name == creep.room.name) return true;
-    creep.moveTo(creep.pos.findClosestByPath(creep.room.findExitTo(room_name)));
-    return false;
 }

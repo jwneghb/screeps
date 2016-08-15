@@ -24,8 +24,8 @@ function operate (room_data, carrier_status) {
 
     var room = Game.rooms[room_data.name];
     var scout_ttl = scouts.control(room_data.name);
-    var reserver_ttl = reservers.control(room_data.name);
-    var miner_ttl = mining.cotrol(room_data.name);
+    if (room_data.reserve) var reserver_ttl = reservers.control(room_data.name);
+    if (room_data.mining) var miner_ttl = mining.cotrol(room_data.name);
 
     if (!room) {
         // ----- NO VISIBILITY -----
@@ -33,7 +33,8 @@ function operate (room_data, carrier_status) {
         // ++ SCOUTING
         if (scout_ttl <= (room_data.scout.ttl || 0)) {
             // TODO: create & assign scout
-            room_data.callback(room_data.scout.body, (name) => scouts.assign(name, room_data.scout.target));
+            room_data.spawn_callback(room_data.scout.body,
+                (name) => scouts.assign(name, new RoomPosition(room_data.scout.x, room_data.scout.y, room_data.name)));
             return;
         }
 
@@ -46,10 +47,11 @@ function operate (room_data, carrier_status) {
             // ++ RESERVING
             if (room_data.reserve) {
                 var controller = room.controller;
+                reservers.set_pos(controller.pos);
                 if (controller.reservation.username != 'Jawnee' || controller.reservation.ticksToEnd < 4000) {
                     if (reserver_ttl == 0) {
                         // TODO: create & assign reserver
-                        room_data.callback(room_data.reserver.body, (name) => reservers.assign(name, room_data.name));
+                        room_data.spawn_callback(room_data.reserver.body, (name) => reservers.assign(name, room_data.name));
                         return;
                     }
                 }
@@ -57,20 +59,22 @@ function operate (room_data, carrier_status) {
 
             // ++ MINING
             if (room_data.mining) {
-                if (miner_ttl.length < room_data.mining.miners ||
-                    miner_ttl.length == room_data.mining.miners && miner_ttl[0] <= (room_data.mining.miner_ttl || 0))
-                {
-                    // TODO: create and assign miner
-                    room_data.callback(room_data.mining.miner_body, (name) => mining.assign(Game.creeps[name], room_data.name));
-                    return;
-                }
+                if (!miner_ttl) {
+                    mining.init(room, room_data.mining.container_placement);
+                } else {
+                    if (miner_ttl.length < room_data.mining.miners ||
+                        miner_ttl.length == room_data.mining.miners && miner_ttl[0] <= (room_data.mining.miner_ttl || 0)) {
+                        // TODO: create and assign miner
+                        room_data.spawn_callback(room_data.mining.miner_body, (name) => mining.assign(Game.creeps[name], room_data.name));
+                        return;
+                    }
 
-                if (mining.fill(room_data.name) > room_data.mining.min_fill &&
-                    (!carrier_status || carrier_status.creeps.length < room_data.mining.carriers))
-                {
-                    // TODO: create and assign carrier
-                    room_data.callback(room_data.mining.carrier_body, (name) => carriers.assign(name, room_data.name, room_data.mining.home));
-                    return;
+                    if (mining.fill(room_data.name) > room_data.mining.min_fill &&
+                        (!carrier_status || carrier_status.creeps.length < room_data.mining.carriers)) {
+                        // TODO: create and assign carrier
+                        room_data.spawn_callback(room_data.mining.carrier_body, (name) => carriers.assign(name, room_data.name, room_data.mining.home));
+                        return;
+                    }
                 }
 
             }

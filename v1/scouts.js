@@ -17,7 +17,7 @@ function assign_scout (creep_name, target) {
 }
 
 function control_scouts (room_name) {
-    if (!Memory.scouts || !Memory.scouts[room_name]) return false;
+    if (!Memory.scouts || !Memory.scouts[room_name]) return 0;
     var scouts = Memory.scouts[room_name];
     var n = scouts.length;
     var k = 0;
@@ -38,13 +38,5 @@ function control_scouts (room_name) {
 }
 
 function control_scout (creep) {
-    if (is_in_room(creep, creep.memory.target.roomName)) {
-        creep.moveTo(creep.memory.target.x, creep.memory.target.y);
-    }
-}
-
-function is_in_room(creep, room_name) {
-    if (room_name == creep.room.name) return true;
-    creep.moveTo(creep.pos.findClosestByPath(creep.room.findExitTo(room_name)));
-    return false;
+    creep.moveTo(creep.memory.target);
 }

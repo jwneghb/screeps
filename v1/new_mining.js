@@ -10,45 +10,6 @@ module.exports = {
 
 var memspace = 'new_mining';
 
-var init_W42N24 = [
-    {
-        id: '577b92ec0f9d51615fa47608',
-        rel: TOP
-    },
-    {
-        id: '577b92ec0f9d51615fa47609',
-        rel: TOP
-    }
-];
-
-var init_W41N24 = [
-    {
-        id: '577b92fa0f9d51615fa47751',
-        rel: TOP_RIGHT
-    },
-    {
-        id: '577b92fa0f9d51615fa47753',
-        rel: TOP_LEFT
-    }
-];
-
-var init_W42N25 = [
-    {
-        id: '577b92ec0f9d51615fa47604',
-        rel: BOTTOM_RIGHT
-    },
-    {
-        id: '577b92ec0f9d51615fa47605',
-        rel: TOP_LEFT
-    }
-];
-
-var init_settings = {
-    W42N24: init_W42N24,
-    W42N25: init_W42N25,
-    W41N24: init_W41N24
-};
-
 function rel_pos(pos, rel) {
     var x = pos.x;
     var y = pos.y;
@@ -57,7 +18,7 @@ function rel_pos(pos, rel) {
     if (rel == BOTTOM || rel == BOTTOM_RIGHT || rel == BOTTOM_LEFT) dy = 1;
     if (rel == LEFT || rel == TOP_LEFT || rel == BOTTOM_LEFT) dx = -1;
     if (rel == RIGHT || rel == TOP_RIGHT || rel == BOTTOM_RIGHT) dx = 1;
-    return Game.rooms[pos.roomName].getPositionAt(x+dx, y+dy);
+    return new RoomPosition(x+dx, y+dy, pos.roomName);
 }
 
 function ttl(creep_name) {
@@ -69,28 +30,41 @@ function room_initialized(room_name) {
     return !(!Memory[memspace] || !Memory[memspace][room_name]);
 }
 
-function initialize_room(room) {
+function find_position(source, placement) {
+    if (placement[source.id]) {
+        return rel_pos(source.pos, placement[source.id]);
+    } else {
+        var swamp = null;
+        for (var x = -1; x <= 1; ++x) {
+            for (var y = -1; y <= 1; ++y) {
+                if (x != 0 || y != 0) {
+                    var terrain = source.room.lookForAt(LOOK_TERRAIN, x, y);
+                    if (terrain == 'plain') return new RoomPosition(x, y, source.room.name);
+                    if (!swamp && terrain == 'swamp') swamp = new RoomPosition(x, y, source.room.name);
+                }
+            }
+        }
+        return swamp;
+    }
+}
+
+function initialize_room(room, container_placement) {
     if (!room) return 'ROOM_NOT_FOUND';
 
-    if (!init_settings[room.name]) return 'SOURCE_SETTINGS_MISSING';
     if (!Memory[memspace]) Memory[memspace] = {};
 
     var room_data = {sources: []};
 
-    var settings = init_settings[room.name];
+    var sources = room.find(FIND_SOURCES);
+    for (var i = 0; i < sources.length; ++i) {
+        var id = sources[i].id;
+        var cpos = find_position(sources[i], container_placement);
 
-    for (var i = 0; i < settings.length; ++i) {
         var source_data = {
-            id: settings[i].id,
+            id: id,
             miners: [],
-            container: {}
+            container: {pos: cpos}
         };
-        var source = Game.getObjectById(source_data.id);
-        if (!source) {
-            return 'SOURCE_NOT_FOUND';
-        }
-
-        source_data.container.pos = rel_pos(source.pos, settings[i].rel);
 
         room_data.sources.push(source_data);
     }
@@ -163,15 +137,7 @@ function control_miner(creep, source_data, isFirst) {
                     }
                 }
             } else {
-                if (creep.room.name == c.pos.roomName) {
-                    if (creep.room.name == 'W41N24' && creep.pos.x < 7) {
-                        creep.moveTo(7, 33);
-                    } else {
-                        creep.moveTo(c.pos.x, c.pos.y);
-                    }
-                } else {
-                    creep.moveTo(creep.pos.findClosestByPath(creep.room.findExitTo(c.pos.roomName)));
-                }
+                creep.moveTo(new RoomPosition(c.pos.x, c.pos.y, c.pos.roomName));
             }
         } else {
             if (creep.pos.inRangeTo(c.pos, 0)) {
@@ -231,32 +197,19 @@ function total_fill(room_name) {
     return ret;
 }
 
-function fill_status(room_name) {
-    if (!room_initialized(room_name)) return [];
-    var room_data = Memory[memspace][room_name];
-    var ret = [];
-    for (var i = 0; i < room_data.sources.length; ++i) {
-        var source_data = room_data.sources[i];
-        ret.push({id: source_data.container.id, fill: source_data.container.fill});
-    }
-    return  ret;
-}
-
 function control(room_name) {
+    if (!room_initialized(room_name)) return undefined;
+
     var room = Game.rooms[room_name];
 
     if (!room) {
-        if (Memory[memspace][room_name]) {
-            let room_data = Memory[memspace][room_name];
-            let ttl = [];
-            for (let i = 0; i < room_data.sources.length; ++i) {
-              let source_data = room_data.sources[i];
-              ttl.push(control_miners(source_data));
-            }
-            return ttl;
-        } else {
-            return undefined;
+        let room_data = Memory[memspace][room_name];
+        let ttl = [];
+        for (let i = 0; i < room_data.sources.length; ++i) {
+            let source_data = room_data.sources[i];
+            ttl.push(control_miners(source_data));
         }
+        return ttl.sort();
     }
 
     var room_data = Memory[memspace][room.name];

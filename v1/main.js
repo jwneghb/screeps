@@ -5,7 +5,6 @@ var workers = require('xxworker');
 var colony = require('colony');
 var tower = require('new_tower');
 var ramparts = require('ramparts');
-var goto = require('goto');
 var remote = require('remote_operations');
 
 var spawn_01_can_spawn;
@@ -36,8 +35,6 @@ module.exports.loop = function() {
         }
     }
 
-    goto.run();
-
     // WORKERS IN W42N24
     var distributors01 = distributors.control(Game.rooms.W42N24);
     if (distributors01 < 2) spawn_at01(dist_body, (name) => distributors.assign(name, 'W42N24'));
@@ -58,21 +55,21 @@ module.exports.loop = function() {
     remote.operate(remote_rooms);
 };
 
-function spawn_at01(body, callback) {
+function spawn_at01(body, assignment) {
     if (spawn_01_can_spawn) {
         var name = Game.spawns.spawn_01.createCreep(body);
         if (! (name < 0)) {
-            callback(name);
+            assignment(name);
             spawn_01_can_spawn = false;
         }
     }
 }
 
-function spawn_at02(body, callback) {
+function spawn_at02(body, assignment) {
     if (spawn_02_can_spawn) {
         var name = Game.spawns.spawn_02.createCreep(body);
         if (! (name < 0)) {
-            callback(name);
+            assignment(name);
             spawn_02_can_spawn = false;
         }
     }
@@ -106,14 +103,20 @@ function control_links () {
 const remote_rooms = [
     {
         name: 'W41N24',
-        callback: spawn_at01,
+        spawn_callback: spawn_at01,
         scout: {
-            body: [MOVE]
+            body: [MOVE],
+            x: 16,
+            y: 33
         },
         reserve: {
             body: [CLAIM, CLAIM, MOVE, MOVE]
         },
         mining: {
+            container_placement: {
+                '577b92fa0f9d51615fa47751': TOP_RIGHT,
+                '577b92fa0f9d51615fa47753': TOP_LEFT
+            },
             miners: 1,
             miner_ttl: 1000,
             miner_body: [WORK, WORK, WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE],
@@ -124,17 +127,34 @@ const remote_rooms = [
             carrier_body: [
                 CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY,
                 MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE
-            ],
+            ]
         }
     },
     {
         name: 'W41N25',
-        callback: spawn_at02,
+        spawn_callback: spawn_at02,
         scout: {
-            body: [MOVE]
+            body: [MOVE],
+            x: 15,
+            y: 45
         },
         reserve: {
             body: [CLAIM, CLAIM, MOVE, MOVE]
+        },
+        mining: {
+            container_placement: {
+                '577b92fa0f9d51615fa4774e': BOTTOM_RIGHT
+            },
+            miners: 1,
+            miner_body: [WORK, WORK, WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE],
+
+            min_fill: 300,
+            home: 'W42N25',
+            carriers: 1,
+            carrier_body: [
+                CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY,
+                MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE
+            ]
         }
     }
 
