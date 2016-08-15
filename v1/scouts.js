@@ -38,5 +38,6 @@ function control_scouts (room_name) {
 }
 
 function control_scout (creep) {
-    creep.moveTo(creep.memory.target);
+    var tgt = creep.memory.target;
+    creep.moveTo(new RoomPosition(tgt.x, tgt.y, tgt.roomName));
 }
