@@ -98,6 +98,7 @@ module.exports.loop = function () {
 
     // --- W41N25 ---
 
+    /*
     var minerW41N25_ttl = new_mining.control('W41N25');
 
     if (minerW41N25_ttl.length > 0) {
@@ -115,10 +116,11 @@ module.exports.loop = function () {
             carriers.assign(creep, 'W41N25');
         }
     }
+    */
 
     // --- /W41N25 ---
 
-    var reserved_rooms = ['W41N24', 'W41N25'];
+    var reserved_rooms = ['W41N24']; //, 'W41N25'];
     var reserver_spawns = {W41N24: {spawn: Game.spawns.spawn_01, busy: false}, W41N25: {spawn: Game.spawns.spawn_02, busy: false}};
     for (var i = 0; i < reserved_rooms.length; ++i) {
         var room = Game.rooms[reserved_rooms[i]];
@@ -138,7 +140,6 @@ module.exports.loop = function () {
         }
     }
     var res = reserver.run(reserved_rooms);
-    var sub4k, sub2k;
     if (res.length > 0) {
         for (var i = 0; i < res.length; ++i) {
             if (Memory.reservations[res[i]] < 4000) {
@@ -177,13 +178,13 @@ module.exports.loop = function () {
     }
 
     var spwn = function (b, cb) {
-        var n  =Game.spawns.spawn_02.createCreep(b);
+        var n = Game.spawns.spawn_02.createCreep(b);
         if(! (n < 0)) cb(n);
     }
 
     var rdata = [
         {
-            name: 'W42N26',
+            name: 'W41N25',
             spawn_callback: spwn,
             scout: {
                 body: [MOVE],
@@ -192,6 +193,18 @@ module.exports.loop = function () {
             },
             reserve: {
                 body: [CLAIM, CLAIM, MOVE, MOVE]
+            },
+            mining: {
+                miners: 1,
+                miner_body: [WORK, WORK, WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE],
+
+                min_fill: 300,
+                home: 'W42N25',
+                carriers: 1,
+                carrier_body: [
+                    CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY,
+                    MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE
+                ]
             }
         }
     ];

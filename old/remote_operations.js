@@ -29,6 +29,7 @@ function operate (room_data, carrier_status) {
 
     if (!room) {
         // ----- NO VISIBILITY -----
+        console.log('[' + room_data.name + '] No visibility');
 
         // ++ SCOUTING
         if (scout_ttl <= (room_data.scout.ttl || 0)) {
@@ -43,14 +44,15 @@ function operate (room_data, carrier_status) {
 
         if (room.find(FIND_HOSTILE_CREEPS, {filter: (c) => !exempt_hostiles(c, room_data.name)}).length == 0) {
             // ----- NO HOSTILES -----
+            console.log('[' + room_data.name + '] No hostiles');
 
             // ++ RESERVING
             if (room_data.reserve) {
                 var controller = room.controller;
-                if (controller.reservation.username != 'Jawnee' || controller.reservation.ticksToEnd < 4000) {
+                if (!controller.reservation || controller.reservation.username != 'Jawnee' || controller.reservation.ticksToEnd < 4000) {
                     if (reserver_ttl == 0) {
                         // TODO: create & assign reserver
-                        room_data.spawn_callback(room_data.reserver.body, (name) => reservers.assign(name, room_data.name));
+                        room_data.spawn_callback(room_data.reserve.body, (name) => reservers.assign(name, room_data.name));
                         return;
                     }
                 }
