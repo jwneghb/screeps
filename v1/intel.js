@@ -1,4 +1,4 @@
-const MSPC = intel_v1;
+const MSPC = 'intel_v1';
 
 module.exports = {
     gather: gather,
