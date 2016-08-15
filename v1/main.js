@@ -7,8 +7,14 @@ var tower = require('new_tower');
 var ramparts = require('ramparts');
 var remote = require('remote_operations');
 
+var mining = require('new_mining');
+
 var spawn_01_can_spawn;
 var spawn_02_can_spawn;
+
+var miner_body = [
+    WORK, WORK, WORK, WORK, WORK, WORK, MOVE, MOVE
+]
 
 var dist_body = [
     CARRY, CARRY, MOVE, CARRY, CARRY, MOVE, CARRY, CARRY, MOVE,
@@ -39,11 +45,17 @@ module.exports.loop = function() {
     var distributors01 = distributors.control(Game.rooms.W42N24);
     if (distributors01 < 2) spawn_at01(dist_body, (name) => distributors.assign(name, 'W42N24'));
 
+    var miners01 = mining.control(Game.rooms.W42N24);
+    if (miners01.length < 2 || miners01[0] < 40) spawn_at01(miner_body, (name) => mining.assign(name, 'W42N24'));
+
     workers.run(Game.rooms.W42N24, spawn_at01);
 
     // WORKERS IN W42N25
     var distributors02 = distributors.control(Game.rooms.W42N25);
     if (distributors02 < 2) spawn_at02(dist_body, (name) => distributors.assign(name, 'W42N25'));
+
+    var miners02 = mining.control(Game.rooms.W42N25);
+    if (miners02.length < 2 || miners02[0] < 40) spawn_at02(miner_body, (name) => mining.assign(name, 'W42N25'));
 
     var workers02 = colony.run(Game.rooms.W42N25);
     if (workers02 < 3) spawn_at02(work_body);
