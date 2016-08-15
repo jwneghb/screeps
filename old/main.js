@@ -181,7 +181,7 @@ module.exports.loop = function () {
         if(! (n < 0)) cb(n);
     }
 
-    rdata = [
+    var rdata = [
         {
             name: 'W42N26',
             spawn_callback: spwn,
@@ -189,6 +189,9 @@ module.exports.loop = function () {
                 body: [MOVE],
                 x:30,
                 y:43
+            },
+            reserve: {
+                body: [CLAIM, CLAIM, MOVE, MOVE]
             }
         }
     ];
