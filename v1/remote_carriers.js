@@ -62,7 +62,6 @@ function control_carrier(creep) {
             creep.memory.visited = [];
             creep.memory.current = null;
             if (creep.ticksToLive < 210) creep.suicide();
-            return;
         }
     }
     if (creep.memory.returning) {
