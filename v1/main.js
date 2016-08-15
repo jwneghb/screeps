@@ -46,7 +46,7 @@ module.exports.loop = function() {
     if (distributors01 < 2) spawn_at01(dist_body, (name) => distributors.assign(name, 'W42N24'));
 
     var miners01 = mining.control('W42N24');
-    if (miners01.length < 2 || miners01[0] < 40) spawn_at01(miner_body, (name) => mining.assign(name, 'W42N24'));
+    if (miners01.length < 2 || miners01[0] < 40) spawn_at01(miner_body, (name) => mining.assign(Game.creeps[name], 'W42N24'));
 
     workers.run(Game.rooms.W42N24, spawn_at01);
 
@@ -55,7 +55,7 @@ module.exports.loop = function() {
     if (distributors02 < 2) spawn_at02(dist_body, (name) => distributors.assign(name, 'W42N25'));
 
     var miners02 = mining.control('W42N25');
-    if (miners02.length < 2 || miners02[0] < 40) spawn_at02(miner_body, (name) => mining.assign(name, 'W42N25'));
+    if (miners02.length < 2 || miners02[0] < 40) spawn_at02(miner_body, (name) => mining.assign(Game.creeps[name], 'W42N25'));
 
     var workers02 = colony.run(Game.rooms.W42N25);
     if (workers02 < 3) spawn_at02(work_body);
