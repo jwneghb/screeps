@@ -14,14 +14,14 @@ function body_attr (body) {
 
 function tick (room) {
     if (!Memory.SQ_v1) Memory.SQ_v1 = {rooms: {}, open: {}};
-    if (!Memory.SQ_v1[room.name]) Memory.SQ_v1[room.name] = {queue: []};
-    Memory.SQ_v1[room.name].ticket = 0;
+    if (!Memory.SQ_v1.rooms[room.name]) Memory.SQ_v1.rooms[room.name] = {queue: []};
+    Memory.SQ_v1.rooms[room.name].ticket = 0;
 
     for (var i in Game.creeps) {
         delete Memory.SQ_v1.open[i];
     }
 
-    var room_data = Memory.SQ_v1[room.name];
+    var room_data = Memory.SQ_v1.rooms[room.name];
 
     var idx = -1;
     for (var i = 0; i < room_data.queue.length; ++i) {
