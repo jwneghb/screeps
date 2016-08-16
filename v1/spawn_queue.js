@@ -80,7 +80,7 @@ function schedule_spawn (room, body, assignment=null, inc=1, init=0, min=0) {
     if (attr.cost > room.energyCapacityAvailable) return ERR_NOT_ENOUGH_ENERGY;
 
     Memory.SQ_v1.ticket += 1;
-    var ticket = 'sq' + Game.time.toString(16) + 'x' + Memory.SQ_v1.ticket.toString(16);
+    var ticket = 'SQ' + Game.time.toString(16) + 'x' + Memory.SQ_v1.ticket.toString(16);
 
     Memory.SQ_v1.queues[room.name].push({ticket: ticket, attr: attr, body: body, priority: {inc: inc, total: init, min: min}, assignment: assignment});
     Memory.SQ_v1.open[ticket] = {spawning: false};
