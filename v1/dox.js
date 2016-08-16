@@ -34,7 +34,7 @@ function entire_attack(worker, healers) {
 }
 
 function staging (worker, healers) {
-    worker.moveTo(new RoomPosition(23, 2, "W41N26"));
+    if (worker) worker.moveTo(new RoomPosition(23, 2, "W41N26"));
     for (var i = 0; i < healers.length; ++i) {
         healers[i].moveTo(new RoomPosition(worker.pos.x - 1 + (i % 3), worker.pos.y + 1 + (i / 3), "W41N26"));
     }
