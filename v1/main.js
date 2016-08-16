@@ -74,6 +74,21 @@ module.exports.loop = function() {
     control_links();
 
     // REMOTE OPERATIONS
+    if (Game.time > 12887519) {
+        remote_rooms.push({
+            name: 'W41N23',
+            spawn_callback: spawn_at01,
+            scout: {
+                body: [MOVE],
+                x: 20,
+                y: 20
+            },
+            reserve: {
+                body: [CLAIM, CLAIM, MOVE, MOVE]
+            }
+        });
+    }
+
     remote.operate(remote_rooms);
 };
 
@@ -122,7 +137,7 @@ function control_links () {
     }
 }
 
-const remote_rooms = [
+var remote_rooms = [
     {
         name: 'W41N24',
         spawn_callback: spawn_at01,
@@ -170,5 +185,4 @@ const remote_rooms = [
             carrier_body: remote_carrier
         }
     }
-
 ];
