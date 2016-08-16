@@ -15,6 +15,13 @@ function body_attr (body) {
 function tock () {
     if (!Memory.SQ_v1) Memory.SQ_v1 = {queues: {}, open: {}};
     Memory.SQ_v1.ticket = 0;
+
+    for (var i in Game.creeps) {
+        if (!Game.creeps[i].spawning) {
+            delete Memory.SQ_v1.open[i];
+        }
+    }
+
     for (var i in Memory.SQ_v1.queues) {
         if (Game.rooms[i]) {
             tick(Game.rooms[i]);
@@ -23,41 +30,42 @@ function tock () {
 }
 
 function tick (room) {
-    for (var i in Game.creeps) {
-        delete Memory.SQ_v1.open[i];
-    }
-
     var queue = Memory.SQ_v1.queues[room.name];
 
-    var idx = -1;
-    for (var i = 0; i < queue.length; ++i) {
+    for (let i = 0; i < queue.length; ++i) {
         queue[i].priority.total += queue[i].priority.inc;
-        if (idx < 0 || queue[idx].priority.total < queue[i].priority.total) {
-            if (queue[i].priority.total >= queue[i].priority.min) {
-                idx = i;
-            }
-        }
     }
 
-    if (idx >= 0 && queue[idx].attr.cost <= room.energyAvailable) {
+    let comp = function (a, b) {
+        let bv = b.priority.total >= b.priority.min ? b.priority.total : -1e6;
+        let av = a.priority.total >= a.priority.min ? a.priority.total : -1e6;
+        return bv - av;
+    };
 
-        var spawns = room.find(FIND_MY_SPAWNS);
-        for (var i = 0; i < spawns.length; ++i) {
+    queue.sort(comp);
+
+    let spawns = room.find(FIND_MY_SPAWNS, {filter: (s) => !s.spawning});
+
+    let energy_spent = 0;
+
+    while (queue.length > 0 && spawns.length > 0 && queue[0].attr.cost <= room.energyAvailable - energy_spent) {
+        let i = 0;
+        let spawned = false;
+        while (!spawned && i < spawns.length) {
             var spawn = spawns[i];
-            if (!spawn.spawning) {
-                var qi = queue[idx];
-                var name = spawn.createCreep(qi.body, qi.ticket);
-                if (!(name < 0)) {
-                    if (qi.assignment) qi.assignment(name);
-                    Memory.SQ_v1.open[qi.ticket].spawning = true;
-                    queue.splice(idx, 1);
-                    return true;
-                }
+            var q = queue[0];
+            var name = spawn.createCreep(q.body, q.ticket);
+            if (!(name < 0)) {
+                energy_spent += q.attr.cost;
+                if (q.assignment) q.assignment(name);
+                Memory.SQ_v1.open[q.ticket].spawning = true;
+                queue.shift();
+                spawns.splice(i, 1);
+                spawned = true;
             }
-
+            i += 1;
         }
     }
-    return false;
 }
 
 function ticket_status(ticket) {
@@ -72,7 +80,7 @@ function schedule_spawn (room, body, assignment=null, inc=1, init=0, min=0) {
     if (attr.cost > room.energyCapacityAvailable) return ERR_NOT_ENOUGH_ENERGY;
 
     Memory.SQ_v1.ticket += 1;
-    var ticket = Game.time.toString(16) + 'x' + Memory.SQ_v1.ticket.toString(16);
+    var ticket = 'sq' + Game.time.toString(16) + 'x' + Memory.SQ_v1.ticket.toString(16);
 
     Memory.SQ_v1.queues[room.name].push({ticket: ticket, attr: attr, body: body, priority: {inc: inc, total: init, min: min}, assignment: assignment});
     Memory.SQ_v1.open[ticket] = {spawning: false};
