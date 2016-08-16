@@ -15,7 +15,7 @@ function body_attr (body) {
 function tick (room) {
     if (!Memory.SQ_v1) Memory.SQ_v1 = {rooms: {}, open: {}};
     if (!Memory.SQ_v1.rooms[room.name]) Memory.SQ_v1.rooms[room.name] = {queue: []};
-    Memory.SQ_v1.rooms[room.name].ticket = 0;
+    Memory.SQ_v1.ticket = 0;
 
     for (var i in Game.creeps) {
         delete Memory.SQ_v1.open[i];
@@ -64,7 +64,7 @@ function schedule_spawn (room, body, assignment=null, inc=1, init=0, min=0) {
     var attr = body_attr(body);
     if (attr.cost > room.energyCapacityAvailable) return ERR_NOT_ENOUGH_ENERGY;
 
-    Memory.SQ_v1[room.name].ticket += 1;
+    Memory.SQ_v1.ticket += 1;
     var ticket = Game.time.toString(16) + 'x' + Memory.SQ_v1.ticket.toString(16);
 
     Memory.SQ_v1.rooms[room.name].queue.push({ticket: ticket, attr: attr, body: body, priority: {inc: inc, total: init, min: min}, assignment: assignment});
