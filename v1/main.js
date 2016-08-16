@@ -52,13 +52,13 @@ module.exports.loop = function() {
 
     // WORKERS IN W42N25
     var distributors02 = distributors.control(Game.rooms.W42N25);
-    if (distributors02 < 2) spawn_at02(dist_body, (name) => distributors.assign(name, 'W42N25'));
+    if (distributors02 < 3) spawn_at02(dist_body, (name) => distributors.assign(name, 'W42N25'));
 
     var miners02 = mining.control('W42N25');
     if (miners02.length < 2 || miners02[0] < 40) spawn_at02(miner_body, (name) => mining.assign(Game.creeps[name], 'W42N25'));
 
     var workers02 = colony.run(Game.rooms.W42N25);
-    if (workers02 < 3) spawn_at02(work_body);
+    if (workers02 < 4) spawn_at02(work_body);
 
     // LINK CONTROL
     control_links();
