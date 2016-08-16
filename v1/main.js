@@ -83,13 +83,6 @@ function spawn_at01(body, assignment) {
         if (! (name < 0)) {
             if (assignment) assignment(name);
             spawn_01_can_spawn = false;
-            spawn_03_can_spawn = false;
-        }
-    } else if (spawn_03_can_spawn) {
-        let name = Game.spawns.spawn_03.createCreep(body);
-        if (! (name < 0)) {
-            if (assignment) assignment(name);
-            spawn_03_can_spawn = false;
         }
     }
 }
