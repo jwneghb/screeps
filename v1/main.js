@@ -11,6 +11,7 @@ var mining = require('new_mining');
 
 var spawn_01_can_spawn;
 var spawn_02_can_spawn;
+var spawn_03_can_spawn;
 
 var miner_body = [
     WORK, WORK, WORK, WORK, WORK, WORK, MOVE, MOVE
@@ -38,6 +39,7 @@ var remote_carrier = [
 module.exports.loop = function() {
     spawn_01_can_spawn = (Game.spawns.spawn_01.spawning == null);
     spawn_02_can_spawn = (Game.spawns.spawn_02.spawning == null);
+    spawn_03_can_spawn = (Game.spawns.spawn_03.spawning == null);
 
     tower.run(Game.rooms.W42N24);
     tower.run(Game.rooms.W42N25);
@@ -77,17 +79,23 @@ module.exports.loop = function() {
 
 function spawn_at01(body, assignment) {
     if (spawn_01_can_spawn) {
-        var name = Game.spawns.spawn_01.createCreep(body);
+        let name = Game.spawns.spawn_01.createCreep(body);
         if (! (name < 0)) {
             if (assignment) assignment(name);
             spawn_01_can_spawn = false;
+        }
+    } else if (spawn_03_can_spawn) {
+        let name = Game.spawns.spawn_03.createCreep(body);
+        if (! (name < 0)) {
+            if (assignment) assignment(name);
+            spawn_03_can_spawn = false;
         }
     }
 }
 
 function spawn_at02(body, assignment) {
     if (spawn_02_can_spawn) {
-        var name = Game.spawns.spawn_02.createCreep(body);
+        let name = Game.spawns.spawn_02.createCreep(body);
         if (! (name < 0)) {
             if (assignment) assignment(name);
             spawn_02_can_spawn = false;
