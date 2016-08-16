@@ -33,7 +33,7 @@ function tick (room) {
     for (var i = 0; i < queue.length; ++i) {
         queue[i].priority.total += queue[i].priority.inc;
         if (idx < 0 || queue[idx].priority.total < queue[i].priority.total) {
-            if (queue[idx].priority.total >= queue[idx].priority.min) {
+            if (queue[i].priority.total >= queue[i].priority.min) {
                 idx = i;
             }
         }
