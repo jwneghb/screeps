@@ -84,7 +84,7 @@ module.exports.loop = function() {
                 y: 20
             },
             reserve: {
-                body: [CLAIM, CLAIM, MOVE, MOVE]
+                body: [CLAIM, CLAIM, CLAIM, MOVE, MOVE, MOVE]
             }
         });
     }
