@@ -16,10 +16,8 @@ function tock () {
     if (!Memory.SQ_v1) Memory.SQ_v1 = {queues: {}, open: {}};
     Memory.SQ_v1.ticket = 0;
 
-    for (var i in Game.creeps) {
-        if (!Game.creeps[i].spawning) {
-            delete Memory.SQ_v1.open[i];
-        }
+    for (var i in Memory.SQ_v1.open) {
+        if (Memory.SQ_v1.open[i].spawning && !Game.creeps[i] || !Game.creeps[i].spawning) delete Memory.SQ_v1.open[i];
     }
 
     for (var i in Memory.SQ_v1.queues) {
