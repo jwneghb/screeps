@@ -2,7 +2,30 @@ module.exports = {
     set_worker: set_worker,
     add_healer: add_healer,
     commence: commence,
-    run: entire_attack
+    run: entire_attack,
+    worker_body: [TOUGH, TOUGH, MOVE,
+        MOVE, MOVE, MOVE, MOVE, MOVE,
+        MOVE, MOVE, MOVE, MOVE, MOVE,
+        MOVE, MOVE, MOVE, MOVE, MOVE,
+
+        WORK, WORK, WORK, WORK, WORK,
+        WORK, WORK, WORK, WORK, WORK,
+        WORK, WORK, WORK, WORK, WORK,
+        WORK, WORK, WORK, WORK, WORK,
+        WORK, WORK, WORK, WORK, WORK,
+        WORK, WORK, WORK, WORK, WORK],
+    healer_body: [
+        TOUGH, TOUGH, TOUGH, TOUGH, TOUGH,
+
+        MOVE, MOVE, MOVE, MOVE, MOVE,
+        MOVE, MOVE, MOVE, MOVE, MOVE,
+        MOVE,
+
+        HEAL, HEAL, HEAL, HEAL, HEAL,
+        HEAL, HEAL, HEAL, HEAL, HEAL,
+        HEAL, HEAL, HEAL, HEAL, HEAL,
+        HEAL, HEAL
+    ]
 };
 
 function set_worker (name) {
