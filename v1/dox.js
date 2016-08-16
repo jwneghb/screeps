@@ -67,9 +67,15 @@ function entire_attack() {
     let t = Game.creeps[Memory.dox.tank];
     let w = Game.creeps[Memory.dox.worker];
     let h = [];
+    var k = 0;
     for (var i = 0; i < Memory.dox.healers.length; ++i) {
-        var healer = Game.getObjectById(Memory.dox.healers[i]);
-        if (healer) h.push(healer);
+        var healer = Game.getObjectById(Memory.dox.healers[k]);
+        if (healer) {
+            h.push(healer);
+            k++;
+        } else {
+            Memory.dox.healers.splice(k, 1);
+        }
     }
 
     if (!Memory.dox.staged) {
