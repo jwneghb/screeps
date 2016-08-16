@@ -1,7 +1,8 @@
 module.exports = {
     clock: tock,
     spawn: schedule_spawn,
-    status: ticket_status
+    status: ticket_status,
+    release: release
 };
 
 function body_attr (body) {
@@ -10,6 +11,23 @@ function body_attr (body) {
         cost += BODYPART_COST[body[i]];
     }
     return {cost: cost, duration: 3 * body.length};
+}
+
+function release (ticket) {
+    var ts = ticket_status(ticket);
+    if (ts) {
+        if (!ts.spawning) {
+            var queue = Memory.SQ_v1.queues[ts.room];
+            for (var i = 0; i < queue.length; ++i) {
+                if (queue[i].ticket == ticket) {
+                    queue.splice(i, 1);
+                    delete Memory.SQ_v1.open[ticket];
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
 }
 
 function tock () {
@@ -37,6 +55,13 @@ function tick (room) {
     let comp = function (a, b) {
         let bv = b.priority.total >= b.priority.min ? b.priority.total : -1e6;
         let av = a.priority.total >= a.priority.min ? a.priority.total : -1e6;
+        if (av == bv) {
+            if (a.attr.cost > room.energyAvailable) {
+                return 1;
+            } else if (b.attr.cost > room.energyAvailable) {
+                return -1;
+            }
+        }
         return bv - av;
     };
 
@@ -46,7 +71,10 @@ function tick (room) {
 
     let energy_spent = 0;
 
-    while (queue.length > 0 && spawns.length > 0 && queue[0].attr.cost <= room.energyAvailable - energy_spent) {
+    while (queue.length > 0 && spawns.length > 0 &&
+        queue[0].attr.cost <= room.energyAvailable - energy_spent &&
+        queue[0].priority.total >= queue[0].priority.min)
+    {
         let i = 0;
         let spawned = false;
         while (!spawned && i < spawns.length) {
@@ -81,7 +109,7 @@ function schedule_spawn (room, body, assignment=null, inc=1, init=0, min=0) {
     var ticket = 'SQ' + Game.time.toString(16) + 'x' + Memory.SQ_v1.ticket.toString(16);
 
     Memory.SQ_v1.queues[room.name].push({ticket: ticket, attr: attr, body: body, priority: {inc: inc, total: init, min: min}, assignment: assignment});
-    Memory.SQ_v1.open[ticket] = {spawning: false};
+    Memory.SQ_v1.open[ticket] = {spawning: false, room: room.name};
 
     return ticket;
 }
