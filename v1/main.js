@@ -198,7 +198,7 @@ var remote_rooms = [
             y: 20
         },
         reserve: {
-            body: [CLAIM, CLAIM, CLAIM, MOVE, MOVE, MOVE]
+            body: [CLAIM, CLAIM, MOVE, MOVE]
         }
     }
 ];
