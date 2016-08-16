@@ -9,6 +9,8 @@ var remote = require('remote_operations');
 
 var mining = require('new_mining');
 
+var dox = require('dox');
+
 var spawn_01_can_spawn;
 var spawn_02_can_spawn;
 var spawn_03_can_spawn;
@@ -106,6 +108,8 @@ module.exports.loop = function() {
     }
 
     remote.operate(remote_rooms);
+
+    dox.run();
 };
 
 function spawn_at01(body, assignment) {
