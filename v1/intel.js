@@ -23,6 +23,8 @@ function gather(room) {
             owner: creep.owner.username
         });
     }
+
+    Memory[MSPC][room.name].creeps = creep_data;
 }
 
 function get(room_name) {
