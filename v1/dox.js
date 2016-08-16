@@ -23,7 +23,8 @@ function entire_attack(worker, healers) {
     let w = Game.creeps[worker];
     let h = [];
     for (var i = 0; i < Memory.dox.healers.length; ++i) {
-        h.push(Game.getObjectById(healers[i]));
+        var healer = Game.getObjectById(healers[i]);
+        if (healer) h.push(healer);
     }
 
     if (!Memory.dox.staged) {
@@ -39,7 +40,7 @@ function staging (worker, healers) {
         healers[i].moveTo(new RoomPosition(worker.pos.x - 1 + (i % 3), worker.pos.y + 1 + (i / 3), "W41N26"));
     }
 
-    if (worker == null || healers.length < 6) return;
+    if (worker == null || healers.length < 3) return;
     if (!worker.pos.inRangeTo(new RoomPosition(23, 2, "W41N26"), 0)) return;
     for (var i = 0; i < healers.length; ++i) {
         if (!healers[i].pos.inRangeTo(new RoomPosition(worker.pos.x - 1 + (i % 3), worker.pos.y + 1 + (i / 3), "W41N26"), 0)) {
@@ -72,18 +73,19 @@ function tower1 (worker, healers) {
     if (wall) {
         worker.moveTo(new RoomPosition(wall.pos.x, wall.pos.y + 1, "W41N27"));
         worker.dismantle(wall);
-        for (var i = 0; i < 6; ++i) {
+        for (var i = 0; i < healers.length; ++i) {
             healers[i].moveTo(new RoomPosition(worker.pos.x - 1 + (i % 3), worker.pos.y + 1 + (i / 3), "W41N27"));
         }
     } else {
         worker.moveTo(new RoomPosition(19, 34, "W41N27"));
         worker.dismantle(t1);
-        healers[0].moveTo(new RoomPosition(18, 34, "W41N27"));
-        healers[1].moveTo(new RoomPosition(18, 35, "W41N27"));
-        healers[2].moveTo(new RoomPosition(19, 35, "W41N27"));
-        healers[3].moveTo(new RoomPosition(17, 35, "W41N27"));
-        healers[4].moveTo(new RoomPosition(17, 36, "W41N27"));
-        healers[5].moveTo(new RoomPosition(19, 36, "W41N27"));
+        if (healers.length > 0) healers[0].moveTo(new RoomPosition(18, 34, "W41N27"));
+        if (healers.length > 1) healers[1].moveTo(new RoomPosition(18, 35, "W41N27"));
+        if (healers.length > 2) healers[2].moveTo(new RoomPosition(19, 35, "W41N27"));
+        if (healers.length > 3) healers[3].moveTo(new RoomPosition(17, 35, "W41N27"));
+        if (healers.length > 4) healers[4].moveTo(new RoomPosition(17, 36, "W41N27"));
+        if (healers.length > 5) healers[5].moveTo(new RoomPosition(19, 36, "W41N27"));
+        if (healers.length > 6) healers[5].moveTo(new RoomPosition(18, 36, "W41N27"));
     }
 
     return true;
@@ -95,12 +97,13 @@ function tower2 (worker, healers) {
 
     worker.moveTo(new RoomPosition(18, 7, "W41N27"));
     worker.dismantle(t2);
-    healers[0].moveTo(new RoomPosition(17, 6, "W41N27"));
-    healers[1].moveTo(new RoomPosition(19, 7, "W41N27"));
-    healers[2].moveTo(new RoomPosition(19, 8, "W41N27"));
-    healers[3].moveTo(new RoomPosition(17, 5, "W41N27"));
-    healers[4].moveTo(new RoomPosition(18, 5, "W41N27"));
-    healers[5].moveTo(new RoomPosition(20, 7, "W41N27"));
+    if (healers.length > 0) healers[0].moveTo(new RoomPosition(17, 6, "W41N27"));
+    if (healers.length > 1) healers[1].moveTo(new RoomPosition(19, 7, "W41N27"));
+    if (healers.length > 2) healers[2].moveTo(new RoomPosition(19, 8, "W41N27"));
+    if (healers.length > 3) healers[3].moveTo(new RoomPosition(17, 5, "W41N27"));
+    if (healers.length > 4) healers[4].moveTo(new RoomPosition(18, 5, "W41N27"));
+    if (healers.length > 5) healers[5].moveTo(new RoomPosition(20, 7, "W41N27"));
+    if (healers.length > 6) healers[5].moveTo(new RoomPosition(19, 5, "W41N27"));
 }
 
 function heal (healer) {
