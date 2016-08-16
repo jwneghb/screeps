@@ -37,8 +37,11 @@ function control_reservers (room_name) {
         if (c) {
             if (!c.spawning) {
                 control_reserver(c);
+                if (c.ticksToLive > ttl) ttl = c.ticksToLive;
+            } else {
+                ttl = 1500;
             }
-            if (c.ticksToLive > ttl) ttl = c.ticksToLive;
+
             k += 1;
         } else {
             reservers.splice(k, 1);

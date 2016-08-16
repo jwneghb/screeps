@@ -27,8 +27,10 @@ function control_scouts (room_name) {
         if (c) {
             if (!c.spawning) {
                 control_scout(c);
+                if (c.ticksToLive > ttl) ttl = c.ticksToLive;
+            } else {
+                ttl = 1500;
             }
-            if (c.ticksToLive > ttl) ttl = c.ticksToLive;
             k += 1;
         } else {
             scouts.splice(k, 1);
