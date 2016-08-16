@@ -22,7 +22,7 @@ function entire_attack(worker, healers) {
 
     let w = Game.creeps[worker];
     let h = [];
-    for (var i = 0; i < Memory.healers.length; ++i) {
+    for (var i = 0; i < Memory.dox.healers.length; ++i) {
         h.push(Game.getObjectById(healers[i]));
     }
 
