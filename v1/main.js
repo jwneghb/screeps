@@ -90,23 +90,9 @@ module.exports.loop = function() {
     control_links();
 
     // REMOTE OPERATIONS
-    if (Game.time > 12887519) {
-        remote_rooms.push({
-            name: 'W41N23',
-            spawn_callback: spawn_at01,
-            scout: {
-                body: [MOVE],
-                x: 20,
-                y: 20
-            },
-            reserve: {
-                body: [CLAIM, CLAIM, CLAIM, MOVE, MOVE, MOVE]
-            }
-        });
-    }
-
     remote.operate(remote_rooms);
 
+    // WAR
     dox.run();
 };
 
@@ -201,6 +187,18 @@ var remote_rooms = [
             home: 'W42N25',
             carriers: 2,
             carrier_body: remote_carrier
+        }
+    },
+    {
+        name: 'W41N23',
+        spawn_callback: spawn_at01,
+        scout: {
+            body: [MOVE],
+            x: 20,
+            y: 20
+        },
+        reserve: {
+            body: [CLAIM, CLAIM, CLAIM, MOVE, MOVE, MOVE]
         }
     }
 ];

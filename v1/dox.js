@@ -4,10 +4,9 @@ module.exports = {
     add_healer: add_healer,
     commence: commence,
     run: entire_attack,
-    worker_body: [TOUGH, TOUGH, MOVE,
-
-        WORK, WORK, WORK, WORK, WORK,
-
+    worker_body: [
+        MOVE, MOVE, MOVE, MOVE, MOVE,
+        MOVE, MOVE, MOVE, MOVE, MOVE,
         MOVE, MOVE, MOVE, MOVE, MOVE,
         MOVE, MOVE, MOVE, MOVE, MOVE,
         MOVE, MOVE, MOVE, MOVE, MOVE,
@@ -19,11 +18,10 @@ module.exports = {
         WORK, WORK, WORK, WORK, WORK
     ],
     healer_body: [
-        TOUGH, TOUGH, TOUGH, TOUGH, TOUGH,
-
         MOVE, MOVE, MOVE, MOVE, MOVE,
         MOVE, MOVE, MOVE, MOVE, MOVE,
-        MOVE,
+        MOVE, MOVE, MOVE, MOVE, MOVE,
+        MOVE, MOVE,
 
         HEAL, HEAL, HEAL, HEAL, HEAL,
         HEAL, HEAL, HEAL, HEAL, HEAL,
