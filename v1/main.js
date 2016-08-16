@@ -36,6 +36,16 @@ var remote_carrier = [
     CARRY, MOVE, CARRY, MOVE, CARRY, MOVE
 ];
 
+var remote_carrier_large = [
+    CARRY, MOVE, CARRY, MOVE, CARRY, MOVE, CARRY, MOVE, CARRY, MOVE,
+    CARRY, MOVE, CARRY, MOVE, CARRY, MOVE, CARRY, MOVE, CARRY, MOVE,
+    CARRY, MOVE, CARRY, MOVE, CARRY, MOVE, CARRY, MOVE, CARRY, MOVE,
+    CARRY, MOVE, CARRY, MOVE, CARRY, MOVE, CARRY, MOVE, CARRY, MOVE,
+    CARRY, MOVE, CARRY, MOVE, CARRY, MOVE, CARRY, MOVE, CARRY, MOVE,
+    CARRY, MOVE, CARRY, MOVE, CARRY, MOVE, CARRY, MOVE, CARRY, MOVE,
+    CARRY, MOVE, CARRY, MOVE, CARRY, MOVE, CARRY, MOVE, CARRY, MOVE
+];
+
 module.exports.loop = function() {
     spawn_01_can_spawn = (Game.spawns.spawn_01.spawning == null);
     spawn_02_can_spawn = (Game.spawns.spawn_02.spawning == null);
@@ -159,7 +169,7 @@ var remote_rooms = [
             min_fill: 1000,
             home: 'W42N24',
             carriers: 3,
-            carrier_body: remote_carrier
+            carrier_body: remote_carrier_large
         }
     },
     {
