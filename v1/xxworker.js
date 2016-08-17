@@ -76,14 +76,12 @@ module.exports = {
         if (workers.length < 1 || (workers.length < 3 && Math.floor(work / workers.length) > 500)) {
             let body = [WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE];
             callback(body, (name) => Game.creeps[name].memory.role = WORKER_ROLE);
-            //spawn.createCustomCreep(creepTypes.MEDIUM_WORKER, max_energy, {role: WORKER_ROLE, mode: WORKER_MODE_IDLE});
         } else if (room.controller.level < CTRL_LEVEL && (heavy_workers.length < 1 || heavy_workers.length < 2 && room.storage.store.energy > 500000)) {
             let body = [
                 WORK, WORK, WORK, CARRY, MOVE, MOVE, WORK, WORK, WORK, CARRY, MOVE, MOVE, WORK, WORK, WORK, CARRY, MOVE, MOVE,
                 WORK, WORK, WORK, CARRY, MOVE, MOVE, WORK, WORK, WORK, CARRY, MOVE, MOVE
             ];
             callback(body, (name) => Game.creeps[name].memory.role = HEAVY_WORKER_ROLE);
-            //spawn.createCustomCreep(creepTypes.HEAVY_WORKER, Infinity, {role: HEAVY_WORKER_ROLE, mode: WORKER_MODE_UPGRADE_CTRL, upg_amt: 0});
         }
 
         var idle_workers = _.filter(workers, (creep) => creep.memory.mode == WORKER_MODE_IDLE);
