@@ -19,7 +19,7 @@ module.exports = function () {
         }
 
         var targetPos = new RoomPosition(target.x, target.y, target.roomName);
-        var reuse = Math.floor(Math.random()*3) + 4;
+        var reuse = Math.floor(Math.random()*5) + 3;
 
         if (this.moveTo(targetPos, {reusePath: reuse}));
     }

@@ -114,8 +114,8 @@ function control_carrier(creep) {
         }
     } else {
         if (is_in_room(creep, creep.memory.mine)) {
-            if (creep.room.name == 'W41N24' && creep.pos.x < 5) {
-                creep.moveTo(6, 34);
+            if (creep.room.name == 'W41N24' && creep.pos.x < 6) {
+                creep.moveTo(7, 34);
                 return;
             }
             if (creep.memory.current) {
