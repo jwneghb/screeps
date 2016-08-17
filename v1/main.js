@@ -2,6 +2,7 @@ var distributors = require('energy_distribution');
 distributors.setup();
 
 require('mymove')();
+require('dismantle').setup();
 
 var workers = require('xxworker');
 var colony = require('colony');
@@ -91,6 +92,7 @@ module.exports.loop = function() {
 
     // MINERALS
     minerals.mine(Game.rooms.W42N24, Game.getObjectById('57b4586769dc27e97a16241b'), spawn_at01);
+    minerals.mine(Game.rooms.W42N25, Game.getObjectById('57b475569745b4d320fd290c'), spawn_at02);
 
     // LINK CONTROL
     control_links();
