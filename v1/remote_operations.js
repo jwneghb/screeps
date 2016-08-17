@@ -34,7 +34,7 @@ function operate (room_data, carrier_status) {
         // Do not keep spawning scouts into invaders / others
         var past_data = intel.get(room_data.name);
         if (past_data && past_data.creeps) {
-            if (past_data.creeps.length == 1 && past_data.creeps[0].owner == 'Invader') {
+            if (past_data.creeps.length > 0 && past_data.creeps.every((c) => c.owner == 'Invader')) {
                 if (past_data.creeps[0].ttl - 20 + past_data.time > Game.time) {
                     return;
                 }
