@@ -2,7 +2,6 @@ var distributors = require('energy_distribution');
 distributors.setup();
 
 require('mymove')();
-require('dismantle').setup();
 
 var workers = require('xxworker');
 var colony = require('colony');
