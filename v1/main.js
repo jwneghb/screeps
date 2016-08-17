@@ -90,8 +90,8 @@ module.exports.loop = function() {
     if (workers02 < 3) spawn_at02(work_body);
 
     // MINERALS
-    minerals.mine(Game.rooms.W42N24, Game.getObjectById('57b4586769dc27e97a16241b'), spawn_at01);
-    minerals.mine(Game.rooms.W42N25, Game.getObjectById('57b475569745b4d320fd290c'), spawn_at02);
+    minerals.mine(Game.rooms.W42N24, Game.getObjectById('57b4586769dc27e97a16241b'), spawn_at01, 31);
+    minerals.mine(Game.rooms.W42N25, Game.getObjectById('57b475569745b4d320fd290c'), spawn_at02, 14);
 
     // LINK CONTROL
     control_links();

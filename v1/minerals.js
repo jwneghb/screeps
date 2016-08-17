@@ -2,7 +2,7 @@ module.exports = {
     mine: mine
 };
 
-function mine(room, container, callback) {
+function mine(room, container, callback, path) {
 
     var miners = room.find(FIND_MY_CREEPS, {filter: (c) => c.memory.role == 'mineral_miner'});
     var carriers = room.find(FIND_MY_CREEPS, {filter: (c) => c.memory.role == 'mineral_carrier'});
@@ -28,7 +28,12 @@ function mine(room, container, callback) {
             }
 
             if (carriers.length == 0) {
-                callback([CARRY, CARRY, MOVE, CARRY, CARRY, MOVE, CARRY, CARRY, MOVE, CARRY, CARRY, MOVE, CARRY, CARRY, MOVE], (name) => Game.creeps[name].memory.role = 'mineral_carrier');
+                var n = Math.min(10, Math.ceil(path * 2 * 12 / 100 || 5));
+                var body = [];
+                for (var i = 0; i < n; ++i) {
+                    body.concat([CARRY, CARRY, MOVE]);
+                }
+                callback(body, (name) => Game.creeps[name].memory.role = 'mineral_carrier');
             }
 
         }
