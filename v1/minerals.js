@@ -5,12 +5,12 @@ module.exports = {
 function mine(room, container, callback, path) {
 
     var miner_body = [WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, MOVE, MOVE, MOVE, MOVE, MOVE];
-    var miner_work = _.filter(miner_body, (p) => p == WORK).length * 2;
+    var miner_work = _.filter(miner_body, (p) => p == WORK).length;
 
     var n = Math.min(10, Math.ceil(path * 2 * miner_work / 100 || 5));
     var carrier_body = [];
     for (var i = 0; i < n; ++i) {
-        carrier_body.concat([CARRY, CARRY, MOVE]);
+        carrier_body = carrier_body.concat([CARRY, CARRY, MOVE]);
     }
 
     var miners = room.find(FIND_MY_CREEPS, {filter: (c) => c.memory.role == 'mineral_miner'});
