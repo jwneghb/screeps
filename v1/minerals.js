@@ -18,7 +18,7 @@ function mine(room, container, callback) {
                 callback([WORK, WORK, WORK, WORK, WORK, WORK, MOVE, MOVE, MOVE], (name) => Game.creeps[name].memory.role = 'mineral_miner');
             } else {
                 var miner = miners[0];
-                if (miner.inRangeTo(container.pos.x, container.pos.y, 0)) {
+                if (miner.pos.inRangeTo(container.pos.x, container.pos.y, 0)) {
                     if (_.sum(container.store) <= container.storeCapacity - 12) {
                         miner.harvest(mineral);
                     }
