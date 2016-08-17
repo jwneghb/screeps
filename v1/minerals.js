@@ -35,7 +35,7 @@ function mine(room, container, callback) {
 
         if (carriers.length > 0) {
             var carrier = carriers[0];
-            if (_.sum(carrier.carry) < carrier.carryCapacity && carriers.ticksToLive > 50) {
+            if (_.sum(carrier.carry) < carrier.carryCapacity && carrier.ticksToLive > 50) {
                 if (carrier.withdraw(container, mineral.mineralType) == ERR_NOT_IN_RANGE) {
                     carrier.myMoveTo(container);
                 }
