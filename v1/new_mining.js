@@ -31,7 +31,7 @@ function room_initialized(room_name) {
 }
 
 function find_position(source, placement) {
-    if (placement[source.id]) {
+    if (placement && placement[source.id]) {
         return rel_pos(source.pos, placement[source.id]);
     } else {
         var swamp = null;

@@ -63,7 +63,7 @@ function operate (room_data, carrier_status) {
             if (room_data.reserve) {
                 var controller = room.controller;
                 reservers.set_pos(controller.pos);
-                if (controller.reservation.username != 'Jawnee' || controller.reservation.ticksToEnd < 4000) {
+                if (!controller.reservation || controller.reservation.username != 'Jawnee' || controller.reservation.ticksToEnd < 4000) {
                     if (reserver_ttl == 0) {
                         // TODO: create & assign reserver
                         console.log(room_data.name + " - reserver needed");

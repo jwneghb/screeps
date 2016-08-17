@@ -285,7 +285,7 @@ function control_carrier(creep, room, available_jobs, recursive=false) {
                             }
                         }
                     } else {
-                        if (creep.moveTo(target) == -2) {
+                        if (creep.myMoveTo(target) == -2) {
                             creep.move(Math.floor(Math.random() * 8) + 1);
                         }
                     }

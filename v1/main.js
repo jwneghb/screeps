@@ -1,6 +1,8 @@
 var distributors = require('energy_distribution');
 distributors.setup();
 
+require('mymove')();
+
 var workers = require('xxworker');
 var colony = require('colony');
 var tower = require('new_tower');
@@ -162,7 +164,7 @@ var remote_rooms = [
 
             min_fill: 1000,
             home: 'W42N24',
-            carriers: 3,
+            carriers: 2,
             carrier_body: remote_carrier_large
         }
     },
