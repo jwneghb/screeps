@@ -4,7 +4,7 @@ module.exports = {
 
 function mine(room, container, callback, path) {
 
-    var miner_body = [WORK, WORK, WORK, WORK, WORK, WORK, MOVE, MOVE, MOVE];
+    var miner_body = [WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, MOVE, MOVE, MOVE, MOVE, MOVE];
     var miner_work = _.filter(miner_body, (p) => p == WORK).length * 2;
 
     var n = Math.min(10, Math.ceil(path * 2 * miner_work / 100 || 5));
