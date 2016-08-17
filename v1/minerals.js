@@ -28,7 +28,7 @@ function mine(room, container, callback) {
             }
 
             if (carriers.length == 0) {
-                callback([CARRY, CARRY, MOVE, CARRY, CARRY, MOVE, CARRY, CARRY, MOVE, CARRY, CARRY, MOVE]);
+                callback([CARRY, CARRY, MOVE, CARRY, CARRY, MOVE, CARRY, CARRY, MOVE, CARRY, CARRY, MOVE], (name) => Game.creeps[name].memory.role = 'mineral_carrier');
             }
 
         }
