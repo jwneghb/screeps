@@ -10,6 +10,7 @@ var ramparts = require('ramparts');
 var remote = require('remote_operations');
 
 var mining = require('new_mining');
+var minerals = require('minerals');
 
 var dox = require('dox');
 
@@ -87,6 +88,9 @@ module.exports.loop = function() {
 
     var workers02 = colony.run(Game.rooms.W42N25);
     if (workers02 < 3) spawn_at02(work_body);
+
+    // MINERALS
+    minerals.mine(Game.rooms.W42N24, Game.getObjectById('57b4586769dc27e97a16241b'), spawn_at01);
 
     // LINK CONTROL
     control_links();
