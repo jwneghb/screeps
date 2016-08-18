@@ -7,7 +7,6 @@ const TYPES = {
 class MyNode {
     constructor() {
         this.adjacent_path = [];
-        this.adjacent_sink = [];
     }
 
     get obj() {
@@ -35,6 +34,7 @@ class PathNode extends MyNode {
     constructor() {
         super();
         this.type = TYPES.PATH;
+        this.adjacent_sink = [];
     }
 }
 
