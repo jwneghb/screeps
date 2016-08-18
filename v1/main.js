@@ -72,7 +72,7 @@ module.exports.loop = function() {
 
     // WORKERS IN W42N24
     var distributors01 = distributors.control(Game.rooms.W42N24);
-    if (distributors01 < 2) spawn_at01(dist_body_large, (name) => distributors.assign(name, 'W42N24'));
+    if (distributors01 < 2) spawn_at01(dist_body, (name) => distributors.assign(name, 'W42N24'));
 
     var miners01 = mining.control('W42N24');
     if (miners01.length < 2 || miners01[0] < 40) spawn_at01(miner_body, (name) => mining.assign(Game.creeps[name], 'W42N24'));
@@ -81,7 +81,7 @@ module.exports.loop = function() {
 
     // WORKERS IN W42N25
     var distributors02 = distributors.control(Game.rooms.W42N25);
-    if (distributors02 < 2) spawn_at02(dist_body_large, (name) => distributors.assign(name, 'W42N25'));
+    if (distributors02 < 2) spawn_at02(dist_body, (name) => distributors.assign(name, 'W42N25'));
 
     var miners02 = mining.control('W42N25');
     if (miners02.length < 2 || miners02[0] < 40) spawn_at02(miner_body, (name) => mining.assign(Game.creeps[name], 'W42N25'));
