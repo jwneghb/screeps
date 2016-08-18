@@ -7,8 +7,8 @@ const TYPES = {
 class MyNode {
     constructor(x, y) {
         this.pos = {x: x, y: y};
-        this.adjacent_path = {};
-        this.adjacent_sink = {};
+        this.adjacent_path = [];
+        this.adjacent_sink = [];
     }
 
     get obj() {
@@ -112,10 +112,10 @@ function build_graph(room) {
                         let adjacent = graph[px][py];
                         if (adjacent) {
                             if (adjacent.isSink) {
-                                node.adjacent_sink[i] = adjacent;
+                                node.adjacent_sink.push(i);
                                 delete sink_pos[adjacent.id];
                             }
-                            if (adjacent.isPath) node.adjacent_path[i] = adjacent;
+                            if (adjacent.isPath) node.adjacent_path.push(i);
                             adjacent.adjacent_path[opposite[i]] = node;
                         }
                     }
