@@ -3,6 +3,8 @@ distributors.setup();
 
 require('mymove')();
 
+require('resource_levels').setup();
+
 var workers = require('xxworker');
 var colony = require('colony');
 var tower = require('new_tower');
