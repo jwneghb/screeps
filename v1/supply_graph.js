@@ -111,12 +111,11 @@ function build_graph(room) {
                     if (graph[px]) {
                         let adjacent = graph[px][py];
                         if (adjacent) {
-                            if (adjacent.isSink()) {
+                            if (adjacent.isSink) {
                                 node.adjacent_sink[i] = adjacent;
                                 delete sink_pos[adjacent.id];
                             }
-                            if (adjacent.isPath()) node.adjacent_path[i] = adjacent;
-                            if (adjacent.isSource()) node.adjacent_source[i] = adjacent;
+                            if (adjacent.isPath) node.adjacent_path[i] = adjacent;
                             adjacent.adjacent_path[opposite[i]] = node;
                         }
                     }
