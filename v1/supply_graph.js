@@ -52,6 +52,10 @@ class PathNode extends MyNode {
 
 const MS = 'SUPGv2';
 
+module.exports = {
+    build_graph: build_graph
+};
+
 const rel = {};
 rel[TOP] = [0, -1];
 rel[TOP_RIGHT] = [1, -1];
