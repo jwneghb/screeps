@@ -26,7 +26,7 @@ class MyNode {
 class SinkNode extends MyNode {
     constructor(id) {
         super();
-        this.type = 'sink';
+        this.type = TYPES.SINK;
         this.id = id;
     }
 }
@@ -34,7 +34,7 @@ class SinkNode extends MyNode {
 class PathNode extends MyNode {
     constructor() {
         super();
-        this.type = 'path';
+        this.type = TYPES.PATH;
     }
 }
 
