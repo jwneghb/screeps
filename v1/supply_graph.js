@@ -1,12 +1,11 @@
 const TYPES = {
-    PATH: 'path',
-    SINK: 'sink',
-    SOURCE: 'source'
+    PATH: 0,
+    SINK: 1,
+    SOURCE: 2
 };
 
 class MyNode {
-    constructor(x, y) {
-        this.pos = {x: x, y: y};
+    constructor() {
         this.adjacent_path = [];
         this.adjacent_sink = [];
     }
@@ -25,16 +24,16 @@ class MyNode {
 }
 
 class SinkNode extends MyNode {
-    constructor(x, y, id) {
-        super(x, y);
+    constructor(id) {
+        super();
         this.type = 'sink';
         this.id = id;
     }
 }
 
 class PathNode extends MyNode {
-    constructor(x, y) {
-        super(x, y);
+    constructor() {
+        super();
         this.type = 'path';
     }
 }
@@ -80,7 +79,7 @@ function build_graph(room) {
         let y = sink.pos.y;
         sink_pos[sink.id] = {x: x, y: y};
         if (graph[x] == undefined) graph[x] = {};
-        graph[x][y] = new SinkNode(x, y, sink.id);
+        graph[x][y] = new SinkNode(sink.id);
         for (let j = TOP; j <= TOP_LEFT; ++j) {
             let px = x + rel[j][0];
             let py = y + rel[j][1];
@@ -104,7 +103,7 @@ function build_graph(room) {
         for (let sy in votes[x]) {
             let y = parseInt(sy);
             if (votes[x][y] > 2) {
-                let node = new PathNode(x, y);
+                let node = new PathNode();
                 for (let i = TOP; i <= TOP_LEFT; ++i) {
                     let px = x + rel[i][0];
                     let py = y + rel[i][1];
