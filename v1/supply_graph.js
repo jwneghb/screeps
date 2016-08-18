@@ -16,11 +16,11 @@ class MyNode {
     }
 
     get isPath() {
-        return this.type == MyNode.types.PATH;
+        return this.type == TYPES.PATH;
     }
 
     get isSink() {
-        return this.type == MyNode.types.SINK;
+        return this.type == TYPES.SINK;
     }
 }
 
