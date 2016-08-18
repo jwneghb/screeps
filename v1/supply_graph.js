@@ -116,7 +116,7 @@ function build_graph(room) {
                                 delete sink_pos[adjacent.id];
                             }
                             if (adjacent.isPath) node.adjacent_path.push(i);
-                            adjacent.adjacent_path[opposite[i]] = node;
+                            adjacent.adjacent_path.push(opposite[i]);
                         }
                     }
                 }
