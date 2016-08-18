@@ -1,37 +1,26 @@
-class MyNode {
-    static types = {
-        PATH: 'path',
-        SINK: 'sink',
-        SOURCE: 'source'
-    };
+const TYPES = {
+    PATH: 'path',
+    SINK: 'sink',
+    SOURCE: 'source'
+};
 
+class MyNode {
     constructor(x, y) {
-        this.position.x = x;
-        this.position.y = y;
+        this.pos = {x: x, y: y};
+        this.adjacent_path = {};
+        this.adjacent_sink = {};
     }
 
-    position = {};
-    id = undefined;
-    type = undefined;
-
-    adjacent_path = {};
-    adjacent_source = {};
-    adjacent_sink = {};
-
-    obj = function() {
+    get obj() {
         return Game.getObjectById(this.id);
     }
 
-    isPath = function() {
+    get isPath() {
         return this.type == MyNode.types.PATH;
     }
 
-    isSink = function() {
+    get isSink() {
         return this.type == MyNode.types.SINK;
-    }
-
-    isSource = function() {
-        return this.type == MyNode.types.SOURCE;
     }
 }
 
