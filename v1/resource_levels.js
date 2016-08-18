@@ -13,17 +13,17 @@ function setup () {
     }
 
 
-    StructureLink.prototype.xsetLevels = (s) => stringLevels(this, s);
-    StructureContainer.prototype.xsetLevels = (s) => stringLevels(this, s);
+    StructureLink.prototype.xsetLevels = function (s) { return stringLevels(this, s); };
+    StructureContainer.prototype.xsetLevels = function (s) { return stringLevels(this, s); };
 
-    StructureTerminal.prototype.xsetLevels = (s) => stringLevels(this, s);
-    StructureLab.prototype.xsetLevels = (s) => stringLevels(this, s);
+    StructureTerminal.prototype.xsetLevels = function (s) { return stringLevels(this, s); };
+    StructureLab.prototype.xsetLevels = function (s) { return stringLevels(this, s); };
 
-    StructureLink.prototype.xgetLevels = getLevels;
-    StructureContainer.prototype.xgetLevels = getLevels;
+    StructureLink.prototype.xgetLevels = function () { return getLevels(this); };
+    StructureContainer.prototype.xgetLevels = function () { return getLevels(this); };
 
-    StructureTerminal.prototype.xgetLevels = getLevels;
-    StructureLab.prototype.xgetLevels = getLevels;
+    StructureTerminal.prototype.xgetLevels = function () { return getLevels(this); };
+    StructureLab.prototype.xgetLevels = function () { return getLevels(this); };
 }
 
 const levelTypes = [
@@ -118,7 +118,7 @@ function stringLevels(structure, levels) {
 
     if (levelTypes.indexOf(type) < 0) return false;
 
-    if (levels === undefined || !_.isString(levels)) return setLevels(structure, levels, type);
+    if (levels === undefined || !_.isString(levels)) return setLevels(structure, undefined, type);
     var single = levels.split(';');
 
     var cap_energy = structure.store ? structure.storeCapacity : structure.energyCapacity || 0;
@@ -133,7 +133,7 @@ function stringLevels(structure, levels) {
         let min, max;
         if (parts[1].endsWith('%')) {
             min = parseFloat(parts[1].substr(0, parts[1].length-1));
-            if (_.isNan(min)) return false;
+            if (_.isNaN(min)) return false;
             if (parts[0] == RESOURCE_ENERGY) {
                 min = Math.floor(min / 100 * cap_energy);
             } else {
@@ -141,11 +141,11 @@ function stringLevels(structure, levels) {
             }
         } else {
             min = parseInt(parts[1]);
-            if (_.isNan(min)) return false;
+            if (_.isNaN(min)) return false;
         }
         if (parts[2].endsWith('%')) {
             max = parseFloat(parts[2].substr(0, parts[2].length-1));
-            if (_.isNan(max)) return false;
+            if (_.isNaN(max)) return false;
             if (parts[0] == RESOURCE_ENERGY) {
                 max = Math.floor(max / 100 * cap_energy);
             } else {
@@ -153,7 +153,7 @@ function stringLevels(structure, levels) {
             }
         } else {
             max = parseInt(parts[2]);
-            if (_.isNan(max)) return false;
+            if (_.isNaN(max)) return false;
         }
         mLevels.push({res: parts[0], min: min, max: max});
     }
@@ -229,12 +229,13 @@ function setLevels_lab(lab, levels) {
     }
 
 
-    for (let i = 0; i < levels.levels; ++i) {
+    for (let i = 0; i < levels.length; ++i) {
         mLevels[levels[i].res] = {min: levels[i].min, max: levels[i].max};
     }
 
     Memory[MS].levels[lab.id] = mLevels;
     Memory[MS].structRooms[lab.id] = lab.room.name;
+    return true;
 }
 
 function setLevels_store(structure, levels) {
