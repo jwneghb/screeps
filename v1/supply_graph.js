@@ -25,7 +25,7 @@ class PathNode extends MyNode {
 }
 
 function forAdjacent(adjacency, graph, x, y, nodefun) {
-    adjacency.some(function (d) {
+    adjacency.forEach(function (d) {
         let node = undefined;
         let dir = get_dir(d);
         if (x !== undefined && y !== undefined && graph !== undefined) {
@@ -33,7 +33,7 @@ function forAdjacent(adjacency, graph, x, y, nodefun) {
                 node = graph[x + dir.dx][y + dir.dy];
             }
         }
-        return nodefun(node, dir);
+        nodefun(node, dir);
     });
 }
 
@@ -142,7 +142,7 @@ function build_graph(room) {
 
     let new_paths = 0;
 
-    // Step 2: Create vertices for tiles that have received at least 4 votes.
+    // Step 2: Create vertices for tiles that have received at least 3 votes.
     // Establish adjacency for sink-path, and path-path pairs.
     graphLoop(votes, function (n, x, y) {
 
@@ -153,7 +153,7 @@ function build_graph(room) {
             return;
         }
 
-        if (n < 4) return;
+        if (n < 3) return;
 
         let node = new PathNode();
         node.flag = 2;
@@ -324,21 +324,27 @@ function updateGraph (room) {
 
     // Flag usage:
     // Paths: 13 bits total
-    // bit 0...2 : number of sinks in need of energy.
-    // bit     3 : essential path (adjacent sink is only reachable via this path)
+    // bit 0...3 : {
+    //     before tree creation:
+    //         bit 0...2 : number of sinks in need of energy.
+    //         bit     3 : essential path (adjacent sink is only reachable via this path)
+    //     after tree creation:
+    //         bit 0...3 : parent direction (1 - 8) or 0 for no parent
+    // }
     // bit     4 : visited during tree creation
-    // bit 5...8 : predecessor direction
-    // bit 9..12 : successor direction
+    // bit 5..12 : children (e.g. flag & (1 << (TOP + 4)) > 0 means child in TOP direction exists)
 
     // Sinks: 4 bit total
     // bit 0...3 : direction of path, initially 0
 
+    // Clear the lowest 13 bits of the path flags.
     graphLoop(graph.paths, function (v) {
-        v.flag = 0;
+        v.flag &= 0xffffe000;
     });
 
+    // Clear the lowest 4 bits of the sink flags.
     graphLoop(graph.sinks, function (v) {
-        v.flag = 0;
+        v.flag &= 0xfffffff0;
     });
 
     let sink_pos = {};
@@ -386,7 +392,7 @@ function updateGraph (room) {
 
         if (idx >= 0) {
             let path = paths.splice(idx, 1)[0];
-            if (createSnake(graph, path.x, path.y, null)) {
+            if (createTree(graph, path.x, path.y, null)) {
                 graph.roots.push({x: path.x, y: path.y});
             }
         }
@@ -395,51 +401,33 @@ function updateGraph (room) {
     Memory[MS][room.name] = graph;
 }
 
-function createSnake(graph, x, y, p) {
+function createTree(graph, x, y, p) {
+    console.log('open', x, y);
+
+    let non_empty = false;
     let node = graph.paths[x][y];
     if ((node.flag & 0x10) == 0 && (node.flag & 0b111) > 0) {
 
-        node.flag |= 0x10 | ((p || 0) << 5);
+        // clear flag and set visited bit to true
+        node.flag &= 0xffffe000;
+        node.flag |= 0x10 | (p || 0);
 
+        non_empty = true;
         forAdjacent(node.adjacent_sink, graph.sinks, x, y, function (sink, dir) {
             if ((sink.flag & 0xf) == 0 && sink.deficit > 0) {
                 sink.flag |= dir.rev;
                 forAdjacent(sink.adjacent_path, graph.paths, x + dir.dx, y + dir.dy, function (path) {
-                    path.flag -= 1;
+                    if ((path.flag & 0x10) == 0) path.flag -= 1;
                 });
             }
         });
-
-        let adjacent = [];
         forAdjacent(node.adjacent_path, graph.paths, x, y, function (path, dir) {
-            if ((path.flag & 0x10) == 0) {
-                adjacent.push({dir: dir, v: path.flag & 0b111});
+            if(createTree(graph, x + dir.dx, y + dir.dy, dir.rev)) {
+                node.flag |= (1 << (dir.fwd + 4));
             }
         });
-
-        if (adjacent.length > 0) {
-            adjacent.sort((a) => a.v);
-            let dir = adjacent[0].dir;
-            if(createSnake(graph, x + dir.dx, y + dir.dy, dir.rev)) {
-                node.flag |= (dir.fwd << 9);
-            }
-        }
-
-        return true;
     }
 
-    return false;
-}
-
-function getRoute(x, y, energy) {
-    if (!Memory[MS]) return undefined;
-    if (!Memory[MS][room.name]) return undefined;
-
-    var graph = Memory[MS][room.name];
-
-    let route = [];
-
-    for (var i = 0; i < graph.roots.length; ++i) {
-
-    }
+    console.log('close', x, y, (node.flag >> 5).toString(2));
+    return non_empty;
 }
