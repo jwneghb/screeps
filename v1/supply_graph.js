@@ -1,28 +1,13 @@
-const TYPES = {
-    PATH: 0,
-    SINK: 1,
-    SOURCE: 2
-};
-
 class MyNode {
     constructor() {
         this.flag = 0;
         this.adjacent_path = [];
-    }
-
-    get isPath() {
-        return this.type == TYPES.PATH;
-    }
-
-    get isSink() {
-        return this.type == TYPES.SINK;
     }
 }
 
 class SinkNode extends MyNode {
     constructor(id) {
         super();
-        this.type = TYPES.SINK;
         this.id = id;
     }
 
@@ -36,37 +21,21 @@ class PathNode extends MyNode {
     constructor() {
         super();
         this.adjacent_sink = [];
-        this.type = TYPES.PATH;
     }
 }
 
-MyNode.prototype.forAdjacentPath = function(graph, x, y, pathfun) {
-    this.adjacent_path.forEach(function (d) {
-        let path = undefined;
+function forAdjacent(adjacency, graph, x, y, nodefun) {
+    adjacency.forEach(function (d) {
+        let node = undefined;
         let dir = get_dir(d);
         if (x !== undefined && y !== undefined && graph !== undefined) {
             if (graph[x + dir.dx] !== undefined) {
-                path = graph[x + dir.dx][y + dir.dy];
+                node = graph[x + dir.dx][y + dir.dy];
             }
         }
-        pathfun(path, dir);
-        return;
+        nodefun(node, dir);
     });
-};
-
-PathNode.prototype.forAdjacentSink = function(graph, x, y, sinkfun)  {
-    this.adjacent_sink.forEach(function (d) {
-        let sink = undefined;
-        let dir = get_dir(d);
-        if (x !== undefined && y !== undefined && graph !== undefined) {
-            if (graph[x + dir.dx] !== undefined) {
-                sink = graph[x + dir.dx][y + dir.dy];
-            }
-        }
-        sinkfun(sink, dir);
-        return;
-    });
-};
+}
 
 const MS = 'SUPGv2';
 
@@ -215,10 +184,10 @@ function build_graph(room) {
 
         if (accessible) {
 
-            node.forAdjacentPath(graph.paths, x, y, function(path, dir2) {
+            forAdjacent(node.adjacent_path, graph.paths, x, y, function(path, dir2) {
                 path.adjacent_path.push(dir2.rev);
             });
-            node.forAdjacentSink(graph.sinks, x, y, function(sink, dir2) {
+            forAdjacent(node.adjacent_sink, graph.sinks, x, y, function(sink, dir2) {
                 sink.adjacent_path.push(dir2.rev);
                 delete sink_pos[sink.id];
             });
@@ -308,7 +277,7 @@ function build_graph(room) {
                         }
                     });
 
-                    node.forAdjacentPath(graph.paths, px, py, function(path, dir4) {
+                    forAdjacent(node.adjacent_path, graph.paths, px, py, function(path, dir4) {
                         path.adjacent_path.push(dir4.rev);
                     });
 
@@ -420,33 +389,19 @@ function createTree(graph, x, y, p) {
         }
 
         non_empty = true;
-        node.forAdjacentSink(graph.sinks, x, y, function (sink, dir) {
+        forAdjacent(node.adjacent_sink, graph.sinks, x, y, function (sink, dir) {
             if ((sink.flag & 0b1) == 0 && sink.deficit > 0) {
                 sink.flag |= 0b1;
-                sink.forAdjacentPath(graph.paths, x + dir.dx, y + dir.dy, function (path) {
+                forAdjacent(sink.adjacent_path, graph.paths, x + dir.dx, y + dir.dy, function (path) {
                     path.flag -= 1;
                 });
             }
         });
-        node.forAdjacentPath(graph.paths, x, y, function (path, dir) {
+        forAdjacent(node.adjacent_path, graph.paths, x, y, function (path, dir) {
             if(createTree(graph, x + dir.dx, y + dir.dy, dir.rev)) {
                 node.flag |= (1 << (dir.fwd + 4));
             }
         });
     }
     return non_empty;
-}
-
-function createRoute (room, pos, energy) {
-    if (!Memory[MS]) return undefined;
-    if (!Memory[MS][room.name]) return undefined;
-
-    var graph = Memory[MS][room.name];
-    var x = pos.x;
-    var y = pos.y;
-
-    let v = graph[x][y];
-    if (v.isSink()) {
-
-    }
 }
