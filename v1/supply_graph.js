@@ -393,7 +393,7 @@ function updateGraph (room) {
         if (idx >= 0) {
             let flag = paths.splice(idx, 1)[0];
             if (createTree(graph, flag.x, flag.y, null)) {
-                roots.push({x: flag.x, y: flag.y});
+                graph.roots.push({x: flag.x, y: flag.y});
             }
         }
     }
