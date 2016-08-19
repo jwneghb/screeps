@@ -76,7 +76,8 @@ class PathNode extends MyNode {
 const MS = 'SUPGv2';
 
 module.exports = {
-    build_graph: build_graph
+    build_graph: build_graph,
+    update_graph: updateGraph
 };
 
 function get_dir(d) {
@@ -276,7 +277,7 @@ function build_graph(room) {
                         if (graph.paths[ppx] !== undefined) {
                             let path = graph.paths[ppx][ppy];
                             if (path !== undefined) {
-                                node.adjacent_path.push(dir.fwd);
+                                node.adjacent_path.push(dir2.fwd);
                                 if (path.flag == 2) node.flag = 1;
                             }
                         }
@@ -285,7 +286,6 @@ function build_graph(room) {
                 } else {
 
                     frontier.forEach(function (pos) {
-
                         let dx = pos.x - px;
                         let dy = pos.y - py;
                         if (Math.abs(dx) <= 1 && Math.abs(dy) <= 1) {
@@ -348,13 +348,24 @@ function updateGraph (room) {
 
     var graph = Memory[MS][room.name];
 
-    // Clear Path flags
+    // Flag usage:
+    // Paths:
+    // bit 0..2: number of sinks in need of energy.
+    // bit    3: essential path (ex. sink that is only reachable via this path.
+    // bit    4: visited during tree creation
+    // Sinks:
+    // bit    0: votes recalled (=1)
+
+    // Clear bits 0..7 of the flags.
     graphLoop(graph.paths, function (v) {
-        v.flag = 0;
+        v.flag &= 0xffffff00;
+    });
+
+    graphLoop(graph.sinks, function (v) {
+        v.flag &= 0xffffff00;
     });
 
     let sink_pos = {};
-
     let flags = [];
 
     room.find(FIND_MY_STRUCTURES, {filter: (s) => isSink(s) && s.energy < s.energyCapacity}).forEach(function (s) {
@@ -373,13 +384,44 @@ function updateGraph (room) {
     });
 
     graphLoop(graph.paths, function (v, x, y) {
-        if (v.flag > 0) {
-            flags.push({x: x, y: y});
+        if ((v.flag & 0xf) > 0) {
+            flags.push({x: x, y: y, w: v.flag});
         }
     });
-    flags.sort((a, b) => graph.paths[b.x][b.y].flag - graph[a.x][a.y].flag);
 
+    // Sort flags by the content of bits 0..3
+    flags.sort((a, b) => (b.w & 0xf) - (a.w & 0xf));
 
+    let trees = [];
+    while (flags.length > 0) {
+        let flag = flags.shift();
+        let tree = createTree(graph, flag.x, flag.y, null);
+        if (tree !== undefined) trees.push(tree);
+    }
+
+    Memory.TREES = trees;
+}
+
+function createTree(graph, x, y, p) {
+    let tree = undefined;
+    let node = graph.paths[x][y];
+    if ((node.flag & 0b10000) == 0 && (node.flag & 0b0111) > 0) {
+        node.flag |= 0b10000;
+        let tree = {x: x, y: y, p: p, c: {}};
+        node.forAdjacentSink(graph.sinks, x, y, function (sink, dir) {
+            if ((sink.flag & 0b0001) == 0 && sink.deficit > 0) {
+                sink.flag |= 0b0001;
+                sink.forAdjacentPath(graph.paths, x + dir.dx, y + dir.dy, function (path) {
+                    path.flag -= 1;
+                });
+            }
+        });
+        node.forAdjacentPath(graph.paths, x, y, function (path, dir) {
+            let subtree = createTree(graph, x + dir.dx, y + dir.dy, dir.rev);
+            if (subtree !== undefined) tree.c[dir.fwd] = subtree;
+        });
+    }
+    return tree;
 }
 
 function createRoute (room, pos, energy) {
