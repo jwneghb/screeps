@@ -337,14 +337,12 @@ function updateGraph (room) {
     // Sinks: 4 bit total
     // bit 0...3 : direction of path, initially 0
 
-    // Clear the lowest 13 bits of the path flags.
     graphLoop(graph.paths, function (v) {
-        v.flag &= 0xffffe000;
+        v.flag = 0;
     });
 
-    // Clear the lowest 4 bits of the sink flags.
     graphLoop(graph.sinks, function (v) {
-        v.flag &= 0xfffffff0;
+        v.flag = 0;
     });
 
     let sink_pos = {};
