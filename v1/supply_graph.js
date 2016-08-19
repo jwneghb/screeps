@@ -177,6 +177,13 @@ function build_graph(room) {
         });
     }
 
+    graphLoop(votes, function (n, x, y) {
+        if (n == 0) delete votes[x][y];
+        if (Object.keys(votes[x]).length == 0) delete votes[x];
+    });
+
+    Memory.TEST = votes;
+
     let new_paths = 0;
 
     // Step 2: Create vertices for tiles that have received at least 3 votes.
