@@ -363,7 +363,7 @@ function updateGraph (room) {
             let path = graph.paths[px][py];
             if ((path.flag & 0xf) == 0) paths.push({x: px, y: py});
             path.flag += 1;
-            if (essential) path.flag |= 0x10;
+            if (essential) path.flag |= 0b1000;
         });
     });
 
