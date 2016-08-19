@@ -348,7 +348,7 @@ function updateGraph (room) {
     // bit 0...3 : {
     //     before tree creation:
     //         bit 0...2 : number of sinks in need of energy.
-    //         bit     3 : essential path (ex. sink that is only reachable via this path.
+    //         bit     3 : essential path (adjacent sink is only reachable via this path)
     //     after tree creation:
     //         bit 0...3 : parent direction (1 - 8) or 0 for no parent
     // }
