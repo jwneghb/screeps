@@ -175,15 +175,19 @@ function build_graph(room) {
         });
     }
 
-    Memory.TEST = votes;
-
-    return;
-
     let new_paths = 0;
 
     // Step 2: Create vertices for tiles that have received at least 3 votes.
     // Establish adjacency for sink-path, and path-path pairs.
     graphLoop(votes, function (n, x, y) {
+
+        // Remove zero vote entries.
+        if (n == 0) {
+            delete votes[x][y];
+            if (Object.keys(votes[x]).length == 0) delete votes[x];
+            return;
+        }
+
         if (n < 3) return;
 
         let node = new PathNode();
@@ -230,8 +234,8 @@ function build_graph(room) {
 
         } else {
 
-            // If the path is inaccessible, clear votes, to avoid rechecking this tile in further steps.
-            votes[x][y] = 0;
+            // If the path is inaccessible, delete vote, to avoid rechecking this tile in further steps.
+            delete votes[x][y];
         }
     });
 
@@ -258,7 +262,7 @@ function build_graph(room) {
             directions.forEach(function (dir) {
                 let px = x + dir.dx;
                 let py = y + dir.dy;
-                if (votes[px][py] == 0) return;
+                if (votes[px] === undefined || votes[px][py] === undefined) return;
                 let node = new PathNode();
 
                 if (frontier.length == 0 || frontier.length > 8) {
