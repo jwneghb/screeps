@@ -402,17 +402,15 @@ function updateGraph (room) {
 }
 
 function createTree(graph, x, y, p) {
-    console.log('open', x, y);
-
-    let non_empty = false;
     let node = graph.paths[x][y];
     if ((node.flag & 0x10) == 0 && (node.flag & 0b111) > 0) {
+
+        console.log('open', x, y);
 
         // clear flag and set visited bit to true
         node.flag &= 0xffffe000;
         node.flag |= 0x10 | (p || 0);
 
-        non_empty = true;
         forAdjacent(node.adjacent_sink, graph.sinks, x, y, function (sink, dir) {
             if ((sink.flag & 0xf) == 0 && sink.deficit > 0) {
                 sink.flag |= dir.rev;
@@ -426,8 +424,11 @@ function createTree(graph, x, y, p) {
                 node.flag |= (1 << (dir.fwd + 4));
             }
         });
+
+        console.log('close', x, y, (node.flag >> 5).toString(2));
+
+        return true;
     }
 
-    console.log('close', x, y, (node.flag >> 5).toString(2));
-    return non_empty;
+    return false;
 }
