@@ -271,8 +271,8 @@ function build_graph(room) {
                         if (graph.sinks[ppx] !== undefined) {
                             let sink = graph.sinks[ppx][ppy];
                             if (sink !== undefined) {
-                                node.adjacent_sink.push(dir.fwd);
-                                sink.adjacent_path.push(dir.rev);
+                                node.adjacent_sink.push(dir3.fwd);
+                                sink.adjacent_path.push(dir3.rev);
                             }
                         }
                     });
@@ -281,6 +281,7 @@ function build_graph(room) {
                         path.adjacent_path.push(dir4.rev);
                     });
 
+                    if (graph.paths[px] === undefined) graph.paths[px] = {};
                     graph.paths[px][py] = node;
                     delete(sink_pos[id]);
 
@@ -290,6 +291,15 @@ function build_graph(room) {
             });
         }
     }
+
+    graphLoop(graph.paths, function(v) {
+        v.adjacent_path.sort();
+        v.adjacent_sink.sort();
+    });
+
+    graphLoop(graph.sinks, function(v) {
+        v.adjacent_path.sort();
+    });
 
     if (!Memory[MS]) Memory[MS] = {};
     Memory[MS][room.name] = graph;
@@ -324,55 +334,71 @@ function updateGraph (room) {
     // bit     4 : visited during tree creation
     // bit 5..12 : children (e.g. flag & (1 << (TOP + 4)) > 0 means child in TOP direction exists)
 
-    // Sinks: 1 bit total
-    // bit    0: votes recalled (=1)
+    // Sinks: 4 bit total
+    // bit 0...3 : direction of path, initially 0
 
     // Clear the lowest 13 bits of the path flags.
     graphLoop(graph.paths, function (v) {
         v.flag &= 0xffffe000;
     });
 
-    // Clear the lowest 1 bits of the sink flags.
+    // Clear the lowest 4 bits of the sink flags.
     graphLoop(graph.sinks, function (v) {
-        v.flag &= 0xfffffffe;
+        v.flag &= 0xfffffff0;
     });
 
     let sink_pos = {};
-    let flags = [];
+    let paths = [];
 
+    // Step 1: All sinks that have a deficit vote for all adjacent paths.
+    // If a sink that has only one adjacent path the 'essential' flag of that path is set.
+    // Upon receiving the first vote, the paths' position is added to the 'paths' list.
     room.find(FIND_MY_STRUCTURES, {filter: (s) => isSink(s) && s.energy < s.energyCapacity}).forEach(function (s) {
         let x = s.pos.x;
         let y = s.pos.y;
         sink_pos[s.id] = {x: x, y: y};
         let v = graph.sinks[x][y];
+        let essential = v.adjacent_path.length == 1;
         v.adjacent_path.forEach(function (d) {
             let dir = get_dir(d);
-            graph.paths[x + dir.dx][y + dir.dy].flag += 1;
+            let px = x + dir.dx, py = y + dir.dy;
+            let path = graph.paths[px][py];
+            if ((path.flag & 0xf) == 0) paths.push({x: px, y: py});
+            path.flag += 1;
+            if (essential) path.flag |= 0x10;
         });
-        if (v.adjacent_path.length == 1) {
-            let dir = get_dir(v.adjacent_path[0]);
-            graph.paths[x + dir.dx][y + dir.dy].flag |= 0b1000;
-        }
     });
 
-    graphLoop(graph.paths, function (v, x, y) {
-        if ((v.flag & 0xf) > 0) {
-            flags.push({x: x, y: y, w: (v.flag & 0xf)});
+    graph.roots = [];
+    let get_value = function(path) {
+        return graph.paths[path.x][path.y].flag & 0x1f;
+    };
+
+    while (paths.length > 0) {
+
+        let max = 0, k = 0, idx = -1;
+        for (let i = 0; i < paths.length; ++i) {
+            let cur = get_value(paths[k]);
+            if (cur & 0x10 == 0) {
+                if (idx < 0 || cur > max) {
+                    idx = k;
+                    max = cur;
+                }
+                k ++;
+            } else {
+                paths.splice(k, 1);
+            }
         }
-    });
 
-    // Sort flags by the content of bits 0..3
-    flags.sort((a, b) => b.w - a.w);
-
-    let roots = [];
-    while (flags.length > 0) {
-        let flag = flags.shift();
-        if (createTree(graph, flag.x, flag.y, null)) {
-            roots.push({x: flag.x, y: flag.y});
+        if (idx >= 0) {
+            let flag = paths.splice(idx, 1)[0];
+            if (createTree(graph, flag.x, flag.y, null)) {
+                roots.push({x: flag.x, y: flag.y});
+            }
         }
     }
 
-    Memory.TREES = roots;
+    Memory[MS][room.name] = graph;
 }
 
 function createTree(graph, x, y, p) {
@@ -384,16 +410,16 @@ function createTree(graph, x, y, p) {
         node.flag &= 0xffffe000;
         node.flag |= 0x10;
 
-        if (p !== null) {
+        if (p != null) {
             node.flag |= p;
         }
 
         non_empty = true;
         forAdjacent(node.adjacent_sink, graph.sinks, x, y, function (sink, dir) {
-            if ((sink.flag & 0b1) == 0 && sink.deficit > 0) {
-                sink.flag |= 0b1;
+            if ((sink.flag & 0xf) == 0 && sink.deficit > 0) {
+                sink.flag |= dir.rev;
                 forAdjacent(sink.adjacent_path, graph.paths, x + dir.dx, y + dir.dy, function (path) {
-                    path.flag -= 1;
+                    if ((path.flag & 0x10) == 0) path.flag -= 1;
                 });
             }
         });
