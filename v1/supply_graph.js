@@ -153,8 +153,6 @@ function build_graph(room) {
 
             if (graph.sinks[px] !== undefined) {
                 if (graph.sinks[px][py] !== undefined) {
-                    if (votes[px] == undefined) votes[px] = {};
-                    votes[px][py] = 0;
                     return;
                 }
             }
@@ -162,7 +160,7 @@ function build_graph(room) {
             if (votes[px] === undefined) votes[px] = {};
 
             if (votes[px][py] === undefined) {
-                let terrain = room.lookForAt(LOOK_TERRAIN, px, py)
+                let terrain = room.lookForAt(LOOK_TERRAIN, px, py);
                 if (terrain == 'plain' || terrain == 'swamp') {
                     let structures = room.lookForAt(LOOK_STRUCTURES, px, py);
                     if (structures.every((s) => walkable.indexOf(s.structureType) >= 0)) {
@@ -177,12 +175,9 @@ function build_graph(room) {
         });
     }
 
-    graphLoop(votes, function (n, x, y) {
-        if (n == 0) delete votes[x][y];
-        if (Object.keys(votes[x]).length == 0) delete votes[x];
-    });
-
     Memory.TEST = votes;
+
+    return;
 
     let new_paths = 0;
 
@@ -198,7 +193,7 @@ function build_graph(room) {
 
         directions.forEach(function (dir) {
             let px = x + dir.dx;
-            let py = y + dir.y;
+            let py = y + dir.dy;
 
             // Mark this tile as accessible if any neighbor tile has a non-zero amount of votes.
             if (!accessible && votes[px] !== undefined && votes[px][py] > 0) accessible = true;
