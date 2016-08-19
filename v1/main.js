@@ -171,7 +171,7 @@ var remote_rooms = [
 
             min_fill: 1000,
             home: 'W42N24',
-            carriers: 2,
+            carriers: 3,
             carrier_body: remote_carrier_large
         }
     },
