@@ -396,13 +396,11 @@ function updateGraph (room) {
 }
 
 function createSnake(graph, x, y, p) {
-    let non_empty = false;
     let node = graph.paths[x][y];
     if ((node.flag & 0x10) == 0 && (node.flag & 0b111) > 0) {
 
         node.flag |= 0x10 | ((p || 0) << 5);
 
-        non_empty = true;
         forAdjacent(node.adjacent_sink, graph.sinks, x, y, function (sink, dir) {
             if ((sink.flag & 0xf) == 0 && sink.deficit > 0) {
                 sink.flag |= dir.rev;
@@ -411,14 +409,26 @@ function createSnake(graph, x, y, p) {
                 });
             }
         });
+
+        let adjacent = [];
         forAdjacent(node.adjacent_path, graph.paths, x, y, function (path, dir) {
-            if(createSnake(graph, x + dir.dx, y + dir.dy, dir.rev)) {
-                node.flag |= (dir.fwd << 9);
-                return true;
+            if ((path.flag & 0x10) == 0) {
+                adjacent.push({dir: dir, v: path.flag & 0b111});
             }
         });
+
+        if (adjacent.length > 0) {
+            adjacent.sort((a) => a.v);
+            let dir = adjacent[0].dir;
+            if(createSnake(graph, x + dir.dx, y + dir.dy, dir.rev)) {
+                node.flag |= (dir.fwd << 9);
+            }
+        }
+
+        return true;
     }
-    return non_empty;
+
+    return false;
 }
 
 function getRoute(x, y, energy) {
