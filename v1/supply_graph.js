@@ -142,7 +142,7 @@ function build_graph(room) {
 
     let new_paths = 0;
 
-    // Step 2: Create vertices for tiles that have received at least 3 votes.
+    // Step 2: Create vertices for tiles that have received at least 4 votes.
     // Establish adjacency for sink-path, and path-path pairs.
     graphLoop(votes, function (n, x, y) {
 
@@ -153,7 +153,7 @@ function build_graph(room) {
             return;
         }
 
-        if (n < 3) return;
+        if (n < 4) return;
 
         let node = new PathNode();
         node.flag = 2;
