@@ -379,7 +379,7 @@ function updateGraph (room) {
         let max = 0, k = 0, idx = -1;
         for (let i = 0; i < paths.length; ++i) {
             let cur = get_value(paths[k]);
-            if (cur & 0x10 == 0) {
+            if ((cur & 0x10) == 0) {
                 if (idx < 0 || cur > max) {
                     idx = k;
                     max = cur;
