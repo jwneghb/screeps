@@ -159,19 +159,20 @@ function build_graph(room) {
                 }
             }
 
-            if (votes[px] === undefined || votes[px][py] === undefined) {
+            if (votes[px] === undefined) votes[px] = {};
+
+            if (votes[px][py] === undefined) {
                 let terrain = room.lookForAt(LOOK_TERRAIN, px, py)
                 if (terrain == 'plain' || terrain == 'swamp') {
                     let structures = room.lookForAt(LOOK_STRUCTURES, px, py);
                     if (structures.every((s) => walkable.indexOf(s.structureType) >= 0)) {
-                        if (votes[px] === undefined) votes[px] = {};
                         votes[px][py] = 1;
                         return;
                     }
                 }
                 votes[px][py] = 0;
             } else {
-                votes[px][py] += 1;
+                if (votes[px][py] > 0) votes[px][py] += 1;
             }
         });
     }
@@ -235,7 +236,8 @@ function build_graph(room) {
     let frontier = [];
     let new_frontier = [];
 
-    // NEW STEP 3:
+    // Step 3: Incrementally add paths that are adjacent to sinks that are currently not reachable
+    // and are adjacent to paths that are already in the graph.
     while (new_paths > 0) {
 
         new_frontier.forEach(function(pos) {
