@@ -142,7 +142,7 @@ function build_graph(room) {
 
     let new_paths = 0;
 
-    // Step 2: Create vertices for tiles that have received at least 3 votes.
+    // Step 2: Create vertices for tiles that have received at least 4 votes.
     // Establish adjacency for sink-path, and path-path pairs.
     graphLoop(votes, function (n, x, y) {
 
@@ -153,7 +153,7 @@ function build_graph(room) {
             return;
         }
 
-        if (n < 3) return;
+        if (n < 4) return;
 
         let node = new PathNode();
         node.flag = 2;
@@ -400,8 +400,6 @@ function createSnake(graph, x, y, p) {
     let node = graph.paths[x][y];
     if ((node.flag & 0x10) == 0 && (node.flag & 0b111) > 0) {
 
-        // clear flag and set visited bit to true
-        node.flag = 0;
         node.flag |= 0x10 | ((p || 0) << 5);
 
         non_empty = true;
@@ -409,7 +407,7 @@ function createSnake(graph, x, y, p) {
             if ((sink.flag & 0xf) == 0 && sink.deficit > 0) {
                 sink.flag |= dir.rev;
                 forAdjacent(sink.adjacent_path, graph.paths, x + dir.dx, y + dir.dy, function (path) {
-                    if ((path.flag & 0x10) == 0) path.flag -= 1;
+                    path.flag -= 1;
                 });
             }
         });
