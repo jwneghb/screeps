@@ -384,16 +384,16 @@ function updateGraph (room) {
                     idx = k;
                     max = cur;
                 }
-                k ++;
+                k += 1;
             } else {
                 paths.splice(k, 1);
             }
         }
 
         if (idx >= 0) {
-            let flag = paths.splice(idx, 1)[0];
-            if (createTree(graph, flag.x, flag.y, null)) {
-                graph.roots.push({x: flag.x, y: flag.y});
+            let path = paths.splice(idx, 1)[0];
+            if (createTree(graph, path.x, path.y, null)) {
+                graph.roots.push({x: path.x, y: path.y});
             }
         }
     }
@@ -408,11 +408,7 @@ function createTree(graph, x, y, p) {
 
         // clear flag and set visited bit to true
         node.flag &= 0xffffe000;
-        node.flag |= 0x10;
-
-        if (p != null) {
-            node.flag |= p;
-        }
+        node.flag |= 0x10 | (p || 0);
 
         non_empty = true;
         forAdjacent(node.adjacent_sink, graph.sinks, x, y, function (sink, dir) {
